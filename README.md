@@ -95,4 +95,5 @@ If you have run out of energy or time for your project, put a note at the top of
 # Git Exercise
 shall not live in vain;
 Or cool one pain,
+Or help one fainting robin
 Unto his nest again,
