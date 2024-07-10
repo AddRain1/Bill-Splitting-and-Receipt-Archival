@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
   },
   baseText: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
+    top: 30,
     height: 150,
     fontSize: 48,
   },
   logInButton: {
-    height: 30,
     width: 150,
     alignItems: 'center',
     justifyContent: 'center',
@@ -157,9 +157,7 @@ const styles = StyleSheet.create({
   logInText: {
     fontFamily: 'SplineSansMono',
     fontSize: 20,
-    
-
-
+    color: '#F0F4F8'
   },
   orText: {
     fontFamily: 'SplineSansMono',

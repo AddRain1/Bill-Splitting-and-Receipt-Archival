@@ -17,14 +17,15 @@ import {
   PlayfairDisplay_800ExtraBold_Italic,
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
-import HomePage from './app/screens/HomePage';
+import LogIn from './app/screens/LogIn';
 import CreateAccount from './app/screens/CreateAccount';
+import ForgotPassword from './app/screens/ForgotPassword';
 
 
 export default function App() {
    
   return (
-   <CreateAccount/>
+   <ForgotPassword/>
   );
 }
 
