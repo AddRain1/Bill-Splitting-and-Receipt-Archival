@@ -19,7 +19,11 @@ import {
 } from '@expo-google-fonts/playfair-display';
 
 
+
 export default function HomePage() {
+  const [font] = useFonts({
+    'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
+  });
     let [fontsLoaded] = useFonts({
       PlayfairDisplay_400Regular,
       PlayfairDisplay_500Medium,
@@ -39,7 +43,7 @@ export default function HomePage() {
 
 
   return (
-    <NavigationContainer>
+
     <SafeAreaView style= {styles.container}>
       <Text style={styles.baseText}>
       <Text> 
@@ -57,21 +61,30 @@ export default function HomePage() {
         placeholder="password"
       />
   
-      
-      <TouchableOpacity style={styles.logInButton} onPress={() => console.log("Button pressed")}>
-        <Text style = {styles.buttonText}>Create account</Text>
-
-      </TouchableOpacity>
+    
       <TouchableOpacity style={styles.pswButton} onPress={() => console.log("Button pressed")}>
   
         <Text style = {styles.pswText}>Forgot password</Text>
+      </TouchableOpacity>
+
+
+      <TouchableOpacity style={styles.logInButton} onPress={() => console.log("Button pressed")}>
+      <Text style = {styles.logInText}>Log In</Text>
+
+      </TouchableOpacity>
+
+      <Text style = {styles.orText}> or </Text>
+
+
+      <TouchableOpacity style={styles.accountButton} onPress={() => console.log("Button pressed")}>
+        <Text style = {styles.buttonText}>Create account</Text>
+
       </TouchableOpacity>
 
       
       <StatusBar style="auto" />
     
     </SafeAreaView>
-    </NavigationContainer>
   );
 }
 
@@ -84,7 +97,7 @@ const styles = StyleSheet.create({
   },
   baseText: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
-    height: 240,
+    height: 150,
     fontSize: 48,
   },
   logInButton: {
@@ -94,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  logInButton: {
+  accountButton: {
     height: 19,
     width: 144,
     alignItems: 'center',
@@ -102,19 +115,54 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   buttonText: {
-    fontFamily: 'PlayfairDisplay-Bold',
+    fontFamily: 'SplineSansMono',
     color: '#00C896'
   },
   pswText: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    color: '#6E7B91'
+    fontFamily: 'SplineSansMono',
+    color: '#6E7B91',
+    
   },
   input: {
     backgroundColor: '#F0F4F8',
     color: '3A3A3A',
     height: 40,
-    margin: 12,
+    margin: 20,
+    width:300,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 4,
+    fontFamily: 'SplineSansMono',
   },
+  pswButton: {  
+    height: 40,
+    margin: -10,
+    marginBottom: 20,
+    width:300, 
+
+    
+
+  },
+  logInButton: {
+    backgroundColor: '#00C896',
+    width: 118,
+    height:43,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    marginBottom: 10,
+
+
+  },
+  logInText: {
+    fontFamily: 'SplineSansMono',
+    fontSize: 20,
+    
+
+
+  },
+  orText: {
+    fontFamily: 'SplineSansMono',
+
+  }
 });
