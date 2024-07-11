@@ -7,6 +7,9 @@
     "passport-google-oidc": "^0.1.0"
   },
   "devDependencies": {
-    "dotenv": "^16.4.5"
+    "@eslint/js": "^9.6.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.6.0",
+    "globals": "^15.8.0"
   }
 }
