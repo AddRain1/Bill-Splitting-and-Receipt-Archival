@@ -6,6 +6,7 @@ build:
   stage: build_stage
   image: node
   script:
+    - cd backend
     - npm install
   artifacts:
     paths: 
