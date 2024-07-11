@@ -13,6 +13,7 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile' ]
   }, function verify(issuer, profile, cb) {
         /* db logic */
+        return [issuer, profile, cb]
       }
 ));  
 
