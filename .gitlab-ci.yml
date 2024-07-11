@@ -1,0 +1,19 @@
+stages:
+  - build_stage
+  - deploy_stage
+
+build: 
+  stage: build_stage
+  image: node
+  script:
+    - npm install
+  artifacts:
+    paths: 
+      - ./backend/node_modules
+      - ./backend/package-lock.json
+
+deploy:
+  stage: deploy_stage
+  image: node
+  script:
+    - node ./backend/app.js
