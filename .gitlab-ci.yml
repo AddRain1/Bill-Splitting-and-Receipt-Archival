@@ -2,16 +2,26 @@ stages:
   - build_stage
   - deploy_stage
 
+cache:
+  key:
+    files:
+      - ./backend/package-lock.json
+  paths:
+    - ./backend/node_modules
+
 build: 
   stage: build_stage
   image: node
   script:
     - cd backend
     - npm install
+    - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
+    - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
   artifacts:
     paths: 
       - ./backend/node_modules
       - ./backend/package-lock.json
+      - ./backend/.env
 
 deploy:
   stage: deploy_stage
