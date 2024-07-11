@@ -1,4 +1,5 @@
 stages:
+  - lint_stage
   - build_stage
   - deploy_stage
 
@@ -8,6 +9,14 @@ cache:
       - ./backend/package-lock.json
   paths:
     - ./backend/node_modules
+
+eslint:
+  stage: lint_stage
+  image: node
+  script:
+    - cd backend
+    - npm i eslint
+    - node_modules/eslint/bin/eslint.js .
 
 build: 
   stage: build_stage
