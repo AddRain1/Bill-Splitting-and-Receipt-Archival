@@ -17,4 +17,5 @@ deploy:
   stage: deploy_stage
   image: node
   script:
-    - node ./backend/app.js
+    - cd backend
+    - node app.js
