@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert} from 'react-native';
 import { useFonts } from 'expo-font';
 /*import {
   useFonts,
@@ -19,6 +19,7 @@ import { useFonts } from 'expo-font';
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display'; */
 import Icon from 'react-native-vector-icons/FontAwesome';
+import  { useNavigation } from '@react-navigation/native';
 
 
 function ForgotPassword(props) {
@@ -42,6 +43,20 @@ function ForgotPassword(props) {
           setIsPopupVisible(false);
         }
       };
+    const navigation = useNavigation();
+    const handleForgotPsw = () => {
+      Alert.alert(
+        "Email Sent",
+        "Please check your email for a confirmation code to reset your password.",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate('ResetPassword')
+          }
+        ]
+      );
+    };
+    
     
     return (
        <SafeAreaView>
@@ -58,7 +73,7 @@ function ForgotPassword(props) {
         placeholder = "username or email"
       />
       {showText && isPopupVisible && <Text style = {styles.pressedText}>please check your inbox for instructions on resetting your password</Text>}
-        <TouchableOpacity style={styles.submitButton} onPress={() => setShowText(true)}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleForgotPsw}>
         <Text style = {styles.submitText}> Submit </Text>
         
 

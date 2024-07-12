@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert} from 'react-native';
 import {
   useFonts,
   PlayfairDisplay_400Regular,
@@ -18,6 +18,8 @@ import {
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomInput from '../assets/CustomInput';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -25,52 +27,47 @@ function CreateAccount(props) {
     const [font] = useFonts({
         'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
     });
-
-    const [text, onChangeText] =React.useState('email or username');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [password, setPassword] = useState('');
+    const [retypePassword, setRetypePassword] = useState('');
+    const navigation = useNavigation();
+    const handleSignUp = () => {
+        
+        Alert.alert(
+          "Account Created",
+          "Your account has been created. You can now log in.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate('LogIn')
+            }
+          ]
+        );
+      };
+    
     
     return (
         <SafeAreaView style = {styles.container}>
          <Text style ={styles.baseText}>
             Create account
          </Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => console.log("Button pressed")}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('LogIn')}>
         <Icon name="arrow-left" size={20} color="#00C896" style={styles.icon} />
         <Text style = {styles.buttonText}> back to login</Text>
 
        </TouchableOpacity>
+       <CustomInput placeholder = 'email' value= {email} setValue={setEmail}/>
+       <CustomInput placeholder = 'first name' value = {firstName} setValue={setFirstName} />
+       <CustomInput placeholder = 'last name' value = {lastName} setValue={setLastName} />
+        <CustomInput placeholder = 'username' value = {username} setValue={setUsername} style = {styles.input}/>
+      <CustomInput placeholder = 'password' value = {password} setValue={setPassword}  secureTextEntry={true}/>
+      <CustomInput placeholder = 'retype password' value = {retypePassword} setValue={setRetypePassword}  secureTextEntry={true} />
+       
 
-       <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder = "email"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder="username"
-      />
-       <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder = "first name"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder="last name"
-      />
-       <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder = "password"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder="confirm password"
-      />
-
-      <TouchableOpacity style={styles.signUpButton} onPress={() => console.log("Button pressed")}>
+      <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style = {styles.signUpText}> Sign Up </Text>
 
       </TouchableOpacity> 
@@ -97,12 +94,14 @@ const styles = StyleSheet.create({
         top: 100,
         right: 50,
         fontSize: 32,
+        
     },
     backButton: {
         flexDirection: 'row',
         height: 40,
         top: 110,
         right:90,
+        marginBottom: 100,
     },
     buttonText: {
         fontFamily: 'SplineSansMono',
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
      
       },
     signUpButton: {
-        top:160,
+        top:50,
         alignItems: 'center',
         justifyContent: 'center',
         width: 118,

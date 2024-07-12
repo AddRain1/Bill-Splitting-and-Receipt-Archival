@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 import {
   useFonts,
   PlayfairDisplay_400Regular,
@@ -17,6 +17,8 @@ import {
   PlayfairDisplay_800ExtraBold_Italic,
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
+import CustomInput from '../assets/CustomInput';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -38,33 +40,29 @@ export default function HomePage() {
       PlayfairDisplay_800ExtraBold_Italic,
       PlayfairDisplay_900Black_Italic,
     });
-
-  const [text, onChangeText] =React.useState('email or username');
-
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigation = useNavigation();
 
   return (
 
     <SafeAreaView style= {styles.container}>
+      <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/logo.jpeg')} style ={styles.image}/>
+        
+     
       <Text style={styles.baseText}>
       <Text> 
         billy 
       </Text>
       </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder = "username"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder="password"
-      />
-  
+      <CustomInput placeholder = 'username' value = {username} setValue={setUsername} style = {styles.input}/>
+      <CustomInput placeholder = 'password' value = {password} setValue={setPassword}  secureTextEntry={true} style = {styles.input}/>
+
+      
     
-      <TouchableOpacity style={styles.pswButton} onPress={() => console.log("Button pressed")}>
+      <TouchableOpacity style={styles.pswButton} onPress={() => navigation.navigate('ForgotPassword')}>
   
-        <Text style = {styles.pswText}>Forgot password</Text>
+        <Text style = {styles.pswText}>Forgot Password</Text>
       </TouchableOpacity>
 
 
@@ -76,8 +74,8 @@ export default function HomePage() {
       <Text style = {styles.orText}> or </Text>
 
 
-      <TouchableOpacity style={styles.accountButton} onPress={() => console.log("Button pressed")}>
-        <Text style = {styles.buttonText}>Create account</Text>
+      <TouchableOpacity style={styles.accountButton} onPress={() => navigation.navigate('CreateAccount')}>
+        <Text style = {styles.buttonText}>Create Account</Text>
 
       </TouchableOpacity>
 
@@ -95,9 +93,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  image: {
+    width: 124,
+    height: 124,
+    // Add other styling properties as needed
+  },
   baseText: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
-    top: 30,
+    top: 10,
     height: 150,
     fontSize: 48,
   },
@@ -109,13 +112,15 @@ const styles = StyleSheet.create({
   },
   accountButton: {
     height: 19,
-    width: 144,
+    margin: 10,
+    width: 150,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
   buttonText: {
     fontFamily: 'SplineSansMono',
+    fontSize: 16,
     color: '#00C896'
   },
   pswText: {
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
   },
   pswButton: {  
     height: 40,
-    margin: -10,
+    margin: -5,
     marginBottom: 20,
     width:300, 
 
