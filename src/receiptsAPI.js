@@ -1,6 +1,8 @@
 import express from "express";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
+import { Tax } from "./taxClass.js";
+import taxAPI from "./taxAPI.js";
 
 // Export the abstract class receipt_api
 export class receipt_api{
@@ -23,7 +25,7 @@ export class receipt_api{
     static async addReceipt(receipt){
         // Check if the subclass has defined this method
         if(!this.addReceipt){
-            throw new Error("createReceipt method must be defined");
+            throw new Error("addReceipt method must be defined");
         }
     }
 
@@ -32,6 +34,12 @@ export class receipt_api{
         // Check if the subclass has defined this method
         if(!this.deleteReceipt){
             throw new Error("deleteReceipt method must be defined");
+        }
+    }
+
+    static async getReceiptByID(receipt_id){
+        if(!this.getReceiptByID){
+            throw new Error("getReceiptByID method must be defined");
         }
     }
 }
@@ -104,6 +112,7 @@ export default class receiptTable_api extends receipt_api{
             throw new Error("Receipt doesn't exists");
         }
 
+        await taxAPI.deleteTax(receipt_id);
         const connection = await mysql.createConnection({
             host: 'localhost',
             user: 'root',
@@ -114,6 +123,34 @@ export default class receiptTable_api extends receipt_api{
         const query = 'DELETE FROM receipts WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
+    }
+
+    static async getReceiptByID(receipt_id){
+        const allreceipts = await receiptTable_api.getAllReceipts();
+        const exist = allreceipts.find(r => r.receipt_id === receipt_id);
+        if(!exist){
+            throw new Error("Receipt with this ID doesn't exists in table");
+        }
+
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
         
+        const query = 'SELECT * FROM receipts WHERE receipt_id = ?'
+        const params = [receipt_id];
+        const [results] = await connection.execute(query, params);
+
+        const receipt = new Receipts(results[0].receipt_id,
+            results[0].group_id,
+            results[0].images,
+            results[0].receipt_name,
+            results[0].receipt_description,
+            results[0].receipt_category,
+            results[0].created_at,
+            results[0].vendor_name);
+        return receipt;
     }
 }
