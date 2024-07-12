@@ -3,6 +3,11 @@ const router = express.Router();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oidc');
 const dotenv = require('dotenv');
+
+/* import { Receipts } from "./receiptsClass.js";
+import receiptAPI from "./receiptsAPI.js"; */
+
+
 dotenv.config();
 //var db = require('../db');
 
