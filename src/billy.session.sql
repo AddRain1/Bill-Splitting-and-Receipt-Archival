@@ -53,6 +53,17 @@ INSERT INTO taxes(
     )
 VALUES(2, 'GST', 5.0);
 -- @block
+CREATE TABLE tips (
+    tip_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id INT NOT NULL,
+    tip_amount DECIMAL(65, 2) DEFAULT 0,
+    FOREIGN KEY (receipt_id) REFERENCES receipts(receipt_id)
+);
+-- @block
+INSERT INTO tips(receipt_id, tip_amount)
+VALUES(1, 10.0),
+    (2, 20.0);
+-- @block
 SELECT *
 FROM receipts;
 -- @block
@@ -63,5 +74,8 @@ WHERE receipt_id = 3;
 -- @block
 SELECT *
 FROM taxes;
+-- @block
+SELECT *
+FROM tips;
 -- @block
 SHOW TABLES;
