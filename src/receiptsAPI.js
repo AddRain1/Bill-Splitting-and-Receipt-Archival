@@ -47,6 +47,7 @@ export class receipt_api{
 // Export the class receiptTable_api which extends the abstract class receipt_api
 export default class receiptTable_api extends receipt_api{
     // Override the getAllReceipts method
+    // Static async function to get all the receipts from the database
     static async getAllReceipts(){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -102,6 +103,7 @@ export default class receiptTable_api extends receipt_api{
         const [results] = await connection.execute(query, params);
     }
 
+    // Override the deleteReceipt method
     // Static async function to delete a receipt from the database
     static async deleteReceipt(receipt_id){
         // Get all the receipts
@@ -125,6 +127,8 @@ export default class receiptTable_api extends receipt_api{
         const [results] = await connection.execute(query, params);
     }
 
+    // Override the getReceiptByID method
+    // Static async function to get a receipt by ID from the database
     static async getReceiptByID(receipt_id){
         const allreceipts = await receiptTable_api.getAllReceipts();
         const exist = allreceipts.find(r => r.receipt_id === receipt_id);

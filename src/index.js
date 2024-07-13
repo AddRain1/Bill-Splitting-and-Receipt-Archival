@@ -9,8 +9,6 @@ const app = express();
 // test getallreceipt
 app.get('/allreceipts', async (req, res) => {
     const allReceiptArray = await receiptAPI.getAllReceipts();
-    
-    console.log(allReceiptArray[0]);
     res.send(allReceiptArray);    
 });
 // test addreceipt

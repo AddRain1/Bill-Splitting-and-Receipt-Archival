@@ -45,7 +45,7 @@ export class tax_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteTax(receipt){
+    static async deleteTax(receipt_id){
         // Check if the subclass has defined this method
         if(!this.deleteTax){
             throw new Error("deleteTax method must be defined");
@@ -53,9 +53,10 @@ export class tax_api{
     }
 }
 
-// Export the class receiptTable_api which extends the abstract class receipt_api
+// Export the class taxTable_api which extends the abstract class tax_api
 export default class taxTable_api extends tax_api{
-    // Override the getAllReceipts method
+    // Override the getTax method
+    // Static async function to get tax of a receipt from the database
     static async getTax(receipt){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -78,8 +79,8 @@ export default class taxTable_api extends tax_api{
         return tax;
     }
 
-     // Override the addReceipt method
-    // Static async function to add a new receipt to the database
+    // Override the addTax method
+    // Static async function to add tax to the database
     static async addTax(tax){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -107,8 +108,8 @@ export default class taxTable_api extends tax_api{
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the addReceipt method
-    // Static async function to add a new receipt to the database
+    // Override the changeTaxPercentage method
+    // Static async function to change percentage of tax in the database
     static async changeTaxPercentage(receipt, tax_percentage){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
@@ -131,6 +132,8 @@ export default class taxTable_api extends tax_api{
         const [results] = await connection.execute(query, params);
     }
 
+    // Override the changeTaxName method
+    // Static async function to change name of tax in the database
     static async changeTaxName(receipt, tax_name){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
@@ -153,7 +156,7 @@ export default class taxTable_api extends tax_api{
         const [results] = await connection.execute(query, params);
     }
 
-
+    // Override the deleteTax method
     // Static async function to delete a receipt from the database
     // Call when deleting receipt
     static async deleteTax(receipt_id){
