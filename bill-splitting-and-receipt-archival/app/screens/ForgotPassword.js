@@ -59,11 +59,11 @@ function ForgotPassword(props) {
     
     
     return (
-       <SafeAreaView>
+       <SafeAreaView style = {styles.container}>
         <Text style = {styles.baseText}>
             Forgot Password
         </Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => console.log("Button pressed")}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('LogIn')}>
         <Icon name="arrow-left" size={16} color="#00C896" style={styles.icon} />
         <Text style = {styles.buttonText}> back to login</Text>
         </TouchableOpacity>
@@ -87,7 +87,12 @@ function ForgotPassword(props) {
 }
 
 const styles = StyleSheet.create({
-    baseText: {
+   container:{
+    backgroundColor: '#fff',
+    flex: 1
+
+   },
+   baseText: {
         fontSize: 32,
         width: 275,
         height: 56,
