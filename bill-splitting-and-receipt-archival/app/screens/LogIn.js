@@ -24,7 +24,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function HomePage() {
   const [font] = useFonts({
-    'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
+    'SplineSansMono': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
   });
     let [fontsLoaded] = useFonts({
       PlayfairDisplay_400Regular,
@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
 
     <SafeAreaView style= {styles.container}>
-      <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/logo.jpeg')} style ={styles.image}/>
+      <Image source={require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/logo.jpeg')} style ={styles.image}/>
         
      
       <Text style={styles.baseText}>

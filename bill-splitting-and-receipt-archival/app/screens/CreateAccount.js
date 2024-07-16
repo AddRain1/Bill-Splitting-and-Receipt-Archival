@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomInput from '../assets/CustomInput';
+import { useNavigation } from '@react-navigation/native';
+// import styles from '../styles.js';
 import {
   useFonts,
   PlayfairDisplay_400Regular,
@@ -17,15 +21,12 @@ import {
   PlayfairDisplay_800ExtraBold_Italic,
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomInput from '../assets/CustomInput';
-import { useNavigation } from '@react-navigation/native';
 
 
 
 function CreateAccount(props) {
     const [font] = useFonts({
-        'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
+        'SplineSansMono': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
     });
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
@@ -67,7 +68,7 @@ function CreateAccount(props) {
       <CustomInput placeholder = 'retype password' value = {retypePassword} setValue={setRetypePassword}  secureTextEntry={true} />
        
 
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+      <TouchableOpacity style={[styles.signUpButton, {height:43, width: 118,}]} onPress={handleSignUp}>
         <Text style = {styles.signUpText}> Sign Up </Text>
 
       </TouchableOpacity> 
@@ -81,63 +82,62 @@ function CreateAccount(props) {
         </SafeAreaView>
     );
 }
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        
-      },
-    baseText: {
-        fontFamily: 'PlayfairDisplay_700Bold',
-        height: 56,
-        top: 100,
-        right: 50,
-        fontSize: 32,
-        
+  container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      
     },
-    backButton: {
-        flexDirection: 'row',
-        height: 40,
-        top: 110,
-        right:90,
-        marginBottom: 100,
+  baseText: {
+      fontFamily: 'PlayfairDisplay_700Bold',
+      height: 56,
+      top: 100,
+      right: 50,
+      fontSize: 32,
+      
+  },
+  backButton: {
+      flexDirection: 'row',
+      height: 40,
+      top: 110,
+      right:90,
+      marginBottom: 100,
+  },
+  buttonText: {
+      fontFamily: 'SplineSansMono',
+      color: '#00C896',
     },
-    buttonText: {
-        fontFamily: 'SplineSansMono',
-        color: '#00C896',
-      },
-    input: {
-        top:130,
-        backgroundColor: '#F0F4F8',
-        color: '3A3A3A',
-        height: 40,
-        width: 330,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 4
-     
-      },
-    signUpButton: {
-        top:50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 118,
-        backgroundColor: '#00C896',
-        height:43,
-        borderRadius:12
-
-
+  input: {
+      top:130,
+      backgroundColor: '#F0F4F8',
+      color: '3A3A3A',
+      height: 40,
+      width: 330,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+      borderRadius: 4
+   
     },
-    signUpText: {
-        fontSize: 18,
-        fontFamily:'SplineSansMono',
-        color: '#F0F4F8',
+  signUpButton: {
+      top:50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 118,
+      backgroundColor: '#00C896',
+      height:43,
+      borderRadius:12
+  },
+  signUpText: {
+      fontSize: 18,
+      fontFamily:'SplineSansMono',
+      color: '#F0F4F8',
 
-        
-    }
-    
+      
+  }
+  
 })
 
 export default CreateAccount;

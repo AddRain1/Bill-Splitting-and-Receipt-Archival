@@ -8,9 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 
 function ResetPassword(props) {
     const [font] = useFonts({
-        'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), 
-        'PlayfairDisplay_400Regular': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf'),
-        'PlayfairDisplay_700Bold': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf'),
+        'SplineSansMono': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), 
+        'PlayfairDisplay_400Regular': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf'),
+        'PlayfairDisplay_700Bold': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf'),
     });
     const [text, onChangeText] =React.useState('email or username');
     const navigation = useNavigation();
