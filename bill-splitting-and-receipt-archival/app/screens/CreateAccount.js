@@ -20,6 +20,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomInput from '../assets/CustomInput';
 import { useNavigation } from '@react-navigation/native';
+import AppLoading from 'expo-app-loading';
 
 
 
@@ -34,6 +35,7 @@ function CreateAccount(props) {
     const [password, setPassword] = useState('');
     const [retypePassword, setRetypePassword] = useState('');
     const navigation = useNavigation();
+   
     const handleSignUp = () => {
         
         Alert.alert(
@@ -47,6 +49,9 @@ function CreateAccount(props) {
           ]
         );
       };
+      if (!fontsLoaded) {
+        return <AppLoading />;
+      }
     
     
     return (

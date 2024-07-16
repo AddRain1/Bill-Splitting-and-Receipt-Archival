@@ -17,6 +17,7 @@ import {
   PlayfairDisplay_800ExtraBold_Italic,
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
+import AppLoading from 'expo-app-loading';
 import CustomInput from '../assets/CustomInput';
 import { useNavigation } from '@react-navigation/native';
 
@@ -43,6 +44,10 @@ export default function HomePage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
+    if (!fontsLoaded) {
+      return <AppLoading />;
+    }
+  
 
   return (
 

@@ -5,6 +5,7 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert
 import { useFonts } from 'expo-font';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import AppLoading from 'expo-app-loading';
 
 function ResetPassword(props) {
     const [font] = useFonts({
@@ -27,6 +28,9 @@ function ResetPassword(props) {
           ]
         );
       };
+      if (!fontsLoaded) {
+        return <AppLoading />;
+      }
 
     return (
         <SafeAreaView style={styles.container}>

@@ -20,6 +20,7 @@ import { useFonts } from 'expo-font';
 } from '@expo-google-fonts/playfair-display'; */
 import Icon from 'react-native-vector-icons/FontAwesome';
 import  { useNavigation } from '@react-navigation/native';
+import AppLoading from 'expo-app-loading';
 
 
 function ForgotPassword(props) {
@@ -43,6 +44,9 @@ function ForgotPassword(props) {
           setIsPopupVisible(false);
         }
       };
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    }
     const navigation = useNavigation();
     const handleForgotPsw = () => {
       Alert.alert(
