@@ -28,7 +28,7 @@ function ResetPassword(props) {
           ]
         );
       };
-      if (!fontsLoaded) {
+      if (!font) {
         return <AppLoading />;
       }
 

@@ -49,7 +49,7 @@ function CreateAccount(props) {
           ]
         );
       };
-      if (!fontsLoaded) {
+      if (!font) {
         return <AppLoading />;
       }
     

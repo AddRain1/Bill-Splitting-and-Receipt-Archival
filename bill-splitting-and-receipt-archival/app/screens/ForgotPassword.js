@@ -44,7 +44,7 @@ function ForgotPassword(props) {
           setIsPopupVisible(false);
         }
       };
-    if (!fontsLoaded) {
+    if (!font) {
         return <AppLoading />;
     }
     const navigation = useNavigation();
