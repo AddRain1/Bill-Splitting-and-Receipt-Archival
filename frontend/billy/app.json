@@ -20,7 +20,7 @@
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.Billy"
+      "package": "com.javajoysticks.billy"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
