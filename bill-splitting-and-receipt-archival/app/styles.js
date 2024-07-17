@@ -4,7 +4,7 @@ const COLORS = {
   teal: '#fff',
   mint: '#00C896',
   black: '#3A3A3A',
-  gray: '',
+  gray: '#6E7B91',
   white: '#fff',
   softWhite: '#F0F4F8',
 }
@@ -15,7 +15,13 @@ export default styles = StyleSheet.create({
       backgroundColor: COLORS.white,
       alignItems: 'center',
       
-    },
+  },
+  title: {
+    fontFamily: 'PlayfairDisplay_700Bold_Italic',
+    top: 10,
+    height: 150,
+    fontSize: 48,
+  },
   heading1: {
       fontFamily: 'PlayfairDisplay_700Bold',
       fontSize: 32, 
@@ -48,7 +54,8 @@ export default styles = StyleSheet.create({
       width: 118,
       backgroundColor: COLORS.mint,
       height:43,
-      borderRadius:12
+      borderRadius:12,
+      marginBottom: 10
   },
   submitText: {
       fontSize: 20,
@@ -65,5 +72,23 @@ export default styles = StyleSheet.create({
     marginTop: -40,
     fontSize: 14
 
-} 
+  },
+  image: {
+    width: 124,
+    height: 124,
+    // Add other styling properties as needed
+  }, 
+  accountButton: {
+    height: 19,
+    margin: 10,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  caption: {
+    fontFamily: 'SplineSansMono',
+    color: COLORS.gray,
+    
+  },
 })

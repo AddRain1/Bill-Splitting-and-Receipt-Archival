@@ -19,7 +19,7 @@ import {
 } from '@expo-google-fonts/playfair-display';
 import CustomInput from '../assets/CustomInput';
 import { useNavigation } from '@react-navigation/native';
-// import styles from '../styles';
+import styles from '../styles';
 
 
 export default function HomePage() {
@@ -46,11 +46,11 @@ export default function HomePage() {
 
   return (
 
-    <SafeAreaView style= {styles.container}>
+    <SafeAreaView style= {[styles.container, {justifyContent: 'center',}]}>
       <Image source={require('./../assets/logo.jpeg')} style ={styles.image}/>
         
      
-      <Text style={styles.baseText}>
+      <Text style={styles.title}>
       <Text> 
         billy 
       </Text>
@@ -60,18 +60,18 @@ export default function HomePage() {
 
       
     
-      <TouchableOpacity style={styles.pswButton} onPress={() => navigation.navigate('ForgotPassword')}>
+      <TouchableOpacity style={[styles.pswButton, {left:-85}]} onPress={() => navigation.navigate('ForgotPassword')}>
   
-        <Text style = {styles.pswText}>Forgot Password</Text>
+        <Text style = {styles.caption}>Forgot Password</Text>
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.logInButton} onPress={() => console.log("Button pressed")}>
-      <Text style = {styles.logInText}>Log In</Text>
+      <TouchableOpacity style={[styles.submitButton, {marginTop: 40}]} onPress={() => console.log("Button pressed")}>
+      <Text style = {styles.submitText}>Log In</Text>
 
       </TouchableOpacity>
 
-      <Text style = {styles.orText}> or </Text>
+      <Text style = {[styles.caption, {}]}> or </Text>
 
 
       <TouchableOpacity style={styles.accountButton} onPress={() => navigation.navigate('CreateAccount')}>
@@ -85,87 +85,3 @@ export default function HomePage() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 124,
-    height: 124,
-    // Add other styling properties as needed
-  },
-  baseText: {
-    fontFamily: 'PlayfairDisplay_700Bold_Italic',
-    top: 10,
-    height: 150,
-    fontSize: 48,
-  },
-  logInButton: {
-    width: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  accountButton: {
-    height: 19,
-    margin: 10,
-    width: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  buttonText: {
-    fontFamily: 'SplineSansMono',
-    fontSize: 16,
-    color: '#00C896'
-  },
-  pswText: {
-    fontFamily: 'SplineSansMono',
-    color: '#6E7B91',
-    
-  },
-  input: {
-    backgroundColor: '#F0F4F8',
-    color: '3A3A3A',
-    height: 40,
-    margin: 20,
-    width:300,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 4,
-    fontFamily: 'SplineSansMono',
-  },
-  pswButton: {  
-    height: 40,
-    margin: -5,
-    marginBottom: 20,
-    width:300, 
-
-    
-
-  },
-  logInButton: {
-    backgroundColor: '#00C896',
-    width: 118,
-    height:43,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    marginBottom: 10,
-
-
-  },
-  logInText: {
-    fontFamily: 'SplineSansMono',
-    fontSize: 20,
-    color: '#F0F4F8'
-  },
-  orText: {
-    fontFamily: 'SplineSansMono',
-
-  }
-});
