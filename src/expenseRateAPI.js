@@ -1,64 +1,63 @@
+import { ExpenseRate } from "./expenseRateClass.js";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
-import { Tax } from "./taxClass.js";
 
 // Export the abstract class receipt_api
-export class tax_api{
+export class expenseRateAPI{
     constructor(){
         // Prevent instantiation from this abstract class
-        if(this.constructor === tax_api){
+        if(this.constructor === expenseRateAPI){
             throw new Error("Cannot instantiate from abstract class");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async getTax(receipt){
+    static async getExpRt(receipt){
         // Check if the subclass has defined this method
-        if(!this.getTax){
-            throw new Error("getTax method must be defined");
+        if(!this.getExpRt){
+            throw new Error("getExpRt method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async addTax(tax){
+    static async addExpRt(expense_rate){
         // Check if the subclass has defined this method
-        if(!this.addTax){
-            throw new Error("addTax method must be defined");
+        if(!this.addExpRt){
+            throw new Error("addExpRt method must be defined");
         }
     }
 
 
     // Abstract method to be overridden by subclasses
-    static async changeTaxPercentage(receipt, tax_percentage){
+    static async changeExpRt_name(receipt, name){
         // Check if the subclass has defined this method
-        if(!this.changeTaxPercentage){
-            throw new Error("changeTaxPercentage method must be defined");
+        if(!this.changeExpRt_name){
+            throw new Error("changeExpRt_name method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async changeTaxName(receipt, tax_name){
+    static async changeExpRt_percentage(receipt, percentage){
         // Check if the subclass has defined this method
-        if(!this.changeTaxName){
-            throw new Error("changeTaxName method must be defined");
+        if(!this.changeExpRt_percentage){
+            throw new Error("changeExpRt_percentage method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteTax(receipt_id){
+    static async deleteExpRt(receipt_id){
         // Check if the subclass has defined this method
-        if(!this.deleteTax){
-            throw new Error("deleteTax method must be defined");
+        if(!this.deleteExpRt){
+            throw new Error("deleteExpRt method must be defined");
         }
     }
 }
 
-// Export the class taxTable_api which extends the abstract class tax_api
-export default class taxTable_api extends tax_api{
+export default class expRateTableAPI extends expenseRateAPI{
     // Override the getTax method
     // Static async function to get tax of a receipt from the database
-    static async getTax(receipt){
+    static async getExpRt(receipt){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: 'localhost',
@@ -67,22 +66,22 @@ export default class taxTable_api extends tax_api{
             database: 'receipts'
         });
         // Execute the query to get all the receipts from the database
-        const [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [receipt.receipt_id]);
+        const [results] = await connection.execute('SELECT * FROM expense_rate WHERE receipt_id = ?', [receipt.receipt_id]);
         
         // get tax object from results
-        const tax = results.map(result => new Tax(
-            result.tax_id,
+        const expRt = results.map(result => new ExpenseRate(
+            result.expenseRate_id,
             result.receipt_id,
-            result.tax_name,
-            result.tax_percentage
+            result.expenseRate_name,
+            result.expenseRate_percentage
         ));
         // Return the tax object
-        return tax;
+        return expRt;
     }
 
     // Override the addTax method
     // Static async function to add tax to the database
-    static async addTax(tax){
+    static async addExpRt(expense_rate){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: 'localhost',
@@ -91,8 +90,8 @@ export default class taxTable_api extends tax_api{
             database: 'receipts'
         });
         // Get the tax from the database
-        const taxQuery = 'SELECT * FROM taxes WHERE receipt_id = ?';
-        const taxParams = [tax.receipt_id];
+        const taxQuery = 'SELECT * FROM expense_rate WHERE receipt_id = ?';
+        const taxParams = [expense_rate.receipt_id];
         
         // Check if the receipt already exists
         const getInfo = await connection.execute(taxQuery, taxParams);
@@ -100,23 +99,23 @@ export default class taxTable_api extends tax_api{
         
         if(exist){
             // Throw an error if the receipt already exists
-            throw new Error("tax already exist");
+            throw new Error("expense rate already exist");
         }
 
-        console.log('rec_id = ' + tax.receipt_id);
-        console.log('tax_nam = ' + tax.name);
-        console.log('tax_perc = ' + tax.percentage);
+        // console.log('rec_id = ' + tax.receipt_id);
+        // console.log('tax_nam = ' + tax.name);
+        // console.log('tax_perc = ' + tax.percentage);
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO taxes (receipt_id, tax_name, tax_percentage) VALUES (?, ?, ?)';
-        const params = [tax.receipt_id, 
-            tax.name, 
-            tax.percentage];
+        const query = 'INSERT INTO expense_rate (receipt_id, expenseRate_name, expenseRate_percentage) VALUES (?, ?, ?)';
+        const params = [expense_rate.receipt_id, 
+            expense_rate.name, 
+            expense_rate.percentage];
         const [results] = await connection.execute(query, params);
     }
 
     // Override the changeTaxPercentage method
     // Static async function to change percentage of tax in the database
-    static async changeTaxPercentage(receipt, tax_percentage){
+    static async changeExpRt_name(receipt, name){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt already exists
@@ -133,14 +132,14 @@ export default class taxTable_api extends tax_api{
             database: 'receipts'
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
-        const params = [tax_percentage, receipt.receipt_id];
+        const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
+        const params = [name, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
     }
 
     // Override the changeTaxName method
     // Static async function to change name of tax in the database
-    static async changeTaxName(receipt, tax_name){
+    static async changeExpRt_percentage(receipt, percentage){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt already exists
@@ -157,15 +156,15 @@ export default class taxTable_api extends tax_api{
             database: 'receipts'
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
-        const params = [tax_name, receipt.receipt_id];
+        const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
+        const params = [percentage, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
     }
 
     // Override the deleteTax method
     // Static async function to delete a receipt from the database
     // Call when deleting receipt
-    static async deleteTax(receipt_id){
+    static async deleteExpRt(receipt_id){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt is already deleted
@@ -181,9 +180,10 @@ export default class taxTable_api extends tax_api{
             database: 'receipts'
         });
 
-        const query = 'DELETE FROM taxes WHERE receipt_id = ?'
+        const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
         
     }
-}
+
+};

@@ -1,7 +1,3 @@
-/*
-    Did not finish
-*/
-
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import { Tip } from "./tipClass.js";
@@ -71,7 +67,7 @@ export default class tipTable_api extends tip_api{
             result.tip_amount
         ));
         // Return the tax object
-        return tax;
+        return tip;
     }
 
     // Override the addReceipt method
@@ -85,10 +81,12 @@ export default class tipTable_api extends tip_api{
             database: 'receipts'
         });
         // Get the tax from the database
-        const taxQuery = 'SELECT * FROM tips WHERE tip_id = ?';
-        const taxParams = [tip.tip_id];
+        const taxQuery = 'SELECT * FROM tips WHERE receipt_id = ?';
+        const taxParams = [tip.receipt_id];
         // Check if the receipt already exists
-        const exist = await connection.execute(taxQuery, taxParams);
+        const getInfo = await connection.execute(taxQuery, taxParams);
+        const exist = getInfo[0].length > 0;
+        
         if(exist){
             // Throw an error if the receipt already exists
             throw new Error("tip already exist");
@@ -96,10 +94,8 @@ export default class tipTable_api extends tip_api{
 
 
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO tips (tip_id, receipt_id, tip_amount) VALUES (?, ?, ?)';
-        const params = [tip.tip_id, 
-            tip.receipt_id, 
-            tip.tip_amount];
+        const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
+        const params = [ tip.receipt_id, tip.amount];
         const [results] = await connection.execute(query, params);
     }
 

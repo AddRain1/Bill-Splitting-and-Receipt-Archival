@@ -3,6 +3,32 @@ import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import { Tax } from "./taxClass.js";
 import taxAPI from "./taxAPI.js";
+import { Tip } from "./tipClass.js";
+import tipAPI from "./tipAPI.js";
+import expRateTableAPI, { expenseRateAPI } from "./expenseRateAPI.js";
+import { itemAPI } from "./itemTableAPI.js";
+
+async function _checkExistence(receipt){
+    // Connect to the MySQL database
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'daniel2002',
+        database: 'receipts'
+    });
+    // Get the tax from the database
+    const taxQuery = 'SELECT * FROM receipts WHERE receipt_id = ?';
+    const taxParams = [receipt.receipt_id];
+    
+    // Check if the receipt already exists
+    const getInfo = await connection.execute(taxQuery, taxParams);
+    const exist = getInfo[0].length > 0;
+    
+    if(!exist){
+        // Throw an error if the receipt already exists
+        throw new Error("receipt with receipt_id doesn't exist");
+    }
+}
 
 // Export the abstract class receipt_api
 export class receipt_api{
@@ -26,6 +52,54 @@ export class receipt_api{
         // Check if the subclass has defined this method
         if(!this.addReceipt){
             throw new Error("addReceipt method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async updateGroupID(receipt, group_id){
+        // Check if the subclass has defined this method
+        if(!this.updateGroupID){
+            throw new Error("updateGroupID method must be defined");
+        }   
+    }
+    
+    // Abstract method to be overridden by subclasses
+    static async updateImage(receipt, image){
+        // Check if the subclass has defined this method
+        if(!this.updateGroupID){
+            throw new Error("updateGroupID method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async updateReceiptName(receipt, receipt_name){
+        // Check if the subclass has defined this method
+        if(!this.updateReceiptName){
+            throw new Error("updateReceiptName method must be defined");    
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async updateReceiptDescription(receipt, receipt_description){
+        // Check if the subclass has defined this method
+        if(!this.updateReceiptDescription){
+            throw new Error("updateReceiptDescription method must be defined");
+        }   
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async updateReceiptCategory(receipt, receipt_category){
+        // Check if the subclass has defined this method
+        if(!this.updateReceiptCategory){
+            throw new Error("updateReceiptCategory method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async updateReceiptVendor(receipt, receipt_vendor){
+        // Check if the subclass has defined this method
+        if(!this.updateReceiptVendor){
+            throw new Error("updateReceiptVendor method must be defined");
         }
     }
 
@@ -71,6 +145,10 @@ export default class receiptTable_api extends receipt_api{
             result.vendor_name
         ));
         // Return the array of Receipts objects
+        for(let i = 0; i < allReceipts.length; i++){
+            allReceipts[i].tax = await taxAPI.getTax(allReceipts[i]);
+            allReceipts[i].tip = await tipAPI.getTip(allReceipts[i]);
+        }
         return allReceipts;
     }
 
@@ -93,13 +171,113 @@ export default class receiptTable_api extends receipt_api{
             database: 'receipts'
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO receipts (group_id, images, receipt_name, receipt_description, receipt_category, vendor_name) VALUES (?, ?, ?, ?, ?, ?)';
-        const params = [receipt.group_id, 
+        const query = 'INSERT INTO receipts (receipt_id, group_id, images, receipt_name, receipt_description, receipt_category, vendor_name) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const params = [receipt.receipt_id,
+            receipt.group_id, 
             receipt.images, 
             receipt.name, 
             receipt.description, 
             receipt.category, 
             receipt.vendor];
+        const [results] = await connection.execute(query, params);
+        // add tax to taxes table
+        await taxAPI.addTax(receipt.tax);
+        // add tip to tips table
+        await tipAPI.addTip(receipt.tip);
+        // add expense_rate to expense_rate table
+        if(receipt.expense_rate){
+            await expRateTableAPI.addExpRt(receipt.expense_rate);
+        }
+        
+    }
+
+    static async updateGroupID(receipt, group_id){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET group_id = ? WHERE receipt_id = ?';
+        const params = [group_id, receipt.receipt_id];
+        
+        const [results] = await connection.execute(query, params);
+    }
+
+    static async updateImage(receipt, image){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET images = ? WHERE receipt_id = ?';
+        const params = [image, receipt.receipt_id];
+        
+        const [results] = await connection.execute(query, params);
+    }
+
+    static async updateReceiptName(receipt, receipt_name){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET receipt_name = ? WHERE receipt_id = ?';
+        const params = [receipt_name, receipt.receipt_id];
+        
+        const [results] = await connection.execute(query, params);
+    }
+
+    static async updateReceiptDescription(receipt, receipt_description){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET receipt_description = ? WHERE receipt_id = ?';
+        const params = [receipt_description, receipt.receipt_id];
+        
+        const [results] = await connection.execute(query, params);
+    }
+
+    static async updateReceiptCategory(receipt, receipt_category){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET receipt_category = ? WHERE receipt_id = ?';
+        const params = [receipt_category, receipt.receipt_id];
+        
+        const [results] = await connection.execute(query, params);
+    }
+
+    static async updateReceiptVendor(receipt, receipt_vendor){
+        const exist = _checkExistence(receipt);
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'daniel2002',
+            database: 'receipts'
+        });
+        
+        const query = 'UPDATE receipts SET vendor_name = ? WHERE receipt_id = ?';
+        const params = [receipt_vendor, receipt.receipt_id];
+        
         const [results] = await connection.execute(query, params);
     }
 
@@ -115,6 +293,9 @@ export default class receiptTable_api extends receipt_api{
         }
 
         await taxAPI.deleteTax(receipt_id);
+        await tipAPI.deleteTip(receipt_id);
+        await expenseRateAPI.deleteExpRt(receipt_id);
+        await itemAPI.deleteItem(receipt_id);
         const connection = await mysql.createConnection({
             host: 'localhost',
             user: 'root',
