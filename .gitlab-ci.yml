@@ -32,12 +32,13 @@ build:
     - cd ../frontend/billy
     - npm ci --cache .npm
     - apk add --no-cache bash
-    - npx eas-cli build --platform all --non-interactive --no-wait
+    - EXPO_TOKEN=$EXPO_TOKEN npx expo prebuild
   artifacts:
     paths: 
       - ./backend/node_modules
       - ./backend/package-lock.json
       - ./backend/.env
+      - ./frontend/billy/ios
 
 deploy:
   stage: deploy_stage
