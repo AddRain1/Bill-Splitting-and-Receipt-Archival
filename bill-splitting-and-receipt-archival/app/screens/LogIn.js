@@ -19,12 +19,12 @@ import {
 } from '@expo-google-fonts/playfair-display';
 import CustomInput from '../assets/CustomInput';
 import { useNavigation } from '@react-navigation/native';
-
+// import styles from '../styles';
 
 
 export default function HomePage() {
   const [font] = useFonts({
-    'SplineSansMono': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
+    'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
   });
     let [fontsLoaded] = useFonts({
       PlayfairDisplay_400Regular,
@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
 
     <SafeAreaView style= {styles.container}>
-      <Image source={require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/logo.jpeg')} style ={styles.image}/>
+      <Image source={require('./../assets/logo.jpeg')} style ={styles.image}/>
         
      
       <Text style={styles.baseText}>

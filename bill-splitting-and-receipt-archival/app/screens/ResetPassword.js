@@ -5,12 +5,13 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert
 import { useFonts } from 'expo-font';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+// import styles from '../styles';
 
 function ResetPassword(props) {
     const [font] = useFonts({
-        'SplineSansMono': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), 
-        'PlayfairDisplay_400Regular': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf'),
-        'PlayfairDisplay_700Bold': require('/Users/irisc/OneDrive/Desktop/UCSD Java Workspace/bill-splitting-and-receipt-archival/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf'),
+        'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), 
+        'PlayfairDisplay_400Regular': require('./../assets/fonts/PlayfairDisplay-Regular.ttf'),
+        'PlayfairDisplay_700Bold': require('./../assets/fonts/PlayfairDisplay-Bold.ttf'),
     });
     const [text, onChangeText] =React.useState('email or username');
     const navigation = useNavigation();
