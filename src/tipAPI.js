@@ -3,6 +3,11 @@ import { Receipts } from "./receiptsClass.js";
 import { Tip } from "./tipClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
+
 // Export the abstract class receipt_api
 export class tip_api{
     constructor(){
@@ -48,59 +53,59 @@ export class tip_api{
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
 export default class tipTable_api extends tip_api{
-    // Override the getAllReceipts method
+    // Override the getTip method
     static async getTip(receipt){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to get all the receipts from the database
+        // Execute the query to get all the tips from the database
         const [results] = await connection.execute('SELECT * FROM tips WHERE receipt_id = ?', [receipt.receipt_id]);
         
-        // get tax object from results
+        // get tip object from results
         const tip = results.map(result => new Tip(
             result.tip_id,
             result.receipt_id,
             result.tip_amount
         ));
-        // Return the tax object
+        // Return the tip object
         return tip;
     }
 
-    // Override the addReceipt method
-    // Static async function to add a new receipt to the database
+    // Override the addTip method
+    // Static async function to add a new tip to the database
     static async addTip(tip){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Get the tax from the database
-        const taxQuery = 'SELECT * FROM tips WHERE receipt_id = ?';
-        const taxParams = [tip.receipt_id];
+        // Get the tip from the database
+        const tipQuery = 'SELECT * FROM tips WHERE receipt_id = ?';
+        const tipParams = [tip.receipt_id];
         // Check if the receipt already exists
-        const getInfo = await connection.execute(taxQuery, taxParams);
+        const getInfo = await connection.execute(tipQuery, tipParams);
         const exist = getInfo[0].length > 0;
         
         if(exist){
-            // Throw an error if the receipt already exists
+            // Throw an error if the tip already exists
             throw new Error("tip already exist");
         }
 
 
-        // Execute the query to insert the new receipt into the database
+        // Execute the query to insert the new tip into the database
         const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
         const params = [ tip.receipt_id, tip.amount];
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the addReceipt method
-    // Static async function to add a new receipt to the database
+    // Override the changeTipAmount method
+    // Static async function to update tip amount to the database
     static async changeTipAmount(receipt, tip_amount){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
@@ -112,18 +117,18 @@ export default class tipTable_api extends tip_api{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to insert the new receipt into the database
-        const query = 'UPDATE tips SET tax_amount = ? WHERE receipt_id = ?';
+        // Execute the query to update tips amount in the database
+        const query = 'UPDATE tips SET tip_amount = ? WHERE receipt_id = ?';
         const params = [tip_amount, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
     }
 
-
+    // Override the deleteTip method
     // Static async function to delete a receipt from the database
     // Call when deleting receipt
     static async deleteTip(receipt_id){
@@ -135,13 +140,15 @@ export default class tipTable_api extends tip_api{
             throw new Error("Receipt doesn't exists");
         }
 
+        // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
 
+        // Execute the query to delete the tip with receipt_id from the database
         const query = 'DELETE FROM tips WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);

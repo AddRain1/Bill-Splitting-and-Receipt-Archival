@@ -5,23 +5,30 @@ import { Tax } from "./taxClass.js";
 import taxAPI from "./taxAPI.js";
 import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
-import expRateTableAPI, { expenseRateAPI } from "./expenseRateAPI.js";
-import { itemAPI } from "./itemTableAPI.js";
+import { ExpenseRate } from "./expenseRateClass.js";
+import expRateTableAPI from "./expenseRateAPI.js";
+import { Item } from "./itemClass.js";
+import itemAPI from "./itemTableAPI.js"
+
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
 
 async function _checkExistence(receipt){
     // Connect to the MySQL database
     const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'daniel2002',
-        database: 'receipts'
+        host: HOST,
+        user: USER,
+        password: PASSWORD,
+        database: DATABASE
     });
-    // Get the tax from the database
-    const taxQuery = 'SELECT * FROM receipts WHERE receipt_id = ?';
-    const taxParams = [receipt.receipt_id];
+    // Get the receipt from the database
+    const recQuery = 'SELECT * FROM receipts WHERE receipt_id = ?';
+    const recParams = [receipt.receipt_id];
     
     // Check if the receipt already exists
-    const getInfo = await connection.execute(taxQuery, taxParams);
+    const getInfo = await connection.execute(recQuery, recParams);
     const exist = getInfo[0].length > 0;
     
     if(!exist){
@@ -125,10 +132,10 @@ export default class receiptTable_api extends receipt_api{
     static async getAllReceipts(){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Execute the query to get all the receipts from the database
         const [results, fields] = await connection.execute('SELECT * FROM receipts');
@@ -148,6 +155,8 @@ export default class receiptTable_api extends receipt_api{
         for(let i = 0; i < allReceipts.length; i++){
             allReceipts[i].tax = await taxAPI.getTax(allReceipts[i]);
             allReceipts[i].tip = await tipAPI.getTip(allReceipts[i]);
+            allReceipts[i].expense_rate = await expRateTableAPI.getExpRt(allReceipts[i]);
+            allReceipts[i].items = await itemAPI.getAllItems(allReceipts[i]);
         }
         return allReceipts;
     }
@@ -165,10 +174,10 @@ export default class receiptTable_api extends receipt_api{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Execute the query to insert the new receipt into the database
         const query = 'INSERT INTO receipts (receipt_id, group_id, images, receipt_name, receipt_description, receipt_category, vendor_name) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -194,10 +203,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateGroupID(receipt, group_id){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET group_id = ? WHERE receipt_id = ?';
@@ -209,10 +218,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateImage(receipt, image){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET images = ? WHERE receipt_id = ?';
@@ -224,10 +233,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateReceiptName(receipt, receipt_name){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET receipt_name = ? WHERE receipt_id = ?';
@@ -239,10 +248,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateReceiptDescription(receipt, receipt_description){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET receipt_description = ? WHERE receipt_id = ?';
@@ -254,10 +263,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateReceiptCategory(receipt, receipt_category){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET receipt_category = ? WHERE receipt_id = ?';
@@ -269,10 +278,10 @@ export default class receiptTable_api extends receipt_api{
     static async updateReceiptVendor(receipt, receipt_vendor){
         const exist = _checkExistence(receipt);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'UPDATE receipts SET vendor_name = ? WHERE receipt_id = ?';
@@ -297,10 +306,10 @@ export default class receiptTable_api extends receipt_api{
         await expenseRateAPI.deleteExpRt(receipt_id);
         await itemAPI.deleteItem(receipt_id);
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
 
         const query = 'DELETE FROM receipts WHERE receipt_id = ?'
@@ -318,10 +327,10 @@ export default class receiptTable_api extends receipt_api{
         }
 
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         
         const query = 'SELECT * FROM receipts WHERE receipt_id = ?'

@@ -3,6 +3,11 @@ import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 import { Tax } from "./taxClass.js";
 
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
+
 // Export the abstract class receipt_api
 export class tax_api{
     constructor(){
@@ -61,10 +66,10 @@ export default class taxTable_api extends tax_api{
     static async getTax(receipt){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Execute the query to get all the receipts from the database
         const [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [receipt.receipt_id]);
@@ -85,10 +90,10 @@ export default class taxTable_api extends tax_api{
     static async addTax(tax){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Get the tax from the database
         const taxQuery = 'SELECT * FROM taxes WHERE receipt_id = ?';
@@ -103,9 +108,6 @@ export default class taxTable_api extends tax_api{
             throw new Error("tax already exist");
         }
 
-        console.log('rec_id = ' + tax.receipt_id);
-        console.log('tax_nam = ' + tax.name);
-        console.log('tax_perc = ' + tax.percentage);
         // Execute the query to insert the new receipt into the database
         const query = 'INSERT INTO taxes (receipt_id, tax_name, tax_percentage) VALUES (?, ?, ?)';
         const params = [tax.receipt_id, 
@@ -127,12 +129,12 @@ export default class taxTable_api extends tax_api{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to insert the new receipt into the database
+        // Execute the query to update the tax percentage in the database
         const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
         const params = [tax_percentage, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
@@ -151,12 +153,12 @@ export default class taxTable_api extends tax_api{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to insert the new receipt into the database
+        // Execute the query to update the name of tax in the database
         const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
         const params = [tax_name, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
@@ -173,14 +175,16 @@ export default class taxTable_api extends tax_api{
         if(!exist){
             throw new Error("Receipt doesn't exists");
         }
-
+        
+        // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
 
+        // Execute the query to delete the tax with receipt_id from the database
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);

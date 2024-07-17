@@ -3,6 +3,11 @@ import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
+
 // Export the abstract class receipt_api
 export class expenseRateAPI{
     constructor(){
@@ -55,57 +60,55 @@ export class expenseRateAPI{
 }
 
 export default class expRateTableAPI extends expenseRateAPI{
-    // Override the getTax method
-    // Static async function to get tax of a receipt from the database
+    // Override the getExpRt method
+    // Static async function to get expense rate of a receipt from the database
     static async getExpRt(receipt){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Execute the query to get all the receipts from the database
         const [results] = await connection.execute('SELECT * FROM expense_rate WHERE receipt_id = ?', [receipt.receipt_id]);
         
-        // get tax object from results
+        // get expense rate object from results
         const expRt = results.map(result => new ExpenseRate(
             result.expenseRate_id,
             result.receipt_id,
             result.expenseRate_name,
             result.expenseRate_percentage
         ));
-        // Return the tax object
+        // Return the expense rate object
         return expRt;
     }
 
-    // Override the addTax method
-    // Static async function to add tax to the database
+    // Override the addExpRt method
+    // Static async function to add a new expense rate to the database
     static async addExpRt(expense_rate){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Get the tax from the database
-        const taxQuery = 'SELECT * FROM expense_rate WHERE receipt_id = ?';
-        const taxParams = [expense_rate.receipt_id];
+        // Get the expense rate from the database
+        const ERQuery = 'SELECT * FROM expense_rate WHERE receipt_id = ?';
+        const ERParams = [expense_rate.receipt_id];
         
-        // Check if the receipt already exists
-        const getInfo = await connection.execute(taxQuery, taxParams);
+        // Check if the expense rate with receipt_id already exists
+        const getInfo = await connection.execute(ERQuery, ERParams);
         const exist = getInfo[0].length > 0;
         
         if(exist){
-            // Throw an error if the receipt already exists
+            // Throw an error if the expense rate already exists
             throw new Error("expense rate already exist");
         }
 
-        // console.log('rec_id = ' + tax.receipt_id);
-        // console.log('tax_nam = ' + tax.name);
-        // console.log('tax_perc = ' + tax.percentage);
-        // Execute the query to insert the new receipt into the database
+        
+        // Execute the query to insert the new expense rate into the database
         const query = 'INSERT INTO expense_rate (receipt_id, expenseRate_name, expenseRate_percentage) VALUES (?, ?, ?)';
         const params = [expense_rate.receipt_id, 
             expense_rate.name, 
@@ -113,8 +116,8 @@ export default class expRateTableAPI extends expenseRateAPI{
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the changeTaxPercentage method
-    // Static async function to change percentage of tax in the database
+    // Override the changeExpRt_name method
+    // Static async function to change name of expense rate in the database
     static async changeExpRt_name(receipt, name){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
@@ -126,19 +129,19 @@ export default class expRateTableAPI extends expenseRateAPI{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to insert the new receipt into the database
+        // Execute the query to update the name of expense rate into the database
         const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
         const params = [name, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the changeTaxName method
-    // Static async function to change name of tax in the database
+    // Override the changeExpRt_percentage method
+    // Static async function to change the percentage of expense rate in the database
     static async changeExpRt_percentage(receipt, percentage){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
@@ -150,19 +153,19 @@ export default class expRateTableAPI extends expenseRateAPI{
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
-        // Execute the query to insert the new receipt into the database
+        // Execute the query to update expense rate percentage into the database
         const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
         const params = [percentage, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the deleteTax method
-    // Static async function to delete a receipt from the database
+    // Override the deleteExpRt method
+    // Static async function to delete a expense rate from the database
     // Call when deleting receipt
     static async deleteExpRt(receipt_id){
         // Get all the receipts
@@ -174,12 +177,13 @@ export default class expRateTableAPI extends expenseRateAPI{
         }
 
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'daniel2002',
-            database: 'receipts'
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
 
+        // Execute the query to delete expense rate from the database
         const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
