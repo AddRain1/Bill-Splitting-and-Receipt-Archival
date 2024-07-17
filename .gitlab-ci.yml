@@ -21,9 +21,6 @@ eslint:
     - npm i eslint
     - node_modules/eslint/bin/eslint.js .
 
-before_script:
-  - npm ci --cache .npm
-
 build: 
   stage: build_stage
   image: node:alpine
@@ -33,6 +30,7 @@ build:
     - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
     - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
     - cd ../frontend/billy
+    - npm ci --cache .npm
     - apk add --no-cache bash
     - npx eas-cli build --platform all --non-interactive --no-wait
   artifacts:
