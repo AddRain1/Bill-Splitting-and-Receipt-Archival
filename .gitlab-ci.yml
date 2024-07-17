@@ -4,11 +4,14 @@ stages:
   - deploy_stage
 
 cache:
-  key:
-    files:
-      - ./backend/package-lock.json
-  paths:
-    - ./backend/node_modules
+  - key:
+        files:
+        - ./backend/package-lock.json
+    paths:
+        - ./backend/node_modules
+  - key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - .npm
 
 eslint:
   stage: lint_stage
@@ -18,14 +21,20 @@ eslint:
     - npm i eslint
     - node_modules/eslint/bin/eslint.js .
 
+before_script:
+  - npm ci --cache .npm
+
 build: 
   stage: build_stage
-  image: node
+  image: node:alpine
   script:
     - cd backend
     - npm install
     - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
     - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
+    - cd ../frontend/billy
+    - apk add --no-cache bash
+    - npx eas-cli build --platform all --non-interactive --no-wait
   artifacts:
     paths: 
       - ./backend/node_modules
@@ -37,4 +46,3 @@ deploy:
   image: node
   script:
     - cd backend
-    - node app.js
