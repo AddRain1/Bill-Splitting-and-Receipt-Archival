@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Billy"
+      "bundleIdentifier": "com.javajoysticks.billy"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,5 +29,12 @@
       "expo-font",
       "react-native-document-scanner-plugin"
     ]
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c539100d-b002-4cbc-bc58-ca530461f7f8"
+      }
+    }
   }
 }
