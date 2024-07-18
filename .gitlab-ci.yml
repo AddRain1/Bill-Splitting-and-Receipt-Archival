@@ -39,6 +39,7 @@ build:
       - ./backend/package-lock.json
       - ./backend/.env
       - ./frontend/billy/ios
+      - ./frontend/billy/android
 
 deploy:
   stage: deploy_stage
