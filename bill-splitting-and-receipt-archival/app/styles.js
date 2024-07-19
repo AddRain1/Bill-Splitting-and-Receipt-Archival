@@ -1,73 +1,70 @@
 import {StyleSheet} from 'react-native';
-import {
-    useFonts,
-    PlayfairDisplay_400Regular,
-    PlayfairDisplay_500Medium,
-    PlayfairDisplay_600SemiBold,
-    PlayfairDisplay_700Bold,
-    PlayfairDisplay_800ExtraBold,
-    PlayfairDisplay_900Black,
-    PlayfairDisplay_400Regular_Italic,
-    PlayfairDisplay_500Medium_Italic,
-    PlayfairDisplay_600SemiBold_Italic,
-    PlayfairDisplay_700Bold_Italic,
-    PlayfairDisplay_800ExtraBold_Italic,
-    PlayfairDisplay_900Black_Italic,
-  } from '@expo-google-fonts/playfair-display';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        
-      },
-    heading1: {
-        fontFamily: 'PlayfairDisplay_700Bold',
-        height: 56,
-        top: 100,
-        right: 50,
-        fontSize: 32,
-        
+const COLORS = {
+  teal: '#fff',
+  mint: '#00C896',
+  black: '#3A3A3A',
+  gray: '',
+  white: '#fff',
+  softWhite: '#F0F4F8',
+}
+
+export default styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      backgroundColor: COLORS.white,
+      alignItems: 'center',
+      
     },
-    backButton: {
-        flexDirection: 'row',
-        height: 40,
-        top: 110,
-        right:90,
-        marginBottom: 100,
+  heading1: {
+      fontFamily: 'PlayfairDisplay_700Bold',
+      fontSize: 32, 
+  },
+  backButton: {
+      flexDirection: 'row',
+      marginBottom: 100,
+  },
+  buttonText: {
+      fontFamily: 'SplineSansMono',
+      fontSize: 16, 
+      color: COLORS.mint,
     },
-    buttonText: {
-        fontFamily: 'SplineSansMono',
-        color: '#00C896',
-      },
-    input: {
-        top:130,
-        backgroundColor: '#F0F4F8',
-        color: '3A3A3A',
-        height: 40,
-        width: 330,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 4
-     
-      },
-    mintButton: {
-        top:50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#00C896',
-        borderRadius:12
-
-
+  input: {
+      backgroundColor: COLORS.softWhite,
+      color: COLORS.black,
+      height: 40,
+      width: 330,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+      borderRadius: 4,
+      fontFamily: 'SplineSansMono',
+      gap: 28,
     },
-    signUpText: {
-        fontSize: 18,
-        fontFamily:'SplineSansMono',
-        color: '#F0F4F8',
+  submitButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 118,
+      backgroundColor: COLORS.mint,
+      height:43,
+      borderRadius:12
+  },
+  submitText: {
+      fontSize: 20,
+      fontFamily:'SplineSansMono',
+      color: COLORS.softWhite,
+  },
+  pressedText:{
+    fontFamily: 'SplineSansMono',
+    color: '#00C896',
+    width:330,
+    height: 60,
+    left: 60,
+    top: 400,
+    marginTop: -40,
+    fontSize: 14
 
-        
-    }
-        
+} 
+  // merge styles below this point into above
+  
 })
