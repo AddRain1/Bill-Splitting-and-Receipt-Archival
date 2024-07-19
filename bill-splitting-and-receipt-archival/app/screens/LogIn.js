@@ -60,7 +60,7 @@ export default function HomePage() {
 
       
     
-      <TouchableOpacity style={[styles.pswButton, {left:-85}]} onPress={() => navigation.navigate('ForgotPassword')}>
+      <TouchableOpacity style={[styles.pswButton, {left:-100}]} onPress={() => navigation.navigate('ForgotPassword')}>
   
         <Text style = {styles.caption}>Forgot Password</Text>
       </TouchableOpacity>
