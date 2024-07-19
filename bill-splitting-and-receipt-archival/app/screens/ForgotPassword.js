@@ -74,7 +74,7 @@ function ForgotPassword(props) {
         </TouchableOpacity>
         <TextInput
         onChangeText={handleTextChange}
-        style={[styles.input, {position: 'absolute',top:420, left: 30,}]}
+        style={[styles.input, {position: 'absolute',top:420, left: 40,}]}
         placeholder = "username or email"
       />
       {showText && isPopupVisible && <Text style = {styles.pressedText}>please check your inbox for instructions on resetting your password</Text>}
