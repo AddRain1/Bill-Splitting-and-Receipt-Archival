@@ -78,7 +78,6 @@ function CreateAccount(props) {
 
       <TouchableOpacity style={[styles.submitButton, {top:50,}]} onPress={handleSignUp}>
         <Text style = {styles.submitText}> Sign Up </Text>
-
       </TouchableOpacity> 
   
     
