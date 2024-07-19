@@ -6,6 +6,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomInput from '../assets/CustomInput';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomInput from '../assets/CustomInput';
+import { useNavigation } from '@react-navigation/native';
+import styles from '../styles';
 import {
   useFonts,
   PlayfairDisplay_400Regular,
@@ -30,6 +34,7 @@ import AppLoading from 'expo-app-loading';
 
 function CreateAccount(props) {
     const [font] = useFonts({
+        'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
         'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
     });
     const [email, setEmail] = useState('');
@@ -61,8 +66,10 @@ function CreateAccount(props) {
     return (
         <SafeAreaView style = {styles.container}>
          <Text style ={[styles.heading1, {height: 56, top: 100, right: 50,}]}>
+         <Text style ={[styles.heading1, {height: 56, top: 100, right: 50,}]}>
             Create account
          </Text>
+        <TouchableOpacity style={[styles.backButton, {height: 40, top: 110, right:90,}]} onPress={() => navigation.navigate('LogIn')}>
         <TouchableOpacity style={[styles.backButton, {height: 40, top: 110, right:90,}]} onPress={() => navigation.navigate('LogIn')}>
         <Icon name="arrow-left" size={20} color="#00C896" style={styles.icon} />
         <Text style = {styles.buttonText}> back to login</Text>
@@ -78,6 +85,8 @@ function CreateAccount(props) {
 
       <TouchableOpacity style={[styles.submitButton, {top:50,}]} onPress={handleSignUp}>
         <Text style = {styles.submitText}> Sign Up </Text>
+      <TouchableOpacity style={[styles.submitButton, {top:50,}]} onPress={handleSignUp}>
+        <Text style = {styles.submitText}> Sign Up </Text>
 
       </TouchableOpacity> 
   
@@ -90,6 +99,7 @@ function CreateAccount(props) {
         </SafeAreaView>
     );
 }
+
 
 
 export default CreateAccount;
