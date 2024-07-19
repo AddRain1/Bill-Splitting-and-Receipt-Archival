@@ -1,11 +1,11 @@
 import {StyleSheet} from 'react-native';
 
 const COLORS = {
-  teal: '#fff',
+  teal: '#008080',
   mint: '#00C896',
   black: '#3A3A3A',
   gray: '#6E7B91',
-  white: '#fff',
+  white: '#FDFDFD',
   softWhite: '#F0F4F8',
 }
 
@@ -64,7 +64,7 @@ export default styles = StyleSheet.create({
   },
   pressedText:{
     fontFamily: 'SplineSansMono',
-    color: '#00C896',
+    color: COLORS.mint,
     width:330,
     height: 60,
     left: 60,
@@ -84,7 +84,7 @@ export default styles = StyleSheet.create({
     width: 150,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
   },
   caption: {
     fontFamily: 'SplineSansMono',
