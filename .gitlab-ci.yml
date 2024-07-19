@@ -8,9 +8,11 @@ cache:
         - ./backend/package-lock.json
     paths:
         - ./backend/node_modules
-  - key: ${CI_COMMIT_REF_SLUG}
+  - key: 
+      files:
+        - ./frontend/billy/package-lock.json
     paths:
-        - ./frontend/billy/.npm
+        - ./frontend/billy/.node_modules
 
 eslint:
   stage: lint_stage
@@ -29,8 +31,7 @@ build:
     - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
     - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
     - cd ../frontend/billy
-    - npm ci --cache .npm
-    - apk add --no-cache bash
+    - npm install
     - EXPO_TOKEN=$EXPO_TOKEN npx expo prebuild
   artifacts:
     paths: 
