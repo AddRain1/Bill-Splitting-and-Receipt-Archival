@@ -44,7 +44,7 @@ export default function HomePage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
-    if (!fontsLoaded) {
+    if (!font) {
       return <AppLoading />;
     }
   
@@ -71,7 +71,7 @@ export default function HomePage() {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.logInButton} onPress={() => console.log("Button pressed")}>
+      <TouchableOpacity style={styles.logInButton} onPress={() => navigation.navigate('HomePage')}>
       <Text style = {styles.logInText}>Log In</Text>
 
       </TouchableOpacity>
