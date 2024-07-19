@@ -14,7 +14,12 @@ export default styles = StyleSheet.create({
       flex: 1,
       backgroundColor: COLORS.white,
       alignItems: 'center',
-      
+  },
+  container2: {
+    justifyContent: 'left',
+    backgroundColor: 'transparent',
+    width: 330,
+    marginBottom: 15,
   },
   title: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
@@ -46,7 +51,6 @@ export default styles = StyleSheet.create({
       borderRadius: 4,
       fontFamily: 'SplineSansMono',
       gap: 28,
-      margin: 20,
     },
   submitButton: {
       alignItems: 'center',
