@@ -1,7 +1,6 @@
 stages:
   - lint_stage
   - build_stage
-  - deploy_stage
 
 cache:
   - key:
@@ -11,7 +10,7 @@ cache:
         - ./backend/node_modules
   - key: ${CI_COMMIT_REF_SLUG}
     paths:
-        - .npm
+        - ./frontend/billy/.npm
 
 eslint:
   stage: lint_stage
@@ -40,9 +39,3 @@ build:
       - ./backend/.env
       - ./frontend/billy/ios
       - ./frontend/billy/android
-
-deploy:
-  stage: deploy_stage
-  image: node
-  script:
-    - cd backend
