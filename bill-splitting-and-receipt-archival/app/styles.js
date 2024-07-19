@@ -51,6 +51,7 @@ export default styles = StyleSheet.create({
       borderRadius: 4,
       fontFamily: 'SplineSansMono',
       gap: 28,
+      margin: 20,
     },
   submitButton: {
       alignItems: 'center',
