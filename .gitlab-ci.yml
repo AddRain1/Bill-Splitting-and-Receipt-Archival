@@ -24,7 +24,6 @@ build:
   script:
     - cd backend
     - npm ci --cache .npm
-    - apk add --no-cache bash
     - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
     - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
     - cd ../frontend/billy
