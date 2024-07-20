@@ -1,4 +1,4 @@
-image: node:22.4.x
+image: node:22.4.1
 
 stages:
   - lint_stage
