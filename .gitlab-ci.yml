@@ -4,10 +4,6 @@ stages:
   - lint_stage
   - build_stage
 
-before_script:
-  - node -v
-  - npm install
-
 cache:
   - key:
         files:
