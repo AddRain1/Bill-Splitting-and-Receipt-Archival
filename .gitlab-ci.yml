@@ -1,6 +1,12 @@
+image: node:22.4.x
+
 stages:
   - lint_stage
   - build_stage
+
+before_script:
+  - node -v
+  - npm install
 
 cache:
   - key:
@@ -16,7 +22,6 @@ cache:
 
 eslint:
   stage: lint_stage
-  image: node
   script:
     - cd backend
     - npm i eslint
@@ -24,7 +29,6 @@ eslint:
 
 build: 
   stage: build_stage
-  image: node:alpine
   script:
     - cd backend
     - npm install
