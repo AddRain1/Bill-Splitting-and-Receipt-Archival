@@ -4,7 +4,7 @@ import HomePage from '../screens/LogIn';
 import ReceiptsPage from '../screens/ReceiptsPage';
 import ScanPage from '../screens/ScanPage';
 import BillsPage from '../screens/BillsPage';
-import colors from  '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js';
+// import colors from  '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 

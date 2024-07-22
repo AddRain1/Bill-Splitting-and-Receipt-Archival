@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomInput from '../assets/CustomInput';
-import { useNavigation } from '@react-navigation/native';
 import styles from '../styles';
 import {
   useFonts,

@@ -24,6 +24,7 @@ import ResetPassword from './app/screens/ResetPassword';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './app/screens/HomePage';
+import Settings from './app/screens/Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +40,7 @@ export default function App() {
       <Stack.Screen name ="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name ="ResetPassword" component={ResetPassword} />
       <Stack.Screen name = "HomePage" component= {HomePage}/>
-      
+      <Stack.Screen name = "Settings" component= {Settings}/>
 
 
 

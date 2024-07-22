@@ -4,9 +4,9 @@ import { useFonts } from 'expo-font';
 const WelcomeBar = ({ username }) => {
 
     const [font] = useFonts({
-        'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'),
-        'PlayfairDisplay_400Regular': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf'),
-        'PlayfairDisplay_700Bold': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf'),
+        'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'),
+        'PlayfairDisplay_400Regular': require('./../assets/fonts/PlayfairDisplay-Regular.ttf'),
+        'PlayfairDisplay_700Bold': require('./../assets/fonts/PlayfairDisplay-Bold.ttf'),
     });
 
     if (!font) {
@@ -14,7 +14,7 @@ const WelcomeBar = ({ username }) => {
     }
   return (
     <View style={styles.container}>
-      <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/logo.jpeg')} style ={styles.image}/>
+      <Image source={require('./../assets/logo.jpeg')} style ={styles.image}/>
       <Text style={styles.welcomeText}>hello,  {username}</Text>
     </View>
   );
