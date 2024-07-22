@@ -28,7 +28,7 @@ function HomePage(props) {
         <SafeAreaView styles={styles.container}>
          <WelcomeBar/>
          <Text style = {styles.expenseText}> Expense Breakdown</Text>
-         <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate('LogIn')}>
+         <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate('Settings')}>
          <Octicons name="gear"  size={32} color={'#008080'} />
            
            
