@@ -23,6 +23,8 @@ import ForgotPassword from './app/screens/ForgotPassword';
 import ResetPassword from './app/screens/ResetPassword';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomePage from './app/screens/HomePage';
+
 const Stack = createNativeStackNavigator();
 
 
@@ -31,10 +33,14 @@ export default function App() {
   return (
     <NavigationContainer>
     <Stack.Navigator screenOptions={{headerShown: false}}>
+ 
       <Stack.Screen name ="LogIn" component={LogIn} />
       <Stack.Screen name ="CreateAccount" component={CreateAccount} />
       <Stack.Screen name ="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name ="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name = "HomePage" component= {HomePage}/>
+      
+
 
 
     </Stack.Navigator>

@@ -20,13 +20,15 @@ import { useFonts } from 'expo-font';
 } from '@expo-google-fonts/playfair-display'; */
 import Icon from 'react-native-vector-icons/FontAwesome';
 import  { useNavigation } from '@react-navigation/native';
+import styles from '../styles';
+import AppLoading from 'expo-app-loading';
 
 
 function ForgotPassword(props) {
     const [font] = useFonts({
-        'SplineSansMono': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf'), 
-        'PlayfairDisplay_400Regular': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf'),
-        'PlayfairDisplay_700Bold': require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf'),
+        'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), 
+        'PlayfairDisplay_400Regular': require('./../assets/fonts/PlayfairDisplay-Regular.ttf'),
+        'PlayfairDisplay_700Bold': require('./../assets/fonts/PlayfairDisplay-Bold.ttf'),
     });
 
   
@@ -43,6 +45,9 @@ function ForgotPassword(props) {
           setIsPopupVisible(false);
         }
       };
+    if (!font) {
+        return <AppLoading />;
+    }
     const navigation = useNavigation();
     const handleForgotPsw = () => {
       Alert.alert(
@@ -59,21 +64,21 @@ function ForgotPassword(props) {
     
     
     return (
-       <SafeAreaView style = {styles.container}>
-        <Text style = {styles.baseText}>
+       <SafeAreaView>
+        <Text style = {[styles.heading1, {position: 'absolute', width: 275, height: 56, top: 300, left: 50,}]}>
             Forgot Password
         </Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('LogIn')}>
+        <TouchableOpacity style={[styles.backButton, {position: 'absolute', width:154, height: 25, top: 355, left:55,}]} onPress={() => console.log("Button pressed")}>
         <Icon name="arrow-left" size={16} color="#00C896" style={styles.icon} />
         <Text style = {styles.buttonText}> back to login</Text>
         </TouchableOpacity>
         <TextInput
         onChangeText={handleTextChange}
-        style={styles.input}
+        style={[styles.input, {position: 'absolute',top:420, left: 40,}]}
         placeholder = "username or email"
       />
       {showText && isPopupVisible && <Text style = {styles.pressedText}>please check your inbox for instructions on resetting your password</Text>}
-        <TouchableOpacity style={styles.submitButton} onPress={handleForgotPsw}>
+        <TouchableOpacity style={[styles.submitButton, {top:500, left: 156,}]} onPress={handleForgotPsw}>
         <Text style = {styles.submitText}> Submit </Text>
         
 
@@ -85,80 +90,5 @@ function ForgotPassword(props) {
        </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-   container:{
-    backgroundColor: '#fff',
-    flex: 1
-
-   },
-   baseText: {
-        fontSize: 32,
-        width: 275,
-        height: 56,
-        top: 300,
-        left: 50,
-        fontFamily: 'PlayfairDisplay_700Bold',
-    },
-    backButton:{
-        width:154,
-        height: 25,
-        top: 310,
-        left:55,
-        flexDirection: 'row'
-    },
-    buttonText:{
-        fontFamily:'SplineSansMono',
-        fontSize: 16, 
-        color: '#00C896'
-    },
-    input: {
-        top:370,
-        left: 50,
-        backgroundColor: '#F0F4F8',
-        color: '3A3A3A',
-        height: 40,
-        width: 330,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 4,
-        gap: 28,
-        fontFamily: 'SplineSansMono',
-     
-      },
-    submitButton: {
-        top:450,
-        left: 156,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 118,
-        backgroundColor: '#00C896',
-        height:43,
-        borderRadius:12
-    },
-    submitText:{
-        fontSize: 20,
-        fontFamily:'SplineSansMono',
-        color: '#F0F4F8',
-
-    },
-    pressedText:{
-        fontFamily: 'SplineSansMono',
-        color: '#00C896',
-        width:330,
-        height: 60,
-        left: 60,
-        top: 400,
-        marginTop: -40,
-        fontSize: 14
-
-    }
-    
-
-
-
-    
-})
 
 export default ForgotPassword;
