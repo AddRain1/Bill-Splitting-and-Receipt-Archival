@@ -1,13 +1,5 @@
 import {StyleSheet} from 'react-native';
-
-const COLORS = {
-  teal: '#008080',
-  mint: '#00C896',
-  black: '#3A3A3A',
-  gray: '#6E7B91',
-  white: '#FDFDFD',
-  softWhite: '#F0F4F8',
-}
+import COLORS from './assets/colors';
 
 export default styles = StyleSheet.create({
   container: {
@@ -94,5 +86,25 @@ export default styles = StyleSheet.create({
     fontFamily: 'SplineSansMono',
     color: COLORS.gray,
     
+  },
+  errorText: {
+    fontFamily: 'SplineSansMono',
+    color: COLORS.red,
+    fontSize: 14,
+  },
+  body1: {
+    fontFamily: 'SplineSansMono',
+    color: COLORS.black,
+    fontSize: 14,
+  },
+  navBar:{
+    position: 'absolute',
+    bottom: -710,
+    left: 0,
+    right: 0,
+  },
+  scroll: {
+    alignItems: 'center', 
+    paddingVertical: 20
   },
 })
