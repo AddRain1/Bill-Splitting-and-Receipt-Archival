@@ -8,6 +8,9 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 const userRouter = require('./routes/auth');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const app = express();
 const PORT = 3000;
 
@@ -18,7 +21,7 @@ app.listen(PORT, (error) =>{
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: 'password',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   store: new SQLiteStore({ db: 'sessions.db', dir: './db' })
