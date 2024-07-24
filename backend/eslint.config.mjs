@@ -5,8 +5,11 @@ import pluginJs from "@eslint/js";
 export default [
   {
     files: ["**/*.js"], 
-    languageOptions: {sourceType: "commonjs"}, 
+    languageOptions: {sourceType: "module"}, 
   },
   {languageOptions: { globals: globals.node }},
   pluginJs.configs.recommended,
+  {rules: {
+    "no-unused-vars": "warn"
+  }},
 ];

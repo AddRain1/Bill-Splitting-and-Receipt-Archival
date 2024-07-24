@@ -2,6 +2,7 @@ import { Item } from "./itemClass.js";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
+import { ExpenseRate } from "./expenseRateClass.js";
 
 const HOST = 'localhost';
 const USER = 'root';
@@ -202,7 +203,7 @@ export default class itemTableAPI extends itemAPI{
         });
         // Execute the query to update the price of item in the database
         const query = 'UPDATE items SET item_price = ? WHERE item_id = ?';
-        const params = [percentage, item.item_id];
+        const params = [price, item.item_id];
         const [results] = await connection.execute(query, params);
     }
 
@@ -226,7 +227,7 @@ export default class itemTableAPI extends itemAPI{
         });
         // Execute the query to update the payee of item in the database
         const query = 'UPDATE items SET item_payee = ? WHERE item_id = ?';
-        const params = [percentage, item.item_id];
+        const params = [payee, item.item_id];
         const [results] = await connection.execute(query, params);
     }
 
