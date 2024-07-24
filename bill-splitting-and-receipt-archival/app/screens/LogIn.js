@@ -71,7 +71,7 @@ export default function HomePage() {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={[styles.submitButton, {marginTop: 40}]} onPress={() => console.log("Button pressed")}>
+      <TouchableOpacity style={[styles.submitButton, {marginTop: 40}]} onPress={() => navigation.navigate('HomePage')}>
       <Text style = {styles.submitText}>Log In</Text>
 
       </TouchableOpacity>
