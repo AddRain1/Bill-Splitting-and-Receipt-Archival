@@ -10,9 +10,9 @@ import expRateTableAPI from "./expenseRateAPI.js";
 import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
 
-const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'daniel2002';
+const HOST = '132.249.238.159';
+const USER = 'newperson';
+const PASSWORD = 'random';
 const DATABASE = 'receipts';
 
 async function _checkExistence(receipt){

@@ -3,9 +3,9 @@ import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 
-const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'daniel2002';
+const HOST = '132.249.238.159';
+const USER = 'newperson';
+const PASSWORD = 'random';
 const DATABASE = 'receipts';
 
 // Export the abstract class receipt_api
