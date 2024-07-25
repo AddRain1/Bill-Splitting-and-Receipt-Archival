@@ -26,8 +26,10 @@
       "favicon": "./app/assets/favicon.png"
     },
     "plugins": [
-      "expo-font",
-      "react-native-document-scanner-plugin"
+      "expo-font"
+      
+        
+      
     ]
   }
 }
