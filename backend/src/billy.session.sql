@@ -12,7 +12,18 @@ CREATE TABLE receipts (
 -- @block
 INSERT INTO receipts (
         receipt_id,
-        group_id,
+        group_id,INSERT INTO items(receipt_id, item_name, item_price, item_payee)
+VALUES('20240715000000', 'Item 1', 10.0, 'John'),
+    ('20240715000000', 'Item 2', 20.0, 'Jane'),
+    ('20240716021644', 'Item 1', 10.0, 'Jason');
+
+INSERT INTO expense_rate(
+        receipt_id,
+        expenseRate_name,
+        expenseRate_percentage
+    )
+VALUES('20240715000000', 'ER 1', 6.0),
+    ('20240716021723', 'ER 2', 5.0);
         images,
         receipt_name,
         receipt_description,

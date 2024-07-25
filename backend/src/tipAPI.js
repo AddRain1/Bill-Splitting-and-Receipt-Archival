@@ -2,11 +2,14 @@ import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import { Tip } from "./tipClass.js";
 import receiptTable_api from "./receiptsAPI.js";
+import dotenv from 'dotenv';
 
-const HOST = '132.249.238.159';
-const USER = 'newperson';
-const PASSWORD = 'random';
-const DATABASE = 'receipts';
+dotenv.config();
+
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
 export class tip_api{

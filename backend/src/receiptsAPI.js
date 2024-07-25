@@ -9,11 +9,14 @@ import { ExpenseRate } from "./expenseRateClass.js";
 import expRateTableAPI from "./expenseRateAPI.js";
 import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
+import dotenv from 'dotenv';
 
-const HOST = '132.249.238.159';
-const USER = 'newperson';
-const PASSWORD = 'random';
-const DATABASE = 'receipts';
+dotenv.config();
+
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 async function _checkExistence(receipt){
     // Connect to the MySQL database
