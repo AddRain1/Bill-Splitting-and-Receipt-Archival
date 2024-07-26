@@ -29,36 +29,26 @@ import ForgotPassword from "./app/screens/ForgotPassword";
 import LogIn from "./app/screens/LogIn";
 import ResetPassword from "./app/screens/ResetPassword";
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomePage from './app/screens/HomePage';
-import Settings from './app/screens/Settings';
-import ScanPage from './app/screens/ScanPage';
-import NavigationBar from './app/assets/NavigationBar';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import NavigationBar from "./app/assets/NavigationBar";
+import HomePage from "./app/screens/HomePage";
+import ScanPage from "./app/screens/ScanPage";
+import Settings from "./app/screens/Settings";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-   
-  return (
-    <NavigationContainer>
-    <Stack.Navigator screenOptions={{headerShown: false}}>
- 
-      <Stack.Screen name ="LogIn" component={LogIn} />
-      <Stack.Screen name ="CreateAccount" component={CreateAccount} />
-      <Stack.Screen name ="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name ="ResetPassword" component={ResetPassword} />
-      <Stack.Screen name = "HomePage" component= {HomePage}/>
-      <Stack.Screen name = "Settings" component= {Settings}/>
-      <Stack.Screen name= "ScanPage" component = {ScanPage}/>
-
-
-
-
-    </Stack.Navigator>
-
-
-
-    </NavigationContainer>
-   
-  );
+	return (
+		<NavigationContainer>
+			<Stack.Navigator screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="LogIn" component={LogIn} />
+				<Stack.Screen name="CreateAccount" component={CreateAccount} />
+				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+				<Stack.Screen name="ResetPassword" component={ResetPassword} />
+				<Stack.Screen name="HomePage" component={HomePage} />
+				<Stack.Screen name="Settings" component={Settings} />
+				<Stack.Screen name="ScanPage" component={ScanPage} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
 }
