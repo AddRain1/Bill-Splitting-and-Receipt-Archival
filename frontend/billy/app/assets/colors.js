@@ -9,4 +9,5 @@ export default COLORS = {
     hoverWhite: '#D3DCE6',
     warmGray: '#818181',
     red: '#FF6F61',
+    yellow: '#FFC107',
   }

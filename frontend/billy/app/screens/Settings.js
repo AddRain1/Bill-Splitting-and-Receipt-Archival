@@ -82,7 +82,7 @@ function Settings(props) {
                 contentContainerStyle={styles.scroll}
                 showsVerticalScrollIndicator = {false}
             >
-            <SafeAreaView style = {styles.container2}>
+            <SafeAreaView style = {[styles.container2, {width: 330}]}>
                 <Text style ={[styles.heading1, {}]}>
                     Notifications
                 </Text>
@@ -124,7 +124,7 @@ function Settings(props) {
                 </View>
             </SafeAreaView>
 
-            <SafeAreaView style = {[styles.container2, {marginTop: 15}]}>
+            <SafeAreaView style = {[styles.container2, {marginTop: 15, width: 330}]}>
                 <Text style ={[styles.heading1, {}]}>
                     Edit profile
                 </Text>

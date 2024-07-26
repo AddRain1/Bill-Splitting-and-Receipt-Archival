@@ -10,8 +10,19 @@ export default styles = StyleSheet.create({
   container2: {
     justifyContent: 'left',
     backgroundColor: 'transparent',
-    width: 330,
     marginBottom: 15,
+  },
+  topBar: {
+    backgroundColor: COLORS.teal,
+    height: 150,
+    justifyContent: 'left',
+    width: 430,
+  },
+  subBar: {
+    backgroundColor: COLORS.softWhite,
+    height: 45,
+    width: 430,
+    flexDirection: 'row',
   },
   title: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
@@ -23,6 +34,11 @@ export default styles = StyleSheet.create({
       fontFamily: 'PlayfairDisplay_700Bold',
       fontSize: 32, 
   },
+  heading2: {
+    fontFamily: 'SplineSansMono',
+    fontSize: 40,
+    color: COLORS.teal,
+},
   backButton: {
       flexDirection: 'row',
       marginBottom: 100,
@@ -85,7 +101,11 @@ export default styles = StyleSheet.create({
   caption: {
     fontFamily: 'SplineSansMono',
     color: COLORS.gray,
-    
+  },
+  caption2: {
+    fontFamily: 'SplineSansMono',
+    color: COLORS.softWhite,
+    fontSize: 16,
   },
   errorText: {
     fontFamily: 'SplineSansMono',
@@ -107,4 +127,8 @@ export default styles = StyleSheet.create({
     alignItems: 'center', 
     paddingVertical: 20
   },
+  subBarButton: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
 })
