@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 	scanContainer: {
 		flex: 1,
 		backgroundColor: COLORS.black,
-    justifyContent: "left",
+		justifyContent: "left",
 		height: 120,
 		width: "100%",
 		top: -15,
