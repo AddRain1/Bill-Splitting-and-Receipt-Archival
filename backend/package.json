@@ -13,10 +13,17 @@
   "dependencies": {
     "express": "^4.19.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.10.2"
+    "mysql2": "^3.10.2",
+    "connect-sqlite3": "^0.9.15",
+    "express-session": "^1.18.0",
+    "passport": "^0.7.0",
+    "passport-google-oidc": "^0.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
-  },
-  "type": "module"
+    "nodemon": "^3.1.4",
+    "@eslint/js": "^9.6.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.6.0",
+    "globals": "^15.8.0"
+  }
 }

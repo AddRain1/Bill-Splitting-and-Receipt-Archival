@@ -6,7 +6,7 @@ import taxAPI from "./taxAPI.js";
 import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
 import { ExpenseRate } from "./expenseRateClass.js";
-import expRateTableAPI from "./expenseRateAPI.js";
+import  expenseRateAPI from "./expenseRateAPI.js"; 
 import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
 
@@ -155,7 +155,7 @@ export default class receiptTable_api extends receipt_api{
         for(let i = 0; i < allReceipts.length; i++){
             allReceipts[i].tax = await taxAPI.getTax(allReceipts[i]);
             allReceipts[i].tip = await tipAPI.getTip(allReceipts[i]);
-            allReceipts[i].expense_rate = await expRateTableAPI.getExpRt(allReceipts[i]);
+            allReceipts[i].expense_rate = await expenseRateAPI.getExpRt(allReceipts[i]);
             allReceipts[i].items = await itemAPI.getAllItems(allReceipts[i]);
         }
         return allReceipts;
@@ -195,7 +195,7 @@ export default class receiptTable_api extends receipt_api{
         await tipAPI.addTip(receipt.tip);
         // add expense_rate to expense_rate table
         if(receipt.expense_rate){
-            await expRateTableAPI.addExpRt(receipt.expense_rate);
+            await expenseRateAPI.addExpRt(receipt.expense_rate);
         }
         
     }
