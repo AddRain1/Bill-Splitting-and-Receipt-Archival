@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const COLORS = {
   teal: '#008080',
@@ -38,7 +39,7 @@ export default styles = StyleSheet.create({
     fontSize: 48,
   },
   heading1: {
-      fontFamily: 'PlayfairDisplay_700Bold',
+      fontFamily: 'PlayfairDisplay_400Regular',
       fontSize: 32, 
   },
   backButton: {
@@ -170,6 +171,17 @@ export default styles = StyleSheet.create({
     borderWidth:3,
     borderColor: COLORS.white
 
-  }
+  },
+  receiptsWelcome:{
+    top:0,
+    width:430,
+    height:150,
+    backgroundColor: COLORS.teal
+
+  },
+  searchText:{
+    color: COLORS.black
+   
+  },
   
 })
