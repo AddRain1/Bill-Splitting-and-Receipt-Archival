@@ -10,4 +10,5 @@ export default COLORS = {
     warmGray: '#818181',
     red: '#FF6F61',
     yellow: '#FFC107',
+    softGray: '#E2E9EF',
   }

@@ -90,7 +90,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {[styles.container2, {height: 15, marginBottom: 0}]}></SafeAreaView>
                         {itemList.map((prop) => {
                             return (
-                                <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                                <SafeAreaView style = {[styles.listRow, {}]}>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> {prop.item_name} </Text>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> ${prop.item_price} </Text>
                                 </SafeAreaView>
@@ -100,15 +100,15 @@ function ReceiptView(props) {
                         <SafeAreaView style = {{width: 380, alignItems: 'center'}}>
                             <SafeAreaView style = {styles.grayDivider} />
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Subtotal </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $22.70 </Text>
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Sales Tax </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $1.76 </Text>
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Tip </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $2.00 </Text>
                         </SafeAreaView>
@@ -116,7 +116,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {{width: 380, alignItems: 'center'}}>
                             <SafeAreaView style = {styles.grayDivider} />
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+                        <SafeAreaView style = {[styles.listRow, { marginBottom:15,}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Total </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $26.46 </Text>
                         </SafeAreaView>
@@ -131,7 +131,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {[styles.container2, {height: 15, marginBottom: 0}]}></SafeAreaView>
                         {itemList.map((prop) => {
                             return (
-                                <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                                <SafeAreaView style = {[styles.listRow, {}]}>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> {prop.item_name} </Text>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> ${prop.item_price} </Text>
                                 </SafeAreaView>
@@ -141,15 +141,15 @@ function ReceiptView(props) {
                         <SafeAreaView style = {{width: 380, alignItems: 'center'}}>
                             <SafeAreaView style = {styles.grayDivider} />
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Subtotal </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $22.70 </Text>
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Sales Tax </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $1.76 </Text>
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}]}>
+                        <SafeAreaView style = {[styles.listRow, {}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Tip </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $2.00 </Text>
                         </SafeAreaView>
@@ -157,7 +157,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {{width: 380, alignItems: 'center'}}>
                             <SafeAreaView style = {styles.grayDivider} />
                         </SafeAreaView>
-                        <SafeAreaView style = {[styles.container2, { left: 10, width: 360, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+                        <SafeAreaView style = {[styles.listRow, { marginBottom: 15,}]}>
                             <Text style = {[styles.caption, {fontSize: 14,}]}> Total </Text>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> $26.46 </Text>
                         </SafeAreaView>

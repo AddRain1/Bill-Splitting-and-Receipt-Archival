@@ -12,6 +12,10 @@ export default styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginBottom: 15,
   },
+  container3: {
+    backgroundColor: COLORS.softWhite,
+    width: 380,
+  },
   topBar: {
     backgroundColor: COLORS.teal,
     height: 150,
@@ -130,5 +134,21 @@ export default styles = StyleSheet.create({
   subBarButton: {
     flexDirection: 'row',
     alignItems: 'center'
-  }
+  },
+  grayDivider: {
+    flex: 1, 
+    height: 1, 
+    backgroundColor: COLORS.softGray, 
+    marginBottom: 15,
+    width: 345,
+  },
+  listRow: {
+    backgroundColor: 'transparent',
+    left: 10, 
+    width: 360, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginBottom: 10
+  },
 })
