@@ -20,7 +20,7 @@ lint:
     - npm i eslint
     - npm run lint
     - cd ../frontend/billy
-    - npm run lint
+    - npm run check
 
 build: 
   stage: build_stage
