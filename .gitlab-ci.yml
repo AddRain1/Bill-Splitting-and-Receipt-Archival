@@ -3,6 +3,7 @@ image: node:22.4.1-alpine
 stages:
   - lint_stage
   - build_stage
+  - test_stage
 
 cache:
   - key:
@@ -12,12 +13,14 @@ cache:
     paths:
         - ./frontend/billy/.npm
 
-eslint:
+lint:
   stage: lint_stage
   script:
     - cd backend
     - npm i eslint
-    - node_modules/eslint/bin/eslint.js .
+    - npm run lint
+    - cd ../frontend/billy
+    - npm run check
 
 build: 
   stage: build_stage
@@ -39,3 +42,11 @@ build:
       - ./backend/.env
       - ./frontend/billy/ios
       - ./frontend/billy/android
+
+test: 
+  stage: test_stage
+  script:
+    - cd backend
+    - npm run test
+    - cd ../frontend/billy
+    - npm run test
