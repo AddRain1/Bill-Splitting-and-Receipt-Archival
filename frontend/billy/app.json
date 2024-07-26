@@ -1,35 +1,35 @@
 {
-  "expo": {
-    "name": "Billy",
-    "slug": "Billy",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./app/assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./app/assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Billy"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.anonymous.Billy"
-    },
-    "web": {
-      "favicon": "./app/assets/favicon.png"
-    },
-    "plugins": [
-      "expo-font"
-      
-        
-      
-    ]
-  }
+	"expo": {
+		"name": "Billy",
+		"slug": "Billy",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.javajoysticks.billy"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"package": "com.javajoysticks.billy"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"plugins": ["expo-font", "react-native-document-scanner-plugin"],
+		"extra": {
+			"eas": {
+				"projectId": "c539100d-b002-4cbc-bc58-ca530461f7f8"
+			}
+		}
+	}
 }

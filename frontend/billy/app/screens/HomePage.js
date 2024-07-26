@@ -21,10 +21,9 @@ function HomePage(props) {
         'PlayfairDisplay_700Bold': require('./../assets/fonts/PlayfairDisplay-Bold.ttf'),
     });
 
-    if (!font) {
-     return <AppLoading />;
-    }
-
+	if (!font) {
+		return <AppLoading />;
+	}
 
     return (
       

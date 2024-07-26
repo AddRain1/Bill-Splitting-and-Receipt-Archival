@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 const Tab = createBottomTabNavigator();
 
-
 function NavigationBar() {
     return (
       <Tab.Navigator 
@@ -47,11 +46,11 @@ function NavigationBar() {
     );
   }
 
-  const styles = StyleSheet.create({
-    icon: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
+const styles = StyleSheet.create({
+	icon: {
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});
 
-  export default NavigationBar;
+export default NavigationBar;
