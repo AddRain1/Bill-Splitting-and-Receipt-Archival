@@ -1,49 +1,52 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+image: node:22.4.1-alpine
 
-stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
-  - deploy
+stages:
+  - lint_stage
+  - build_stage
+  - test_stage
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+cache:
+  - key:
+    paths:
+        - ./backend/.npm
+  - key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - ./frontend/billy/.npm
+
+lint:
+  stage: lint_stage
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - cd backend
+    - npm i eslint
+    - npm run lint
+    - cd ../frontend/billy
+    - npm run check
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+build: 
+  stage: build_stage
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+    - cd backend
+    - npm ci --cache .npm
+    - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
+    - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
+    - cd ../frontend/billy
+    - npm ci --cache .npm
+    - apk add --no-cache bash
+    - EXPO_TOKEN=$EXPO_TOKEN npx expo prebuild
+  artifacts:
+    paths: 
+      - ./frontend/billy/node_modules
+      - ./frontend/billy/package-lock.json
+      - ./backend/node_modules
+      - ./backend/package-lock.json
+      - ./backend/.env
+      - ./frontend/billy/ios
+      - ./frontend/billy/android
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
+test: 
+  stage: test_stage
   script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - cd backend
+    - npm run test
+    - cd ../frontend/billy
+    - npm run test

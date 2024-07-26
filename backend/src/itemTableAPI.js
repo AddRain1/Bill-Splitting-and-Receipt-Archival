@@ -5,6 +5,7 @@ import receiptTable_api from "./receiptsAPI.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
+import { ExpenseRate } from "./expenseRateClass.js";
 
 const HOST = process.env.DB_HOST;
 const USER = process.env.DB_USER;
@@ -205,7 +206,7 @@ export default class itemTableAPI extends itemAPI{
         });
         // Execute the query to update the price of item in the database
         const query = 'UPDATE items SET item_price = ? WHERE item_id = ?';
-        const params = [percentage, item.item_id];
+        const params = [price, item.item_id];
         const [results] = await connection.execute(query, params);
     }
 
@@ -229,7 +230,7 @@ export default class itemTableAPI extends itemAPI{
         });
         // Execute the query to update the payee of item in the database
         const query = 'UPDATE items SET item_payee = ? WHERE item_id = ?';
-        const params = [percentage, item.item_id];
+        const params = [payee, item.item_id];
         const [results] = await connection.execute(query, params);
     }
 
