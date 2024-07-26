@@ -13,6 +13,16 @@ export default styles = StyleSheet.create({
     width: 330,
     marginBottom: 15,
   },
+  scanContainer: {
+    
+    justifyContent: 'left',
+    backgroundColor: 'white',
+    height: 120,
+    width: '100%',
+    top: -15,
+    borderRadius: 10
+
+  },
   title: {
     fontFamily: 'PlayfairDisplay_700Bold_Italic',
     top: 10,
@@ -107,4 +117,65 @@ export default styles = StyleSheet.create({
     alignItems: 'center', 
     paddingVertical: 20
   },
+  scanPageMain:{
+    flex: 1, // This will make the view take up the available space
+    backgroundColor: COLORS.black,
+    zIndex: -1,
+    top:27
+    
+    
+
+  },
+  cameraButton:{
+    position: 'absolute',
+    top:383,
+    left:150,
+    borderRadius:30,
+    width: 48,
+    height:48
+
+  },
+  cameraButton1:{
+    position: 'absolute',
+    top:375,
+    left:90,
+    borderRadius:40,
+    width: 70,
+    height:70
+
+  },
+  scanImage:{
+    position:'absolute',
+    width:366,
+    height:660,
+    top: -20,
+    left: 28,
+    
+
+    
+
+  },
+  scanContainer:{
+    flex:1,
+    backgroundColor: COLORS.black,
+  },
+  scanWelcome:{
+    backgroundColor: COLORS.white,
+    top:-50,
+    height:103,
+    borderRadius: 10
+
+  },
+  imagePlaceholder:{
+    position:'absolute',
+    width:366,
+    height:660,
+    top: -20,
+    left: 28,
+    backgroundColor: '#808080',
+    borderWidth:3,
+    borderColor: COLORS.white
+
+  }
+  
 })

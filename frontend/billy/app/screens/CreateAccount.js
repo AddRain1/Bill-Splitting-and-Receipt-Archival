@@ -18,9 +18,6 @@ import {
   PlayfairDisplay_800ExtraBold_Italic,
   PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomInput from '../assets/CustomInput';
-import { useNavigation } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
 
 

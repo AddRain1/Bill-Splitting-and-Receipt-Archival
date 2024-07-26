@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, SafeAreaView,Image } from 'react-native';
-import HomePage from '../screens/LogIn';
+import HomePage from '../screens/Home';
 import ReceiptsPage from '../screens/ReceiptsPage';
 import ScanPage from '../screens/ScanPage';
 import BillsPage from '../screens/BillsPage';
@@ -16,6 +16,7 @@ function NavigationBar() {
     return (
       <Tab.Navigator 
       screenOptions={{
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: '#008080',
           height: 100, // Adjust height as needed
@@ -32,11 +33,12 @@ function NavigationBar() {
         tabBarActiveTintColor: '#F0F4F8', // Color of the active tab text/icon
         tabBarInactiveTintColor: '#F0F4F8', // Color of the inactive tab text/icon
         tabBarIcon: ({ color, size }) => (
-          <Icon name="f0c8"  size={16} color="#F0F4F8" style={styles.icon} />
+          <Icon name="square"  size={25} color="#F0F4F8" backgroundColor= '#F0F4F8'  />
         ),
+        //style={styles.icon}
    
       }} >
-        <Tab.Screen name="home" component={HomePage} style={styles.tabButton} />
+        <Tab.Screen name="HomePage" component={HomePage} style={styles.tabButton} />
         <Tab.Screen name="receipts" component={ReceiptsPage} />
         <Tab.Screen name="scan" component={ScanPage} />
         <Tab.Screen name="bills" component={BillsPage} />
