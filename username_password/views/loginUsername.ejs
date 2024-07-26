@@ -1,13 +1,12 @@
-<h1>Log in</h1>
-<form action="/login" method="post">
-  <div class="login">
+<h1>Log in with username</h1>
+<form action="/loginUsername" method="post">
+  <div class="loginUsername">
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" /><br />
-    <label for="email">Email:</label>
-    <input type="text" id="email" name="login" /><br />
+    <input type="text" id="username" name="username" required /><br />
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required /><br />
     <button type="submit">Log in</button>
   </div>
 </form>
+<a href="/loginEmail">Log in with email</a>
 <a href="/signup">Don't have an account? Sign up</a>
