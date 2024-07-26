@@ -25,6 +25,8 @@ import ResetPassword from './app/screens/ResetPassword';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './app/screens/HomePage';
 import Settings from './app/screens/Settings';
+import ReceiptView from './app/screens/ReceiptView';
+import ReceiptEdit from './app/screens/ReceiptEdit';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +43,8 @@ export default function App() {
       <Stack.Screen name ="ResetPassword" component={ResetPassword} />
       <Stack.Screen name = "HomePage" component= {HomePage}/>
       <Stack.Screen name = "Settings" component= {Settings}/>
+      <Stack.Screen name = "ReceiptView" component= {ReceiptView}/>
+      <Stack.Screen name = "ReceiptEdit" component= {ReceiptEdit}/>
 
 
 

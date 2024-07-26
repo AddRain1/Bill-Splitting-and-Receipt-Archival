@@ -49,6 +49,7 @@ function ReceiptView(props) {
     const [font] = useFonts({
         'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), 
     });
+    const navigation = useNavigation();
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -70,7 +71,7 @@ function ReceiptView(props) {
                     <Octicons name="image"  size={25} color={COLORS.gray} />
                     <Text style = {[styles.caption, {color: COLORS.gray}]}> view </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = {[styles.subBarButton, {left: 175}]}>
+                <TouchableOpacity style = {[styles.subBarButton, {left: 175}]} onPress={() => navigation.navigate('ReceiptEdit')}>
                     <Feather name="edit"  size={25} color={COLORS.gray} />
                     <Text style = {[styles.caption, {color: COLORS.gray}]}> edit </Text>
                 </TouchableOpacity>
