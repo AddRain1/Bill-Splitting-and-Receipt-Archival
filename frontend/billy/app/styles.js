@@ -151,4 +151,13 @@ export default styles = StyleSheet.create({
     alignItems: 'center', 
     marginBottom: 10
   },
+  editInput: {
+    color: COLORS.gray, 
+    backgroundColor: COLORS.softWhite, 
+    fontFamily: 'SplineSansMono', 
+    padding: 5, 
+    borderRadius: 4, 
+    overflow: 'hidden',
+    fontSize: 14,
+  }
 })

@@ -123,7 +123,10 @@ function ReceiptView(props) {
                         </SafeAreaView>
                     </SafeAreaView>
 
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 30}]}> Others: </Text>
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 25}]}>
+                        <Text style = {[styles.caption, {fontSize: 14,}]}> Others: </Text>
+                        <Text style = {[styles.editInput, {}]}> 1 </Text>
+                    </SafeAreaView>
                     <SafeAreaView style = {[styles.container3, {backgroundColor: COLORS.softGray, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Jordan </Text>
                         <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
