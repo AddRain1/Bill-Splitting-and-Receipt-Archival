@@ -1,6 +1,4 @@
-export const colors = {
-    main: '#008080',
-    background: '#FDFDFD',
+export const COLORS = {
     teal: '#008080',
     mint: '#00C896',
     black: '#3A3A3A',
@@ -8,6 +6,4 @@ export const colors = {
     white: '#FDFDFD',
     softWhite: '#F0F4F8',
      
-
-
-}
+};
