@@ -20,7 +20,6 @@ export function initPassportUsername(passport, getUserByUsername, getUserById) {
         try{
             // Compare the password with the hashed password in the database
             if(await bcrypt.compare(password, user.hashed_password)){
-                console.log('i was here2')
                 // If the password is correct, return the user
                 return done(null, user)
             }

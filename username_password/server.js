@@ -28,7 +28,6 @@ initPassportEmail(passport, async email => {
         const emailQuery = 'SELECT * FROM users WHERE email = ?';
         const emailField = [email];
         var [emailResults] = await connection.execute(emailQuery, emailField);
-        console.log('emailresults.length is : '+ emailResults.length)
     }
 
     // If the email is found, create a new User object
@@ -39,7 +38,6 @@ initPassportEmail(passport, async email => {
     else{
         return null;
     }
-    console.log('im here email')
     return ret[0];
 
 }, async id => {
@@ -94,7 +92,6 @@ initPassportUsername(passport, async username => {
     else{
         return null;
     }
-    console.log('im here username')
     return ret[0];
 
 }, async id => {
@@ -178,7 +175,7 @@ app.post("/signup", checkNotAuthenticated, async (req, res) => {
         const userQuery = 'INSERT INTO users (username, email, firstname, lastname, hashed_password, profile_description) VALUES (?, ?, ?, ?, ?, ?)';
         const userValues = [req.body.username, req.body.email, req.body.firstname, req.body.lastname, hash_password, req.body.profileDescription];
         const result = await connection.execute(userQuery, userValues);
-        res.redirect("/login");
+        res.redirect("/loginEmail");
     } catch {
         res.redirect("/signup");
     }
@@ -195,14 +192,16 @@ app.delete("/logout", (req, res) => {
 })
 
 // Check if the user is authenticated
+// redirect to login if user is not authenticated
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
-    res.redirect('/login')
+    res.redirect('/loginEmail')
 }
 
 // Check if the user is not authenticated
+// redirect to home page if user is authenticated
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/')

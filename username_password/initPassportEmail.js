@@ -16,7 +16,6 @@ export function initPassportEmail(passport, getUserByEmail, getUserById) {
        
         try{
             if(await bcrypt.compare(password, user.hashed_password)){
-                console.log('i was here2')
                 return done(null, user)
             }
             else{
