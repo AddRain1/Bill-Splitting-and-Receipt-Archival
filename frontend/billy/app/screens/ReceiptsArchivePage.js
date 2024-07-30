@@ -1,25 +1,32 @@
 
 import {React, useState} from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert,ScrollView} from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert,ScrollView, FlatList} from 'react-native';
 import Styles from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js';
 import { COLORS } from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js';
 import { SearchBar } from 'react-native-elements';
 import {useFonts} from '@expo-google-fonts/playfair-display';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+//import { getAllReceipts } from '../../../../backend/src/receiptsAPI';
 
 
 
 function ReceiptsArchivePage(props) {
 
+
+    const [receipts, setReceipts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const Tab = createBottomTabNavigator();
-
+    
     const updateSearch = (search) => {
         setSearch(search);
     };
     const [font] = useFonts({
         'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
       });
+
+
+    
 
     return (
         <SafeAreaView style={Styles.container}>
@@ -62,6 +69,7 @@ function ReceiptsArchivePage(props) {
             
         </View>
         <ScrollView style={Styles.scrollContainer}>
+        
 
         </ScrollView>
     </SafeAreaView>

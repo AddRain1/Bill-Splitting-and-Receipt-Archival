@@ -182,6 +182,56 @@ export default styles = StyleSheet.create({
     color: COLORS.black
    
   },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    top:70,
+    backgroundColor: COLORS.white
+
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginHorizontal: 0,
+    alignItems: 'center',
+    height:50
+  },
+  selectedTab: {
+    backgroundColor:'#D3DCE6',
+    borderColor: '#007B83',
+    
+  },
+
+  tabText: {
+    fontSize: 16,
+    fontFamily: 'SplineSansMono',
+    color: COLORS.teal
+    
+
+  },
+  sortTab: {
+    flex: 1,
+    paddingVertical: 2,
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginHorizontal: 0,
+    alignItems: 'center',
+    height:28
+  },
+  sortTabText: {
+    fontSize: 14,
+    fontFamily: 'SplineSansMono',
+    color: COLORS.teal
+    
+
+  },
+  
+  
+
   
 })
   

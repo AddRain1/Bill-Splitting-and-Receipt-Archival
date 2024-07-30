@@ -46,7 +46,7 @@ export default function App() {
       <Stack.Screen name="HomePage" component={NavigationBar} />
       <Stack.Screen name= "ScanPage" component = {ScanPage}/>
       <Stack.Screen name= "ReceiptsArchivePage" component = {ReceiptsArchivePage}/>
-      <Stack.Screen name= "BillsPage" component = {NavigationBar}/>
+      <Stack.Screen name= "BillsPage" component = {BillsPage}/>
 
       
 
