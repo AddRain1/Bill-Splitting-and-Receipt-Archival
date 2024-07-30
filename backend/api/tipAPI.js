@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
+import { Receipts } from "../class/receiptsClass.js";
 import { Tip } from "./tipClass.js";
-import receiptTable_api from "./receiptsAPI.js";
+import receiptTable_api from "../api/receiptsAPI.js";
 import dotenv from 'dotenv';
 
 dotenv.config();

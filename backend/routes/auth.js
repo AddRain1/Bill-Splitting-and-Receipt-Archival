@@ -4,10 +4,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oidc');
 const dotenv = require('dotenv');
 
-/* import { Receipts } from "./receiptsClass.js";
-import receiptAPI from "./receiptsAPI.js"; */
-
-
 dotenv.config();
 //var db = require('../db');
 
@@ -34,10 +30,12 @@ passport.deserializeUser(function(user, cb) {
     });
 });
 
+//initiate google authentication
 router.get('/google',
     passport.authenticate('google', { scope:[ 'email', 'profile' ] }
 ));
 
+//response after (attempting to) login
 router.get( '/google/callback',
     passport.authenticate( 'google', {
         successRedirect: '/google/success',
@@ -51,6 +49,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
     failureRedirect: '/login'
 }));
 
+//Log out of account
 router.post('/logout', function(req, res, next) {
     req.logout(function(err) {
       if (err) { return next(err); }
