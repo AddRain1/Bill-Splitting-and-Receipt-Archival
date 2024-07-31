@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import Tesseract from 'tesseract.js';
 import './App.css';
+const sharp = require('sharp');
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+  host: '132.249.238.159',
+  user: 'newperson',
+  password: 'random',
+  database: 'receipts'
+})
 
 function App() {
   const [image, setImage] = useState(null);
@@ -12,6 +21,8 @@ function App() {
 
   const handleClick = () => {
     if (!image) return;
+
+    sharp(image).grayscale().threshold(128);
 
     Tesseract.recognize(
       image, 'eng',
