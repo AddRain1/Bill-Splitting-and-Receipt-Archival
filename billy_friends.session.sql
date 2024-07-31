@@ -12,3 +12,6 @@ CREATE TABLE friends (
 -- @block
 INSERT INTO friends (requester_id, receiver_id, is_confirmed)
 VALUES ('20240730000000', '20240729000000', FALSE);
+-- @block
+SELECT *
+FROM friends;

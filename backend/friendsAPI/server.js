@@ -1,7 +1,5 @@
 import express from 'express';
-import { Friends } from './friendClass.js';
 import friendsAPI from './friendsAPI.js';
-import mysql from 'mysql2/promise';
 
 const app = express();
 
@@ -15,6 +13,12 @@ app.get('/getfriendbyid/:id', async (req, res) => {
     const friends = await friendsAPI.getFriendById(req.params.id);
     res.send(friends);
 });
+
+app.get('/getAllFriendOfUser', async (req, res) => {
+    const idList = await friendsAPI.getFriendOfUser('00000000000000');
+    res.send(idList);
+
+})
 
 app.get('/addfriend', async (req, res) => {
     await friendsAPI.addFriend('20200101000000', '20210101000000');
