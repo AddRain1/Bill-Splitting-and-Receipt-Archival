@@ -159,5 +159,6 @@ export default styles = StyleSheet.create({
     borderRadius: 4, 
     overflow: 'hidden',
     fontSize: 14,
+    alignItems: 'left',
   }
 })

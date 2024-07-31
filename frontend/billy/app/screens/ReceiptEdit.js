@@ -21,6 +21,7 @@ import styles from '../styles';
 import COLORS from "../assets/colors";
 import NavigationBar from '../assets/NavigationBar';
 import { Octicons, Feather } from 'react-native-vector-icons';
+import Draggable from '../assets/Draggable';
 
 itemList = [
     {
@@ -50,6 +51,9 @@ function ReceiptEdit(props) {
         'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), 
     });
     const navigation = useNavigation();
+
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+    const setDragging = (isDragging) => { setScrollEnabled(!isDragging); };
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -75,26 +79,59 @@ function ReceiptEdit(props) {
             <ScrollView 
                 contentContainerStyle={styles.scroll}
                 showsVerticalScrollIndicator = {false}
+                scrollEnabled={scrollEnabled}
             >
                 <SafeAreaView style = {[styles.container2, {width: 380}]}>
 
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> Title: </Text>
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> Date: </Text>
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> Subtotal ($): </Text>
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> Tip: </Text>
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
+                        <Text style = {[styles.caption, {fontSize: 14,}]}> Title: </Text>
+                        <Text style = {[styles.editInput, {}]}> Ralph’s Fresh Fare </Text>
+                    </SafeAreaView>
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
+                        <Text style = {[styles.caption, {fontSize: 14,}]}> Date: </Text>
+                        <Text style = {[styles.editInput, {}]}> 06/21/2024 </Text>
+                    </SafeAreaView>
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
+                        <Text style = {[styles.caption, {fontSize: 14,}]}> Subtotal ($): </Text>
+                        <Text style = {[styles.editInput, {}]}> 40.66 </Text>
+                    </SafeAreaView>
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
+                        <Text style = {[styles.caption, {fontSize: 14,}]}> Tip: </Text>
+                        <Text style = {[styles.editInput, {}]}> 2.00 </Text>
+                    </SafeAreaView>
+                    <SafeAreaView style = {[styles.grayDivider, {width:430, marginTop:10}]} />
 
                     <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> You: </Text>
                     <SafeAreaView style = {[styles.container3, {backgroundColor: COLORS.softGray}]}>
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Taylor </Text>
                     </SafeAreaView>
-                    <SafeAreaView style = {styles.container3}> 
-
+                    <SafeAreaView style = {styles.container3} > 
+                        {itemList.map((prop) => {
+                            return (
+                                <Draggable
+                                    item_name={prop.item_name}
+                                    item_price={prop.item_price}
+                                    setDragging={setDragging}
+                                />
+                            );
+                        })}
                     </SafeAreaView>
 
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5}]}> Others: </Text>
+                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 25,}]}> Others: </Text>
                     <SafeAreaView style = {[styles.container3, {backgroundColor: COLORS.softGray, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Jordan </Text>
                         <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
+                    </SafeAreaView>
+                    <SafeAreaView style = {styles.container3}> 
+                        {itemList.map((prop) => {
+                            return (
+                                <Draggable
+                                    item_name={prop.item_name}
+                                    item_price={prop.item_price}
+                                    setDragging={setDragging}
+                                />
+                            );
+                        })}
                     </SafeAreaView>
 
                 </SafeAreaView>
