@@ -1,13 +1,5 @@
 import { StyleSheet } from "react-native";
-
-const COLORS = {
-	teal: "#008080",
-	mint: "#00C896",
-	black: "#3A3A3A",
-	gray: "#6E7B91",
-	white: "#FDFDFD",
-	softWhite: "#F0F4F8",
-};
+import COLORS from "./assets/colors";
 
 const styles = StyleSheet.create({
 	container: {
@@ -92,6 +84,80 @@ const styles = StyleSheet.create({
 	caption: {
 		fontFamily: "SplineSansMono",
 		color: COLORS.gray,
+	},
+	errorText: {
+		fontFamily: "SplineSansMono",
+		color: COLORS.red,
+		fontSize: 14,
+	},
+	body1: {
+		fontFamily: "SplineSansMono",
+		color: COLORS.black,
+		fontSize: 14,
+	},
+	navBar: {
+		position: "absolute",
+		bottom: -710,
+		left: 0,
+		right: 0,
+	},
+	scroll: {
+		alignItems: "center",
+		paddingVertical: 20,
+	},
+	scanPageMain: {
+		flex: 1, // This will make the view take up the available space
+		backgroundColor: COLORS.black,
+		zIndex: -1,
+		top: 27,
+	},
+	cameraButton: {
+		position: "absolute",
+		top: 383,
+		left: 150,
+		borderRadius: 30,
+		width: 48,
+		height: 48,
+	},
+	cameraButton1: {
+		position: "absolute",
+		top: 375,
+		left: 90,
+		borderRadius: 40,
+		width: 70,
+		height: 70,
+	},
+	scanImage: {
+		position: "absolute",
+		width: 366,
+		height: 660,
+		top: -20,
+		left: 28,
+	},
+	scanContainer: {
+		flex: 1,
+		backgroundColor: COLORS.black,
+		justifyContent: "left",
+		height: 120,
+		width: "100%",
+		top: -15,
+		borderRadius: 10,
+	},
+	scanWelcome: {
+		backgroundColor: COLORS.white,
+		top: -50,
+		height: 103,
+		borderRadius: 10,
+	},
+	imagePlaceholder: {
+		position: "absolute",
+		width: 366,
+		height: 660,
+		top: -20,
+		left: 28,
+		backgroundColor: "#808080",
+		borderWidth: 3,
+		borderColor: COLORS.white,
 	},
 });
 

@@ -18,15 +18,15 @@ import { Octicons } from "react-native-vector-icons";
 import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/styles.js";
 import WelcomeBar from "../assets/WelcomeBar";
 
-// import colors from  '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js';
+import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js";
 import NavigationBar from "../assets/NavigationBar";
 
 function HomePage(props) {
 	const Tab = createBottomTabNavigator();
 	const [font] = useFonts({
-		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"),
-		PlayfairDisplay_400Regular: require("./../assets/fonts/PlayfairDisplay-Regular.ttf"),
-		PlayfairDisplay_700Bold: require("./../assets/fonts/PlayfairDisplay-Bold.ttf"),
+		SplineSansMono: require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/SplineSansMono-Regular.ttf"),
+		PlayfairDisplay_400Regular: require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Regular.ttf"),
+		PlayfairDisplay_700Bold: require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/fonts/PlayfairDisplay-Bold.ttf"),
 	});
 
 	if (!font) {
@@ -39,7 +39,7 @@ function HomePage(props) {
 			<Text style={styles.expenseText}> Expense Breakdown</Text>
 			<TouchableOpacity
 				style={styles.settingsButton}
-				onPress={() => navigation.navigate("Settings")}
+				onPress={() => navigation.navigate("LogIn")}
 			>
 				<Octicons name="gear" size={32} color={"#008080"} />
 			</TouchableOpacity>
