@@ -3,9 +3,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { Image, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert} from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { useNavigation } from '@react-navigation/native';
-import Styles from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js';
+import Styles from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/styles.js';
 import NavigationBar from '../assets/NavigationBar';
-import colors from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js'
+import colors from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js'
 import Icon from 'react-native-vector-icons/FontAwesome6';
 function ScanPage(props) {
 
@@ -69,11 +69,11 @@ function ScanPage(props) {
         )}
          </View>
           <TouchableOpacity style={Styles.cameraButton} onPress={handleImagePickerPress}>
-          <Image source={require('../assets/Imagebutton.jpg')} style ={Styles.cameraButton}/>
+          <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/Imagebutton.jpg')} style ={Styles.cameraButton}/>
 
           </TouchableOpacity>
           <TouchableOpacity style={Styles.cameraButton1} onPress={handleLaunchCamera}>
-          <Image source={require('../assets/Photo button.jpg')} style ={Styles.cameraButton1}/>
+          <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/Photo button.jpg')} style ={Styles.cameraButton1}/>
 
           </TouchableOpacity>
 
