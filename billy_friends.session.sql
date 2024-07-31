@@ -12,22 +12,3 @@ CREATE TABLE friends (
 -- @block
 INSERT INTO friends (requester_id, receiver_id, is_confirmed)
 VALUES ('20240730000000', '20240729000000', FALSE);
--- @block
-SELECT *
-FROM friends;
--- @block
-DELETE FROM friends
-WHERE friend_id = 2;
--- @block
-UPDATE friends
-SET is_confirmed = FALSE
-WHERE (
-        requester_id = '20210101000000'
-        AND receiver_id = '20200101000000'
-    )
-    OR (
-        requester_id = '20200101000000'
-        AND receiver_id = '20210101000000'
-    );
--- @block
-DROP TABLE friends;
