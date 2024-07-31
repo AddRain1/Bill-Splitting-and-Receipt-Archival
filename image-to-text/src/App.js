@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Tesseract from 'tesseract.js';
 import './App.css';
-// import preprocessImage from './preprocess';
 
 function App() {
   const [image, setImage] = useState(null);
@@ -21,12 +20,12 @@ function App() {
       }
     )
     .then(result => {
-      setText(result.text);
+      setText(result.data.text);
     })
     .catch(err => {
       console.error(err);
       setText("An error occurred while processing the image.");
-    })
+    });
   }
 
   return (
@@ -37,6 +36,7 @@ function App() {
         
         <h3>Extracted text</h3>
         <div className="text-box">
+          <p>{text}</p>
         </div>
         <input type="file" onChange={handleChange} />
         <button onClick={handleClick} style={{ height: 50 }}>Convert to Text</button>
