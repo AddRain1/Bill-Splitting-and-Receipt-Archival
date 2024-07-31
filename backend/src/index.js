@@ -8,6 +8,9 @@ import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
 import { ExpenseRate } from "./expenseRateClass.js";
 import expRateTableAPI from "./expenseRateAPI.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // helper function to check if given var is a date obj
 function _isDate(date){

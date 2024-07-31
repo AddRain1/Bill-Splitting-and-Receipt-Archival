@@ -1,11 +1,3 @@
-import React, { useState } from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,Alert} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomInput from '../assets/CustomInput';
-import { useNavigation } from '@react-navigation/native';
-import styles from '../styles';
 import {
   useFonts,
   PlayfairDisplay_400Regular,
@@ -26,66 +18,83 @@ import AppLoading from 'expo-app-loading';
 
 
 function CreateAccount(props) {
-    const [font] = useFonts({
-        'SplineSansMono': require('./../assets/fonts/SplineSansMono-Regular.ttf'), // Adjust the path accordingly
-    });
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [password, setPassword] = useState('');
-    const [retypePassword, setRetypePassword] = useState('');
-    const navigation = useNavigation();
-   
-    const handleSignUp = () => {
-        
-        Alert.alert(
-          "Account Created",
-          "Your account has been created. You can now log in.",
-          [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate('LogIn')
-            }
-          ]
-        );
-      };
-      if (!font) {
-        return <AppLoading />;
-      }
-    
-    
-    return (
-        <SafeAreaView style = {styles.container}>
-         <Text style ={[styles.heading1, {height: 56, top: 100, right: 50,}]}>
-            Create account
-         </Text>
-        <TouchableOpacity style={[styles.backButton, {height: 40, top: 110, right:90,}]} onPress={() => navigation.navigate('LogIn')}>
-        <Icon name="arrow-left" size={20} color="#00C896" style={styles.icon} />
-        <Text style = {styles.buttonText}> back to login</Text>
+	const [font] = useFonts({
+		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"), // Adjust the path accordingly
+	});
+	const [email, setEmail] = useState("");
+	const [username, setUsername] = useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [password, setPassword] = useState("");
+	const [retypePassword, setRetypePassword] = useState("");
+	const navigation = useNavigation();
 
-       </TouchableOpacity>
-       <CustomInput placeholder = 'email' value= {email} setValue={setEmail}/>
-       <CustomInput placeholder = 'first name' value = {firstName} setValue={setFirstName} />
-       <CustomInput placeholder = 'last name' value = {lastName} setValue={setLastName} />
-        <CustomInput placeholder = 'username' value = {username} setValue={setUsername} style = {[styles.input, {top:130,}]}/>
-      <CustomInput placeholder = 'password' value = {password} setValue={setPassword}  secureTextEntry={true}/>
-      <CustomInput placeholder = 'retype password' value = {retypePassword} setValue={setRetypePassword}  secureTextEntry={true} />
-       
+	const handleSignUp = () => {
+		Alert.alert(
+			"Account Created",
+			"Your account has been created. You can now log in.",
+			[
+				{
+					text: "OK",
+					onPress: () => navigation.navigate("LogIn"),
+				},
+			],
+		);
+	};
+	if (!font) {
+		return <AppLoading />;
+	}
 
-      <TouchableOpacity style={[styles.submitButton, {top:50,}]} onPress={handleSignUp}>
-        <Text style = {styles.submitText}> Sign Up </Text>
-      </TouchableOpacity> 
-  
-    
+	return (
+		<SafeAreaView style={styles.container}>
+			<Text style={[styles.heading1, { height: 56, top: 100, right: 50 }]}>
+				Create account
+			</Text>
+			<TouchableOpacity
+				style={[styles.backButton, { height: 40, top: 110, right: 90 }]}
+				onPress={() => navigation.navigate("LogIn")}
+			>
+				<Icon name="arrow-left" size={20} color="#00C896" style={styles.icon} />
+				<Text style={styles.buttonText}> back to login</Text>
+			</TouchableOpacity>
+			<CustomInput placeholder="email" value={email} setValue={setEmail} />
+			<CustomInput
+				placeholder="first name"
+				value={firstName}
+				setValue={setFirstName}
+			/>
+			<CustomInput
+				placeholder="last name"
+				value={lastName}
+				setValue={setLastName}
+			/>
+			<CustomInput
+				placeholder="username"
+				value={username}
+				setValue={setUsername}
+				style={[styles.input, { top: 130 }]}
+			/>
+			<CustomInput
+				placeholder="password"
+				value={password}
+				setValue={setPassword}
+				secureTextEntry={true}
+			/>
+			<CustomInput
+				placeholder="retype password"
+				value={retypePassword}
+				setValue={setRetypePassword}
+				secureTextEntry={true}
+			/>
 
-
-
-
-
-        </SafeAreaView>
-    );
+			<TouchableOpacity
+				style={[styles.submitButton, { top: 50 }]}
+				onPress={handleSignUp}
+			>
+				<Text style={styles.submitText}> Sign Up </Text>
+			</TouchableOpacity>
+		</SafeAreaView>
+	);
 }
-
 
 export default CreateAccount;

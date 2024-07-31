@@ -6,14 +6,17 @@ import taxAPI from "./taxAPI.js";
 import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
 import { ExpenseRate } from "./expenseRateClass.js";
-import expRateTableAPI from "./expenseRateAPI.js";
+import  expenseRateAPI from "./expenseRateAPI.js"; 
 import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
+import dotenv from 'dotenv';
 
-const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'daniel2002';
-const DATABASE = 'receipts';
+dotenv.config();
+
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 async function _checkExistence(receipt){
     // Connect to the MySQL database
@@ -155,7 +158,7 @@ export default class receiptTable_api extends receipt_api{
         for(let i = 0; i < allReceipts.length; i++){
             allReceipts[i].tax = await taxAPI.getTax(allReceipts[i]);
             allReceipts[i].tip = await tipAPI.getTip(allReceipts[i]);
-            allReceipts[i].expense_rate = await expRateTableAPI.getExpRt(allReceipts[i]);
+            allReceipts[i].expense_rate = await expenseRateAPI.getExpRt(allReceipts[i]);
             allReceipts[i].items = await itemAPI.getAllItems(allReceipts[i]);
         }
         return allReceipts;
@@ -195,7 +198,7 @@ export default class receiptTable_api extends receipt_api{
         await tipAPI.addTip(receipt.tip);
         // add expense_rate to expense_rate table
         if(receipt.expense_rate){
-            await expRateTableAPI.addExpRt(receipt.expense_rate);
+            await expenseRateAPI.addExpRt(receipt.expense_rate);
         }
         
     }
