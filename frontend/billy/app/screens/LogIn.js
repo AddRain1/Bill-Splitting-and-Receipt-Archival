@@ -83,12 +83,22 @@ export default function HomePage() {
 				<Text style={styles.caption}>Forgot Password</Text>
 			</TouchableOpacity>
 
+<<<<<<< HEAD
 
       <TouchableOpacity style={[styles.submitButton, {marginTop: 40}]} onPress={() => navigation.navigate('HomePage')}>
       <Text style = {styles.submitText}>Log In</Text>
 
       </TouchableOpacity>
 
+=======
+			<TouchableOpacity
+				style={[styles.submitButton, { marginTop: 40 }]}
+				onPress={() => navigation.navigate("HomePage")}
+			>
+				<Text style={styles.submitText}>Log In</Text>
+			</TouchableOpacity>
+
+>>>>>>> 771c83881dad5de062af4345ed72833f516bd215
 			<Text style={[styles.caption, {}]}> or </Text>
 
 			<TouchableOpacity
