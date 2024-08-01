@@ -7,10 +7,12 @@ import Styles from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/fr
 import NavigationBar from '../assets/NavigationBar';
 import colors from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js'
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import Tesseract from 'tesseract.js';
 function ScanPage(props) {
 
+  // image text saved in 'text'
+  const [text, setText] = useState('');
   const [image, setImage] = useState('');
-
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
   useEffect(() => {
@@ -20,6 +22,19 @@ function ScanPage(props) {
     })();
   }, []);
 
+  const convertImage = async (imageURI) => {
+    try {
+      await Tesseract.recognize(
+        imageURI,'eng',
+        {
+          logger: m => console.log(m)
+        }
+      )
+      setText(result.data.text);
+    } catch (error) {
+      console.error('Error performing OCR: ', error);
+    }
+  };
 
   const handleImagePickerPress = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -30,7 +45,9 @@ function ScanPage(props) {
     })
 
     if(!result.canceled){
-      setImage(result.assets[0].uri)
+      const imageURI = result.assets[0].uri;
+      setImage(imageURI);
+      convertImage(imageURI);
     }
   }
 
@@ -48,7 +65,9 @@ function ScanPage(props) {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri)
+      const imageURI = result.assets[0].uri;
+      setImage(imageURI);
+      convertImage(imageURI);
     }
   };
   

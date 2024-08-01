@@ -7,8 +7,7 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity, Aler
 import { useFonts } from 'expo-font';
 import { useNavigation } from '@react-navigation/native';
 import { Octicons } from 'react-native-vector-icons';
-import Styles from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js';
-
+import Styles from '\Users\adria\OneDrive\Desktop\bill-splitting-and-receipt-archival\frontend\billy\app\styles.js';
 import {COLORS} from  '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js';
 import NavigationBar from '../assets/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
