@@ -16,6 +16,8 @@ import ReceiptsArchivePage from './ReceiptsArchivePage';
 import BillsPage from './BillsPage';
 
 
+import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js";
+import NavigationBar from "../assets/NavigationBar";
 
 function HomePage(props) {
     const Tab = createBottomTabNavigator();
@@ -26,9 +28,9 @@ function HomePage(props) {
     });
     const navigation = useNavigation();
 
-    if (!font) {
-     return <AppLoading />;
-    }
+	if (!font) {
+		return <AppLoading />;
+	}
 
 
     return (
