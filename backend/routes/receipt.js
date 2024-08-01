@@ -1,15 +1,11 @@
 const express = require('express');
 const router = express.Router();
-import mysql from "mysql2";
-import { Receipts } from "../class/receiptsClass.js";
-import receiptAPI from "../api/receiptsAPI.js";
-import { Tax } from "../class/taxClass.js";
-import taxAPI from "./taxAPI.js";
-import { Tip } from "../class/tipClass.js";
-import tipAPI from "./tipAPI.js";
-import { ExpenseRate } from "../class/expenseRateClass.js";
-import expRateTableAPI from "../api/expenseRateAPI.js";
-import helper from "../helpers/helper.js"
+const Receipts = require("../class/receiptsClass.js");
+const receiptAPI = require("../api/receiptsAPI.js");
+const Tax = require("../class/taxClass.js");
+const Tip = require("../class/tipClass.js");
+const ExpenseRate = require("../class/expenseRateClass.js");
+const helper = require("../helpers/helper.js");
 
 //get a list of receipts from all of the user's groups
 //Authorization: Can only see receipts that are part of the user's groups.

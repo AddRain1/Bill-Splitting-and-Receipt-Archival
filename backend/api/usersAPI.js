@@ -71,4 +71,4 @@ class userTable_api extends user_api{
     }
 }
 
-module.exports = {user_api, userTable_api}
+module.exports = userTable_api;

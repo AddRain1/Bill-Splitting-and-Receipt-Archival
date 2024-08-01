@@ -1,8 +1,8 @@
-import { ExpenseRate } from "../class/expenseRateClass.js";
-import mysql from "mysql2/promise";
-import { Receipts } from "../class/receiptsClass.js";
-import receiptTable_api from "./receiptsAPI.js";
-import dotenv from 'dotenv';
+const ExpenseRate = require("../class/expenseRateClass.js");
+const mysql = require("mysql2/promise");
+const Receipts = require("../class/receiptsClass.js");
+const receiptTable_api = require("./receiptsAPI.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ const PASSWORD = process.env.DB_PASSWORD;
 const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
-export class expenseRateAPI{
+class expenseRateAPI{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === expenseRateAPI){
@@ -62,7 +62,7 @@ export class expenseRateAPI{
     }
 }
 
-export default class expRateTableAPI extends expenseRateAPI{
+class expRateTableAPI extends expenseRateAPI{
     // Override the getExpRt method
     // Static async function to get expense rate of a receipt from the database
     static async getExpRt(receipt){
@@ -194,3 +194,5 @@ export default class expRateTableAPI extends expenseRateAPI{
     }
 
 };
+
+module.exports = expRateTableAPI;

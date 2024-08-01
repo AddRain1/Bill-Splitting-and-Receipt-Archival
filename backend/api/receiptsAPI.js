@@ -1,15 +1,10 @@
-import express from "express";
-import mysql from "mysql2/promise";
-import { Receipts } from "../class/receiptsClass.js";
-import { Tax } from "../class/taxClass.js";
-import taxAPI from "../src/taxAPI.js";
-import { Tip } from "../class/tipClass.js";
-import tipAPI from "../src/tipAPI.js";
-import { ExpenseRate } from "../class/expenseRateClass.js";
-import  expenseRateAPI from "./expenseRateAPI.js"; 
-import { Item } from "../class/itemClass.js";
-import itemAPI from "./itemTableAPI.js"
-import dotenv from 'dotenv';
+const mysql = require("mysql2/promise");
+const Receipts = require("../class/receiptsClass.js");
+const taxAPI = require("./taxAPI.js");
+const tipAPI = require("./tipAPI.js");
+const  expenseRateAPI = require("./expenseRateAPI.js"); 
+const itemAPI = require("./itemAPI.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -40,8 +35,7 @@ async function _checkExistence(receipt){
     }
 }
 
-// Export the abstract class receipt_api
-export class receipt_api{
+class receipt_api{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === receipt_api){
@@ -129,7 +123,7 @@ export class receipt_api{
 }
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
-export default class receiptTable_api extends receipt_api{
+class receiptTable_api extends receipt_api{
     // Override the getAllReceipts method
     // Static async function to get all the receipts from the database
     static async getAllReceipts(){
@@ -351,3 +345,5 @@ export default class receiptTable_api extends receipt_api{
         return receipt;
     }
 }
+
+module.exports = receiptTable_api;

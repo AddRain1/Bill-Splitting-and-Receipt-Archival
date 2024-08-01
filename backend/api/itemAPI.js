@@ -1,11 +1,10 @@
-import { Item } from "./itemClass.js";
-import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
-import receiptTable_api from "./receiptsAPI.js";
-import dotenv from 'dotenv';
+const Item = require("../class/itemClass.js");
+const mysql = require("mysql2/promise");
+const receiptTable_api = require("./receiptsAPI.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
-import { ExpenseRate } from "./expenseRateClass.js";
+const ExpenseRate = require("../class/expenseRateClass.js");
 
 const HOST = process.env.DB_HOST;
 const USER = process.env.DB_USER;
@@ -13,7 +12,7 @@ const PASSWORD = process.env.DB_PASSWORD;
 const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
-export class itemAPI{
+class itemAPI{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === itemAPI){
@@ -79,7 +78,7 @@ export class itemAPI{
     }
 }
 
-export default class itemTableAPI extends itemAPI{
+class itemTableAPI extends itemAPI{
     // Override the getAllItems method
     // Static async function to get all items of a receipt from the database
     static async getAllItems(receipt){
@@ -261,3 +260,5 @@ export default class itemTableAPI extends itemAPI{
     }
 
 };
+
+module.exports = itemTableAPI;

@@ -1,8 +1,7 @@
-import mysql from "mysql2/promise";
-import { Receipts } from "../class/receiptsClass.js";
-import { Tip } from "./tipClass.js";
-import receiptTable_api from "../api/receiptsAPI.js";
-import dotenv from 'dotenv';
+const mysql = require("mysql2/promise");
+const Tip = require("../class/tipClass.js");
+const receiptTable_api = require("./receiptsAPI.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -12,7 +11,7 @@ const PASSWORD = process.env.DB_PASSWORD;
 const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
-export class tip_api{
+class tip_api{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === tip_api){
@@ -55,7 +54,7 @@ export class tip_api{
 }
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
-export default class tipTable_api extends tip_api{
+class tipTable_api extends tip_api{
     // Override the getTip method
     static async getTip(receipt){
         // Connect to the MySQL database
@@ -158,3 +157,5 @@ export default class tipTable_api extends tip_api{
         
     }
 }
+
+module.exports = tipTable_api;

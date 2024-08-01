@@ -1,8 +1,7 @@
-import mysql from "mysql2/promise";
-import { Receipts } from "../class/receiptsClass.js";
-import receiptTable_api from "../api/receiptsAPI.js";
-import { Tax } from "./taxClass.js";
-import dotenv from 'dotenv';
+const mysql = require("mysql2/promise");
+const receiptTable_api = require("./receiptsAPI.js");
+const Tax = require("../class/taxClass.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -12,7 +11,7 @@ const PASSWORD = process.env.DB_PASSWORD;
 const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
-export class tax_api{
+class tax_api{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === tax_api){
@@ -63,7 +62,7 @@ export class tax_api{
 }
 
 // Export the class taxTable_api which extends the abstract class tax_api
-export default class taxTable_api extends tax_api{
+class taxTable_api extends tax_api{
     // Override the getTax method
     // Static async function to get tax of a receipt from the database
     static async getTax(receipt){
@@ -194,3 +193,5 @@ export default class taxTable_api extends tax_api{
         
     }
 }
+
+module.exports = taxTable_api;

@@ -1,4 +1,4 @@
-export class Item {
+class Item {
     item_id;
     receipt_id;
     name;
@@ -14,3 +14,5 @@ export class Item {
         this.created_at = created_at;
     }
 }
+
+module.exports = Item;
