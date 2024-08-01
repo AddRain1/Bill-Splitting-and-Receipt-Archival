@@ -5,25 +5,49 @@ import styles from '../styles';
 import COLORS from "../assets/colors";
 import { Feather } from 'react-native-vector-icons';
   
-const Draggable = ({ item_name, item_price, setDragging}) => { 
+const Draggable = ({ item_name, item_price, setDragging, initialIndex, boxStarts }) => { 
 
     const position = useRef(new Animated.ValueXY()).current; 
-  
+    const [index, setIndex] = useState(initialIndex);
+
+    function calcIndex() {
+        temp = Math.floor((position.y._value - boxStarts[0]) / 40) + 1;
+        if (temp < 1) {temp = 1;}
+        if (temp > 4) {temp = 4;}
+        return temp;
+    }
+
     const panResponder = useRef( 
         PanResponder.create({ 
             onStartShouldSetPanResponder: () => true, 
             onMoveShouldSetPanResponder: () => true, 
-            onPanResponderGrant: () => { setDragging(true); }, 
+            onPanResponderGrant: () => { 
+                setDragging(true); 
+                position.setOffset({
+                    x: position.x._value,
+                    y: position.y._value
+                });
+                position.setValue({ x: 0, y: 0 });
+            }, 
             onPanResponderMove: Animated.event( 
                 [ 
                     null, 
                     { 
-                        dy: position.y, 
+                        dy: position.y,
                     }, 
                 ], 
                 { useNativeDriver: false } 
             ), 
-            onPanResponderRelease: () => { setDragging(false); }, 
+            onPanResponderRelease: () => { 
+                setDragging(false); 
+                position.flattenOffset();
+                const newIndex = calcIndex();
+                setIndex(newIndex);
+                Animated.spring(position, {
+                    toValue: { x: 0, y: boxStarts[0] + 40 * (newIndex-1) },
+                    useNativeDriver: false
+                }).start();
+            }, 
         }) 
     ).current; 
   
@@ -33,6 +57,7 @@ const Draggable = ({ item_name, item_price, setDragging}) => {
                 { 
                     transform: position.getTranslateTransform(),  
                     backgroundColor: COLORS.softWhite,
+                    position: 'absolute',
                 }, 
             ]} 
             {...panResponder.panHandlers} 

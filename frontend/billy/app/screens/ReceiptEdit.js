@@ -27,24 +27,30 @@ itemList = [
     {
         item_id: 1,
         item_name: "Driscoll’s Raspberries (12oz)",
-        item_price: 5.94
+        item_price: 5.94,
+        index: 1,
     },
     {
         item_id: 2,
         item_name: "3x Fuji Apples",
-        item_price: 6.97
+        item_price: 6.97,
+        index: 2,
     },
     {
         item_id: 3,
         item_name: "Chocolate Chip Cookies",
-        item_price: 4.55
+        item_price: 4.55,
+        index: 3,
     },
     {
         item_id: 4,
         item_name: "Ralph’s Purified Drinking Water",
-        item_price: 5.24
+        item_price: 5.24,
+        index: 4,
     },
-  ];
+];
+
+boxStarts = [0, 0];
 
 function ReceiptEdit(props) {
     const [font] = useFonts({
@@ -53,7 +59,7 @@ function ReceiptEdit(props) {
     const navigation = useNavigation();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
-    const setDragging = (isDragging) => { setScrollEnabled(!isDragging); };
+    const setDragging = (isDragging) => { setScrollEnabled(!isDragging);};
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -105,16 +111,12 @@ function ReceiptEdit(props) {
                     <SafeAreaView style = {[styles.container3, {backgroundColor: COLORS.softGray}]}>
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Taylor </Text>
                     </SafeAreaView>
-                    <SafeAreaView style = {styles.container3} > 
-                        {itemList.map((prop) => {
-                            return (
-                                <Draggable
-                                    item_name={prop.item_name}
-                                    item_price={prop.item_price}
-                                    setDragging={setDragging}
-                                />
-                            );
-                        })}
+                    <SafeAreaView 
+                        style = {[styles.container3, {height: 40 * 4 + 10}]} 
+                        onLayout={e => {
+                            boxStarts[0] = e.nativeEvent.layout.y + 10;
+                        }}
+                    > 
                     </SafeAreaView>
 
                     <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 25,}]}> Others: </Text>
@@ -122,18 +124,25 @@ function ReceiptEdit(props) {
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Jordan </Text>
                         <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
                     </SafeAreaView>
-                    <SafeAreaView style = {styles.container3}> 
-                        {itemList.map((prop) => {
-                            return (
-                                <Draggable
-                                    item_name={prop.item_name}
-                                    item_price={prop.item_price}
-                                    setDragging={setDragging}
-                                />
-                            );
-                        })}
+                    <SafeAreaView 
+                        style = {[styles.container3, {height: 40 * 4 + 10}]}
+                        onLayout={e => {
+                            boxStarts[1] = e.nativeEvent.layout.y;
+                        }}
+                    > 
                     </SafeAreaView>
 
+                    {itemList.map((prop) => {
+                    return (
+                        <Draggable
+                            item_name={prop.item_name}
+                            item_price={prop.item_price}
+                            setDragging={setDragging}
+                            index={prop.index}
+                            boxStarts={boxStarts}
+                        />
+                    );
+                    })}
                 </SafeAreaView>
 
             </ScrollView>
