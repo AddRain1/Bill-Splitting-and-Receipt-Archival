@@ -8,8 +8,8 @@ import NavigationBar from '../assets/NavigationBar';
 import colors from '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js'
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Tesseract from 'tesseract.js';
-function ScanPage(props) {
 
+function ScanPage(props) {
   // image text saved in 'text'
   const [text, setText] = useState('');
   const [image, setImage] = useState('');
@@ -100,9 +100,6 @@ function ScanPage(props) {
           
     </SafeAreaView>
     
-
-   
-   
     );
 }
 
