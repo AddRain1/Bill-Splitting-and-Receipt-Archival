@@ -13,16 +13,14 @@ import {
 	View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import Tesseract from "tesseract.js";
+import NavigationBar from "../assets/NavigationBar";
 import colors from "../assets/colors.js";
 import Styles from "../styles.js";
-import NavigationBar from "../assets/NavigationBar";
-import Tesseract from "tesseract.js";
-
 
 function ScanPage(props) {
-
 	const [image, setImage] = useState("");
-  	const [text, setText] = useState("");
+	const [text, setText] = useState("");
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
 	useEffect(() => {
@@ -33,35 +31,33 @@ function ScanPage(props) {
 		})();
 	}, []);
 
-  const convertImage = async (imageURI) => {
-    try {
-		const result = await Tesseract.recognize(imageURI, 'eng', {
-          logger: m => console.log(m),
-		});
-		
-		text  = result.data.text;
-    	setText(text);
+	const convertImage = async (imageURI) => {
+		try {
+			const result = await Tesseract.recognize(imageURI, "eng", {
+				logger: (m) => console.log(m),
+			});
 
-      	//Create POST request
-      	const response = await fetch('http://localhost:3000/receipts/saveText', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      	});
+			setText(result.data.text);
 
-        if (!response.ok) {
-        	throw new Error('Network response was not ok');
-        }
+			//Create POST request
+			const response = await fetch("http://localhost:3000/receipts/saveText", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ text }),
+			});
 
-		const data = await response.json();
-		console.log('Success: ', data);
-     
-    } catch (error) {
-      console.error(error);
-    }
-  }
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+			const data = await response.json();
+			console.log("Success: ", data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const handleImagePickerPress = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -72,9 +68,9 @@ function ScanPage(props) {
 		});
 
 		if (!result.canceled) {
-      imageURI = result.assets[0].uri;
+			imageURI = result.assets[0].uri;
 			setImage(imageURI);
-      await convertImage(imageURI);
+			await convertImage(imageURI);
 		}
 	};
 
@@ -97,7 +93,7 @@ function ScanPage(props) {
 		if (!result.canceled) {
 			imageURI = result.assets[0].uri;
 			setImage(imageURI);
-      await convertImage(imageURI);
+			await convertImage(imageURI);
 		}
 	};
 
