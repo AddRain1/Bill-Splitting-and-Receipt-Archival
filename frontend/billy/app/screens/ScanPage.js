@@ -13,16 +13,16 @@ import {
 	View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js";
-import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js";
+import colors from "../assets/colors.js";
+import Styles from "../styles.js";
 import NavigationBar from "../assets/NavigationBar";
-import Tesseract from 'tesseract.js';
+import Tesseract from "tesseract.js";
 
 
 function ScanPage(props) {
 
 	const [image, setImage] = useState("");
-  const [text, setText] = useState("");
+  	const [text, setText] = useState("");
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
 	useEffect(() => {
@@ -35,33 +35,29 @@ function ScanPage(props) {
 
   const convertImage = async (imageURI) => {
     try {
-      const result = await Tesseract.recognize(
-        imageURI, 'eng',
-        {
-          logger: m => console.log(m)
-        }
-      );
-      setText(result.data.text);
+		const result = await Tesseract.recognize(imageURI, 'eng', {
+          logger: m => console.log(m),
+		});
+		
+		text  = result.data.text;
+    	setText(text);
 
-      //Create POST request
-      const resposne = await fetch('http://localhost:3000/saveText', {
+      	//Create POST request
+      	const response = await fetch('http://localhost:3000/receipts/saveText', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          text: 'This is the text you want to save',
-        }),
-      })
-      .then(response => {
+        body: JSON.stringify({ text }),
+      	});
+
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+        	throw new Error('Network response was not ok');
         }
-        return response.json();
-      }) 
-      .then(data => {
-        console.log('Success: ', data);
-      });
+
+		const data = await response.json();
+		console.log('Success: ', data);
+     
     } catch (error) {
       console.error(error);
     }
