@@ -16,9 +16,13 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js";
 import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js";
 import NavigationBar from "../assets/NavigationBar";
-function ScanPage(props) {
-	const [image, setImage] = useState("");
+import Tesseract from 'tesseract.js';
 
+
+function ScanPage(props) {
+
+	const [image, setImage] = useState("");
+  const [text, setText] = useState("");
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
 	useEffect(() => {
@@ -29,6 +33,40 @@ function ScanPage(props) {
 		})();
 	}, []);
 
+  const convertImage = async (imageURI) => {
+    try {
+      const result = await Tesseract.recognize(
+        imageURI, 'eng',
+        {
+          logger: m => console.log(m)
+        }
+      );
+      setText(result.data.text);
+
+      //Create POST request
+      const resposne = await fetch('http://localhost:3000/saveText', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: 'This is the text you want to save',
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }) 
+      .then(data => {
+        console.log('Success: ', data);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 	const handleImagePickerPress = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -38,7 +76,9 @@ function ScanPage(props) {
 		});
 
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+      imageURI = result.assets[0].uri;
+			setImage(imageURI);
+      await convertImage(imageURI);
 		}
 	};
 
@@ -59,7 +99,9 @@ function ScanPage(props) {
 		});
 
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+			imageURI = result.assets[0].uri;
+			setImage(imageURI);
+      await convertImage(imageURI);
 		}
 	};
 
