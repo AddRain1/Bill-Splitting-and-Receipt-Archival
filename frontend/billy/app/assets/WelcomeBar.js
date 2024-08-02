@@ -2,22 +2,24 @@ import { useFonts } from "expo-font";
 import React from "react";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 const WelcomeBar = ({ username }) => {
+	const [font] = useFonts({
+		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"),
+		PlayfairDisplay_400Regular: require("./../assets/fonts/PlayfairDisplay-Regular.ttf"),
+		PlayfairDisplay_700Bold: require("./../assets/fonts/PlayfairDisplay-Bold.ttf"),
+	});
 
-    const [font] = useFonts({
-        'SplineSansMono': require('../assets/fonts/SplineSansMono-Regular.ttf'),
-        'PlayfairDisplay_400Regular': require('../assets/fonts/PlayfairDisplay-Regular.ttf'),
-        'PlayfairDisplay_700Bold': require('../assets/fonts/PlayfairDisplay-Bold.ttf'),
-    });
-
-    if (!font) {
-     return <AppLoading />;
-    }
-  return (
-    <View style={styles.container}>
-      <Image source={require('/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/logo.jpeg')} style ={styles.image}/>
-      <Text style={styles.welcomeText}>hello,  {username}</Text>
-    </View>
-  );
+	if (!font) {
+		return <AppLoading />;
+	}
+	return (
+		<View style={styles.container}>
+			<Image
+				source={require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/logo.jpeg")}
+				style={styles.image}
+			/>
+			<Text style={styles.welcomeText}>hello, {username}</Text>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
