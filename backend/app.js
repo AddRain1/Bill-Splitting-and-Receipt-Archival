@@ -1,13 +1,9 @@
 const express = require('express');
 const path = require('path');
-
 const session = require('express-session');
 const passport = require('passport');
-
 const SQLiteStore = require('connect-sqlite3')(session);
-
 const userRouter = require('./routes/auth');
-
 const dotenv = require('dotenv');
 dotenv.config();
 

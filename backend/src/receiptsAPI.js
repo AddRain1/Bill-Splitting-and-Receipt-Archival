@@ -130,6 +130,47 @@ export class receipt_api{
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
 export default class receiptTable_api extends receipt_api{
+
+    static async saveImage(title, imageData) {
+        const connection = await mysql.createConnection({
+                host: HOST,
+                user: USER,
+                password: PASSWORD,
+                database
+            });
+
+        const query = 'INSERT INTO receipts (title, imageData) VALUES (?, ?)';
+        const params = [title, imageData];
+
+        await connection.query(query, params);
+        await connection.end();
+    }
+
+    static async saveText(text) {
+        let connection;
+        try {
+            connection = await mysql.createConnection({
+                host: HOST,
+                user: USER,
+                password: PASSWORD,
+                database: DATABASE
+            });
+    
+            const query = 'INSERT INTO rtext (rdata) VALUES (?)';
+            const params = [text];
+    
+            const [result] = await connection.query(query, params);
+    
+            console.log('Text saved succesfully: ', result);
+        } catch (error) {
+            console.error(error)
+        } finally {
+            if (connection) {
+                await connection.end();
+            }
+        }
+    }
+
     // Override the getAllReceipts method
     // Static async function to get all the receipts from the database
     static async getAllReceipts(){
