@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js";
+import colors from "./colors.js";
 import BillsPage from "../screens/BillsPage";
 import HomePage from "../screens/Home";
 import ReceiptsPage from "../screens/ReceiptsArchivePage";

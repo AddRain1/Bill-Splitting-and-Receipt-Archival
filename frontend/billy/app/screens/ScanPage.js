@@ -38,8 +38,8 @@ function ScanPage(props) {
 			});
 
 			setText(result.data.text);
-
-			//Create POST request
+			
+			//Create POST request for text
 			const response = await fetch("http://localhost:3000/receipts/saveText", {
 				method: "POST",
 				headers: {
@@ -59,6 +59,31 @@ function ScanPage(props) {
 		}
 	};
 
+	// create post request for image
+	const storeReceipt = async (imageURI) => {
+		try {
+			const response = await fetch("http://localhost:3000/receipts/saveImage", {
+				method: "POST",
+				headers: {
+					"content-Type": "application",
+				},
+				body: JSON.stringify({
+					title: "Image Title",
+					imageData: imageURI,	
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error("Network response not ok");
+			}
+
+			const data = await response.json();
+			console.log("Success:. data");
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const handleImagePickerPress = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -70,6 +95,7 @@ function ScanPage(props) {
 		if (!result.canceled) {
 			imageURI = result.assets[0].uri;
 			setImage(imageURI);
+			await storeReceipt(imageURI);
 			await convertImage(imageURI);
 		}
 	};
@@ -93,6 +119,7 @@ function ScanPage(props) {
 		if (!result.canceled) {
 			imageURI = result.assets[0].uri;
 			setImage(imageURI);
+			await storeReceipt(imageURI);
 			await convertImage(imageURI);
 		}
 	};

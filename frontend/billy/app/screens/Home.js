@@ -16,11 +16,11 @@ import {
 	View,
 } from "react-native";
 import { Octicons } from "react-native-vector-icons";
-import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js";
+import Styles from "../styles.js";
 import WelcomeBar from "../assets/WelcomeBar";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import { COLORS } from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js";
+import { COLORS } from "../assets/colors.js";
 import NavigationBar from "../assets/NavigationBar";
 import BillsPage from "./BillsPage";
 import ReceiptsArchivePage from "./ReceiptsArchivePage";
