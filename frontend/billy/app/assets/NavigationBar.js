@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "./colors.js";
 import BillsPage from "../screens/BillsPage";
 import HomePage from "../screens/Home";
 import ReceiptsPage from "../screens/ReceiptsArchivePage";
 import ScanPage from "../screens/ScanPage";
+import colors from "./colors.js";
 
 const Tab = createBottomTabNavigator();
 

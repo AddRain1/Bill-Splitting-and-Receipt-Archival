@@ -13,10 +13,7 @@ const WelcomeBar = ({ username }) => {
 	}
 	return (
 		<View style={styles.container}>
-			<Image
-				source={require("./logo.jpeg")}
-				style={styles.image}
-			/>
+			<Image source={require("./logo.jpeg")} style={styles.image} />
 			<Text style={styles.welcomeText}>hello, {username}</Text>
 		</View>
 	);

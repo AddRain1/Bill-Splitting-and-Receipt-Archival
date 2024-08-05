@@ -38,7 +38,7 @@ function ScanPage(props) {
 			});
 
 			setText(result.data.text);
-			
+
 			//Create POST request for text
 			const response = await fetch("http://localhost:3000/receipts/saveText", {
 				method: "POST",
@@ -69,7 +69,7 @@ function ScanPage(props) {
 				},
 				body: JSON.stringify({
 					title: "Image Title",
-					imageData: imageURI,	
+					imageData: imageURI,
 				}),
 			});
 
