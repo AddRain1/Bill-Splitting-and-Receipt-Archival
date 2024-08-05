@@ -14,7 +14,7 @@ const WelcomeBar = ({ username }) => {
 	return (
 		<View style={styles.container}>
 			<Image
-				source={require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/logo.jpeg")}
+				source={require("./../assets/logo.jpeg")}
 				style={styles.image}
 			/>
 			<Text style={styles.welcomeText}>hello, {username}</Text>

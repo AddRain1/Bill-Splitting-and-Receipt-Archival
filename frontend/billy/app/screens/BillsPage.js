@@ -6,7 +6,8 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js";
+import Styles from "../styles";
+
 
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
@@ -53,18 +54,18 @@ function BillsPage(props) {
 						<Text style={Styles.tabText}>bills owed to you</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={styles.tabs}>
+				<View style={Styles.tabs}>
 					<TouchableOpacity
 						onPress={() => setSortOption("date")}
 						style={[
 							Styles.sortTab,
-							sortOption === "date" && styles.selectedTab,
+							sortOption === "date" && Styles.selectedTab,
 						]}
 					>
 						<Text
 							style={[
 								Styles.sortTabText,
-								sortOption === "date" && styles.selectedTabText,
+								sortOption === "date" && Styles.selectedTabText,
 							]}
 						>
 							date
@@ -74,13 +75,13 @@ function BillsPage(props) {
 						onPress={() => setSortOption("group")}
 						style={[
 							Styles.sortTab,
-							sortOption === "group" && styles.selectedTab,
+							sortOption === "group" && Styles.selectedTab,
 						]}
 					>
 						<Text
 							style={[
 								Styles.sortTabText,
-								sortOption === "group" && styles.selectedTabText,
+								sortOption === "group" && Styles.selectedTabText,
 							]}
 						>
 							group
@@ -90,13 +91,13 @@ function BillsPage(props) {
 						onPress={() => setSortOption("person")}
 						style={[
 							Styles.sortTab,
-							sortOption === "person" && styles.selectedTab,
+							sortOption === "person" && Styles.selectedTab,
 						]}
 					>
 						<Text
 							style={[
 								Styles.sortTabText,
-								sortOption === "person" && styles.selectedTabText,
+								sortOption === "person" && Styles.selectedTabText,
 							]}
 						>
 							person

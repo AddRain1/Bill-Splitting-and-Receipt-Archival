@@ -13,8 +13,8 @@ import {
 	View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/assets/colors.js";
-import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/frontend/billy/app/styles.js";
+import colors from "../assets/colors.js";
+import Styles from "../styles.js";
 import NavigationBar from "../assets/NavigationBar";
 function ScanPage(props) {
 	const [image, setImage] = useState("");
