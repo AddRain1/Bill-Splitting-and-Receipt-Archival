@@ -16,12 +16,12 @@ import {
 	View,
 } from "react-native";
 import { Octicons } from "react-native-vector-icons";
-import Styles from "../styles";
 import WelcomeBar from "../assets/WelcomeBar";
+import Styles from "../styles";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import COLORS from "../assets/colors.js";
 import NavigationBar from "../assets/NavigationBar";
+import COLORS from "../assets/colors.js";
 import BillsPage from "./BillsPage";
 import ReceiptsArchivePage from "./ReceiptsArchivePage";
 

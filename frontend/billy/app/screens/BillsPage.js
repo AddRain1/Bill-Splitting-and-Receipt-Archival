@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import Styles from "../styles";
 
-
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
 	const [sortOption, setSortOption] = useState("date"); // 'date', 'group', 'person'

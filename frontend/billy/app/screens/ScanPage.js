@@ -13,9 +13,9 @@ import {
 	View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import NavigationBar from "../assets/NavigationBar";
 import colors from "../assets/colors.js";
 import Styles from "../styles.js";
-import NavigationBar from "../assets/NavigationBar";
 function ScanPage(props) {
 	const [image, setImage] = useState("");
 

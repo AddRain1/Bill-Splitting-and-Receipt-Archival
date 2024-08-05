@@ -13,7 +13,7 @@ import {
 	PlayfairDisplay_900Black_Italic,
 	useFonts,
 } from "@expo-google-fonts/playfair-display";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import NavigationBar from "./app/assets/NavigationBar";
 import BillsPage from "./app/screens/BillsPage";
