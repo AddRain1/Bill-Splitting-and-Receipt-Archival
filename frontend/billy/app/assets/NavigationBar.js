@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
-// import colors from  '/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js';
 import Icon from "react-native-vector-icons/FontAwesome6";
+import colors from "../assets/colors";
 import BillsPage from "../screens/BillsPage";
 import HomePage from "../screens/Home";
-import ReceiptsPage from "../screens/ReceiptsPage";
+import ReceiptsPage from "../screens/ReceiptsArchivePage";
 import ScanPage from "../screens/ScanPage";
 
 const Tab = createBottomTabNavigator();

@@ -13,9 +13,9 @@ import {
 	View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js";
-import Styles from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/styles.js";
 import NavigationBar from "../assets/NavigationBar";
+import colors from "../assets/colors.js";
+import Styles from "../styles.js";
 function ScanPage(props) {
 	const [image, setImage] = useState("");
 
@@ -91,7 +91,7 @@ function ScanPage(props) {
 				onPress={handleImagePickerPress}
 			>
 				<Image
-					source={require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/Imagebutton.jpg")}
+					source={require("../assets/Imagebutton.jpg")}
 					style={Styles.cameraButton}
 				/>
 			</TouchableOpacity>
@@ -100,7 +100,7 @@ function ScanPage(props) {
 				onPress={handleLaunchCamera}
 			>
 				<Image
-					source={require("/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/Photo button.jpg")}
+					source={require("../assets/Photo button.jpg")}
 					style={Styles.cameraButton1}
 				/>
 			</TouchableOpacity>
