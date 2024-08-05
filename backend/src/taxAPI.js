@@ -81,6 +81,8 @@ export default class taxTable_api extends tax_api{
             result.tax_name,
             result.tax_percentage
         ));
+        connection.end();
+
         // Return the tax object
         return tax;
     }
@@ -88,6 +90,7 @@ export default class taxTable_api extends tax_api{
     // Override the addTax method
     // Static async function to add tax to the database
     static async addTax(tax){
+
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -114,6 +117,8 @@ export default class taxTable_api extends tax_api{
             tax.name, 
             tax.percentage];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTaxPercentage method
@@ -138,6 +143,8 @@ export default class taxTable_api extends tax_api{
         const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
         const params = [tax_percentage, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTaxName method
@@ -162,6 +169,8 @@ export default class taxTable_api extends tax_api{
         const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
         const params = [tax_name, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteTax method
@@ -188,6 +197,8 @@ export default class taxTable_api extends tax_api{
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
         
     }
 }

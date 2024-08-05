@@ -31,6 +31,8 @@ async function _checkExistence(receipt){
     const getInfo = await connection.execute(recQuery, recParams);
     const exist = getInfo[0].length > 0;
     
+    connection.end();
+
     if(!exist){
         // Throw an error if the receipt already exists
         throw new Error("receipt with receipt_id doesn't exist");
@@ -59,6 +61,22 @@ export class receipt_api{
         // Check if the subclass has defined this method
         if(!this.addReceipt){
             throw new Error("addReceipt method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async addItemToReceipt(receipt, item){
+        // Check if the subclass has defined this method
+        if(!this.addItemToReceipt){
+            throw new Error("addItemToReceipt method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async deleteReceipt(receipt){
+        // check if the subclass has defined this method
+        if(!this.deleteReceipt){
+            throw new Error("deleteReceipt method must be defined")
         }
     }
 
@@ -158,6 +176,9 @@ export default class receiptTable_api extends receipt_api{
             allReceipts[i].expense_rate = await expenseRateAPI.getExpRt(allReceipts[i]);
             allReceipts[i].items = await itemAPI.getAllItems(allReceipts[i]);
         }
+
+        connection.end();
+
         return allReceipts;
     }
 
@@ -197,7 +218,15 @@ export default class receiptTable_api extends receipt_api{
         if(receipt.expense_rate){
             await expenseRateAPI.addExpRt(receipt.expense_rate);
         }
-        
+        // add all items to the item table
+        connection.end();
+    }
+
+    // given a receipt object, add the item to the receipt
+    static async addItemToReceipt(receipt, item){
+        await itemAPI.addItem(item);
+        receipt.item = item;
+        return receipt
     }
 
     static async updateGroupID(receipt, group_id){
@@ -213,6 +242,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [group_id, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateImage(receipt, image){
@@ -228,6 +259,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [image, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptName(receipt, receipt_name){
@@ -243,6 +276,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [receipt_name, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptDescription(receipt, receipt_description){
@@ -258,6 +293,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [receipt_description, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptCategory(receipt, receipt_category){
@@ -273,6 +310,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [receipt_category, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptVendor(receipt, receipt_vendor){
@@ -288,6 +327,8 @@ export default class receiptTable_api extends receipt_api{
         const params = [receipt_vendor, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteReceipt method
@@ -315,6 +356,8 @@ export default class receiptTable_api extends receipt_api{
         const query = 'DELETE FROM receipts WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the getReceiptByID method
@@ -345,6 +388,9 @@ export default class receiptTable_api extends receipt_api{
             results[0].receipt_category,
             results[0].created_at,
             results[0].vendor_name);
+
+        connection.end();
+
         return receipt;
     }
 }

@@ -71,6 +71,8 @@ export default class tipTable_api extends tip_api{
             result.receipt_id,
             result.tip_amount
         ));
+        connection.end();
+
         // Return the tip object
         return tip;
     }
@@ -102,6 +104,8 @@ export default class tipTable_api extends tip_api{
         const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
         const params = [ tip.receipt_id, tip.amount];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTipAmount method
@@ -126,6 +130,8 @@ export default class tipTable_api extends tip_api{
         const query = 'UPDATE tips SET tip_amount = ? WHERE receipt_id = ?';
         const params = [tip_amount, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteTip method
@@ -152,6 +158,7 @@ export default class tipTable_api extends tip_api{
         const query = 'DELETE FROM tips WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
-        
+        connection.end();
+
     }
 }

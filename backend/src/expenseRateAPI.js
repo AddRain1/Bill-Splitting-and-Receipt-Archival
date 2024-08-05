@@ -80,6 +80,8 @@ export default class expRateTableAPI extends expenseRateAPI{
             result.expenseRate_name,
             result.expenseRate_percentage
         ));
+        connection.end();
+
         // Return the expense rate object
         return expRt;
     }
@@ -114,6 +116,8 @@ export default class expRateTableAPI extends expenseRateAPI{
             expense_rate.name, 
             expense_rate.percentage];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeExpRt_name method
@@ -138,6 +142,8 @@ export default class expRateTableAPI extends expenseRateAPI{
         const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
         const params = [name, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeExpRt_percentage method
@@ -162,6 +168,8 @@ export default class expRateTableAPI extends expenseRateAPI{
         const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
         const params = [percentage, receipt.receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteExpRt method
@@ -187,7 +195,8 @@ export default class expRateTableAPI extends expenseRateAPI{
         const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
-        
+        connection.end();
+
     }
 
 };

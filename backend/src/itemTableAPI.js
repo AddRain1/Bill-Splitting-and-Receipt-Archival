@@ -99,6 +99,8 @@ export default class itemTableAPI extends itemAPI{
             result.item_payee,
             result.created_at
         ));
+        connection.end();
+
         // Return the tax object
         return items;
     }
@@ -124,6 +126,8 @@ export default class itemTableAPI extends itemAPI{
             result.expenseRate_percentage
         ));
         // Return the item object
+        connection.end();
+
         return item;
     }
 
@@ -157,6 +161,8 @@ export default class itemTableAPI extends itemAPI{
             item.price,
             item.payee];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeItem_name method
@@ -181,6 +187,8 @@ export default class itemTableAPI extends itemAPI{
         const query = 'UPDATE items SET item_name = ? WHERE item_id = ?';
         const params = [name, item.item_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeItem_price method
@@ -205,6 +213,8 @@ export default class itemTableAPI extends itemAPI{
         const query = 'UPDATE items SET item_price = ? WHERE item_id = ?';
         const params = [price, item.item_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeItem_payee method
@@ -229,6 +239,8 @@ export default class itemTableAPI extends itemAPI{
         const query = 'UPDATE items SET item_payee = ? WHERE item_id = ?';
         const params = [payee, item.item_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteItem method
@@ -254,6 +266,8 @@ export default class itemTableAPI extends itemAPI{
         const query = 'DELETE FROM items WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
+        connection.end();
+
         
     }
 
