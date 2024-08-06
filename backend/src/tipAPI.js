@@ -69,7 +69,7 @@ export default class tipTable_api extends tip_api{
         const tip = results.map(result => new Tip(
             result.tip_id,
             result.receipt_id,
-            result.tip_amount
+            Number(result.tip_amount)
         ));
         connection.end();
 

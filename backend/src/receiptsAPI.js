@@ -392,6 +392,14 @@ export default class receiptTable_api extends receipt_api{
             results[0].receipt_category,
             results[0].created_at,
             results[0].vendor_name);
+        const receiptTax = await taxAPI.getTax(receipt);
+        const receiptTip = await tipAPI.getTip(receipt);
+        const receiptExpr = await expenseRateAPI.getExpRt(receipt);
+        const receiptItems = await itemAPI.getAllItems(receipt);
+        receipt.tax = receiptTax[0];
+        receipt.tip = receiptTip[0];
+        receipt.expense_rate = receiptExpr[0];
+        receipt.items = receiptItems;
 
         connection.end();
 

@@ -79,7 +79,7 @@ export default class taxTable_api extends tax_api{
             result.tax_id,
             result.receipt_id,
             result.tax_name,
-            result.tax_percentage
+            Number(result.tax_percentage)
         ));
         connection.end();
 

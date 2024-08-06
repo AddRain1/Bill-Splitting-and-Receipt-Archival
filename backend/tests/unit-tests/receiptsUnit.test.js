@@ -2,9 +2,11 @@ import receiptTable_api from '../../src/receiptsAPI.js';
 import { Receipts } from '../../src/receiptsClass.js';
 import { Tax } from '../../src/taxClass.js';
 import { Tip } from '../../src/tipClass.js';
+import { ExpenseRate } from '../../src/expenseRateClass.js';
 import { Item } from '../../src/itemClass.js';
 import taxTable_api from "../../src/taxAPI.js";
 import tipTable_api from '../../src/tipAPI.js';
+import expenseRateTable_api from '../../src/expenseRateAPI.js';
 import itemTableAPI from '../../src/itemTableAPI.js';
 
 function _isDate(date){
@@ -35,15 +37,17 @@ const receipt_id = _generateReceipt_id(date);
 const receipt = new Receipts(receipt_id, 2, 'image.png', 'mcdonald', 'mcdonald receipt', 'food');
 receipt.vendor = 'vendor';
 receipt.tax = new Tax(1, receipt_id, 'taxname', 0.08);
-receipt.tip = new Tip(1, receipt_id, 0.1);
-const item1 = new Item(1, receipt_id, 'item1', 1.00, 1);
+receipt.tip = new Tip(1, receipt_id, 0.11);
+receipt.expense_rate = new ExpenseRate(1, receipt_id, 'expr1', 0.10);
+const item1 = new Item(1, receipt_id, '001',  'item1', 1.00);
+const item2 = new Item(2, receipt_id, '001',  'item2', 2.00);
+receipt.items = [item1, item2];
 
 test('test getting all receipts from database', async () => {
     await receiptTable_api.getAllReceipts().then((res) => {
         expect(res).toBeInstanceOf(Array)
     })
 })
-
 
 test('test adding a receipt to the database', async () => {
     
@@ -56,6 +60,24 @@ test('test adding a receipt to the database', async () => {
         expect(newArrSize).toBe(1 + arrSize);
     })
     
+})
+
+test('test getting a receipt from the database', async () => {
+    await receiptTable_api.getReceiptByID(receipt_id).then((res) => {
+        expect(res.description).toBe(receipt.description);
+        expect(res.tax.percentage).toBe(receipt.tax.percentage);
+        expect(res.tip.amount).toBe(receipt.tip.amount);
+        expect(res.expense_rate.percentage).toBe(receipt.expense_rate.percentage);
+        expect(res.items[0].price).toBe(receipt.items[0].price);
+    })
+})
+
+test('test getting tip', async () => {
+    const tip = await tipTable_api.getTip(receipt);
+    const tax = await taxTable_api.getTax(receipt);
+    expect(tax[0].percentage).toBe(0.08);
+
+    expect(tip[0].amount).toBe(0.11);
 })
 
 test('test getting tax', async () => {

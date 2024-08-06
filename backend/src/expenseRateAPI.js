@@ -78,7 +78,7 @@ export default class expRateTableAPI extends expenseRateAPI{
             result.expenseRate_id,
             result.receipt_id,
             result.expenseRate_name,
-            result.expenseRate_percentage
+            Number(result.expenseRate_percentage)
         ));
         connection.end();
 
