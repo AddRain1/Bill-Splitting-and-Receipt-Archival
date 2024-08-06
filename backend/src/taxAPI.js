@@ -115,7 +115,7 @@ export default class taxTable_api extends tax_api{
         const params = [tax.receipt_id, 
             tax.name, 
             tax.percentage];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -141,7 +141,7 @@ export default class taxTable_api extends tax_api{
         // Execute the query to update the tax percentage in the database
         const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
         const params = [tax_percentage, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -167,7 +167,7 @@ export default class taxTable_api extends tax_api{
         // Execute the query to update the name of tax in the database
         const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
         const params = [tax_name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -195,9 +195,7 @@ export default class taxTable_api extends tax_api{
         // Execute the query to delete the tax with receipt_id from the database
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
-
-        
     }
 }

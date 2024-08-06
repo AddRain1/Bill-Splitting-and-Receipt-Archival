@@ -115,7 +115,7 @@ export default class expRateTableAPI extends expenseRateAPI{
         const params = [expense_rate.receipt_id, 
             expense_rate.name, 
             expense_rate.percentage];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -141,7 +141,7 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to update the name of expense rate into the database
         const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
         const params = [name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -167,7 +167,7 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to update expense rate percentage into the database
         const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
         const params = [percentage, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -194,7 +194,7 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to delete expense rate from the database
         const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }

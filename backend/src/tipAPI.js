@@ -102,7 +102,7 @@ export default class tipTable_api extends tip_api{
         // Execute the query to insert the new tip into the database
         const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
         const params = [ tip.receipt_id, tip.amount];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -128,7 +128,7 @@ export default class tipTable_api extends tip_api{
         // Execute the query to update tips amount in the database
         const query = 'UPDATE tips SET tip_amount = ? WHERE receipt_id = ?';
         const params = [tip_amount, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -156,7 +156,7 @@ export default class tipTable_api extends tip_api{
         // Execute the query to delete the tip with receipt_id from the database
         const query = 'DELETE FROM tips WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }

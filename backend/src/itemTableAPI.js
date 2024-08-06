@@ -148,7 +148,7 @@ export default class itemTableAPI extends itemAPI{
             item.user_id,
             item.name, 
             item.price,];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -174,7 +174,7 @@ export default class itemTableAPI extends itemAPI{
         // Execute the query to update the item's name in the database
         const query = 'UPDATE items SET item_name = ? WHERE item_id = ?';
         const params = [name, item.item_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -200,7 +200,7 @@ export default class itemTableAPI extends itemAPI{
         // Execute the query to update the price of item in the database
         const query = 'UPDATE items SET item_price = ? WHERE item_id = ?';
         const params = [price, item.item_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -226,7 +226,7 @@ export default class itemTableAPI extends itemAPI{
         // Execute the query to update the payee of item in the database
         const query = 'UPDATE items SET user_id = ? WHERE item_id = ?';
         const params = [user_id, item.item_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -264,10 +264,7 @@ export default class itemTableAPI extends itemAPI{
         // Execute the query to delete the item from in the database
         const query = 'DELETE FROM items WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
-
-        
     }
-
 };

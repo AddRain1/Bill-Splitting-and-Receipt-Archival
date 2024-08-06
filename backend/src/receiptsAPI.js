@@ -151,7 +151,7 @@ export default class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to get all the receipts from the database
-        const [results, fields] = await connection.execute('SELECT * FROM receipts');
+        const [results] = await connection.execute('SELECT * FROM receipts');
         
         // Map the results to an array of Receipts objects
         const allReceipts = results.map(result => new Receipts(
@@ -229,7 +229,7 @@ export default class receiptTable_api extends receipt_api{
     }
 
     static async updateGroupID(receipt, group_id){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -240,13 +240,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET group_id = ? WHERE receipt_id = ?';
         const params = [group_id, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
 
     static async updateImage(receipt, image){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -257,7 +257,7 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET images = ? WHERE receipt_id = ?';
         const params = [image, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -280,7 +280,7 @@ export default class receiptTable_api extends receipt_api{
     }
 
     static async updateReceiptDescription(receipt, receipt_description){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -291,13 +291,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET receipt_description = ? WHERE receipt_id = ?';
         const params = [receipt_description, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
 
     static async updateReceiptCategory(receipt, receipt_category){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -308,13 +308,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET receipt_category = ? WHERE receipt_id = ?';
         const params = [receipt_category, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
 
     static async updateReceiptVendor(receipt, receipt_vendor){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -325,7 +325,7 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET vendor_name = ? WHERE receipt_id = ?';
         const params = [receipt_vendor, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
@@ -354,7 +354,7 @@ export default class receiptTable_api extends receipt_api{
 
         const query = 'DELETE FROM receipts WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
         connection.end();
 
     }
