@@ -6,8 +6,6 @@ import { ExpenseRate } from '../../src/expenseRateClass.js';
 import { Item } from '../../src/itemClass.js';
 import taxTable_api from "../../src/taxAPI.js";
 import tipTable_api from '../../src/tipAPI.js';
-import expenseRateTable_api from '../../src/expenseRateAPI.js';
-import itemTableAPI from '../../src/itemTableAPI.js';
 
 function _isDate(date){
     return date instanceof Date && !isNaN(date);

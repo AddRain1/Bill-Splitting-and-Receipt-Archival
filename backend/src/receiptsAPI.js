@@ -1,13 +1,8 @@
-import express from "express";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
-import { Tax } from "./taxClass.js";
 import taxAPI from "./taxAPI.js";
-import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
-import { ExpenseRate } from "./expenseRateClass.js";
 import  expenseRateAPI from "./expenseRateAPI.js"; 
-import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
 
 const HOST = 'localhost';

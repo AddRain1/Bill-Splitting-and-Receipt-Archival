@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
 import { Tip } from "./tipClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 

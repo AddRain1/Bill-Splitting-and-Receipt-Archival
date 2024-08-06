@@ -1,8 +1,6 @@
 import { Item } from "./itemClass.js";
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
-import { ExpenseRate } from "./expenseRateClass.js";
 
 const HOST = 'localhost';
 const USER = 'root';
@@ -143,19 +141,6 @@ export default class itemTableAPI extends itemAPI{
             password: PASSWORD,
             database: DATABASE
         });
-
-        // // Get the items with same receipt_id from the database
-        // const itemQuery = 'SELECT * FROM items WHERE receipt_id = ?';
-        // const itemParams = [item.receipt_id];
-        
-        // // Check if the item already exists
-        // const getInfo = await connection.execute(itemQuery, itemParams);
-        // const exist = getInfo[0].length > 0;
-        
-        // if(exist){
-        //     // Throw an error if the receipt already exists
-        //     throw new Error("item already exist");
-        // }
 
         // Execute the query to insert the new item into the database
         const query = 'INSERT INTO items (receipt_id, user_id, item_name, item_price) VALUES (?, ?, ?, ?)';
