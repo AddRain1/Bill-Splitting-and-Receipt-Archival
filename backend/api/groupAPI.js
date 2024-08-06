@@ -27,6 +27,22 @@ class groupAPI{
     }
 
     // Abstract method to be overridden by subclasses
+    static async getGroup_members(group_id){
+        // Check if the subclass has defined this method
+        if(!this.getGroup_members){
+            throw new Error("getGroup_members method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async getUser_groups(user_id){
+        // Check if the subclass has defined this method
+        if(!this.getUser_groups){
+            throw new Error("getUser_groups method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
     static async addGroup_member(group_id, user_id){
         // Check if the subclass has defined this method
         if(!this.addGroup_member){
@@ -106,6 +122,24 @@ class groupTableAPI extends groupAPI{
 
         //Insert members into group
         for(let user_id in user_ids) await this.addGroup_member(group.group_id, user_id);
+    }
+
+    // Override the getGroup_members method
+    // Static async function to get group members from the database
+    static async getGroup_members(group_id){
+        const query = 'SELECT * FROM user_group WHERE group_id = ?';
+        const params = [group_id];
+        const [results] = await connection.execute(query, params);
+        return results;
+    }
+
+    // Override the getUser_groups method
+    // Static async function to get groups that a user is part of
+    static async getUser_groups(user_id){
+        const query = 'SELECT * FROM user_group WHERE user_id = ?';
+        const params = [user_id];
+        const [results] = await connection.execute(query, params);
+        return results;
     }
 
     // Override the addGroup_member method
