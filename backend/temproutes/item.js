@@ -18,8 +18,8 @@ router.post('/saveItem', async (req, res) => {
     try {
         const { item } = req.body;
 
-        if (!expense_rate) {
-            return res.status(400).json({ message: 'Text content is required'});
+        if (!item) {
+            return res.status(400).json({ message: 'Item content is required'});
         }
 
        // Get the items with same receipt_id from the database

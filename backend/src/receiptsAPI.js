@@ -136,7 +136,7 @@ export default class receiptTable_api extends receipt_api{
                 host: HOST,
                 user: USER,
                 password: PASSWORD,
-                database
+                database: DATABASE
             });
 
         const query = 'INSERT INTO receipts (title, imageData) VALUES (?, ?)';
