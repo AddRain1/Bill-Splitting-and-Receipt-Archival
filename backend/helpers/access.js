@@ -1,6 +1,7 @@
 const paymentRequestAPI = require('../api/paymentRequestAPI');
 const receiptAPI = require('../api/receiptsAPI');
 const groupAPI = require('../api/groupAPI');
+const expenseRateAPI = require('../api/expenseRateAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = user_id => {
@@ -32,8 +33,6 @@ const check_payment_request_accessible = (user_id, paymentRequest_id) => {
 }
 
 const get_accessible_receipts = user_id => {
-    const receipt = receiptAPI.getReceiptByID(receipt_id);
-
     //Retrieve all groups that the user is a member of
     const user_group_query = '';
     const groups = groupAPI.getGroups(user_group_query);
@@ -55,4 +54,13 @@ const check_receipt_accessible = (user_id, receipt_id) => {
     else return false;
 }
 
-module.exports = {get_payment_requests_payer_or_receiver, get_payment_requests_with_receipt_access, get_accessible_payment_requests, check_payment_request_accessible, get_accessible_receipts, check_receipt_accessible}
+const get_accessible_expense_rates = user_id => {
+    //Get receipts the user has access to 
+    const receipts = get_accessible_receipts(user_id);
+
+    //Get expense rates assigned to each receipt
+    const expense_rate_receipt_query = '';
+    return expenseRateAPI.getExpRt(expense_rate_receipt_query);
+} 
+
+module.exports = {get_payment_requests_payer_or_receiver, get_payment_requests_with_receipt_access, get_accessible_payment_requests, check_payment_request_accessible, get_accessible_receipts, check_receipt_accessible, get_accessible_expense_rates}
