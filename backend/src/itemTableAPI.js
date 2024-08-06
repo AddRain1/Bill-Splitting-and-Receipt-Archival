@@ -68,7 +68,7 @@ export class itemAPI{
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteItem(receipt_id){
+    static async deleteAllItemOfReceipt(receipt_id){
         // Check if the subclass has defined this method
         if(!this.deleteItem){
             throw new Error("deleteItem method must be defined");
@@ -94,9 +94,9 @@ export default class itemTableAPI extends itemAPI{
         const items = results.map(result => new Item(
             result.item_id,
             result.receipt_id,
+            result.user_id,
             result.item_name,
             result.item_price,
-            result.item_payee,
             result.created_at
         ));
         connection.end();
@@ -119,11 +119,13 @@ export default class itemTableAPI extends itemAPI{
         const [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [item_id]);
         
         // get item object from results
-        const item = results.map(result => new ExpenseRate(
-            result.expenseRate_id,
+        const item = results.map(result => new Item(
+            result.item_id,
             result.receipt_id,
-            result.expenseRate_name,
-            result.expenseRate_percentage
+            result.user_id,
+            result.name,
+            result.price,
+            result.created_at
         ));
         // Return the item object
         connection.end();
@@ -155,11 +157,11 @@ export default class itemTableAPI extends itemAPI{
         }
 
         // Execute the query to insert the new item into the database
-        const query = 'INSERT INTO items (receipt_id, item_name, item_price, item_payee) VALUES (?, ?, ?, ?)';
+        const query = 'INSERT INTO items (receipt_id, user_id, item_name, item_price) VALUES (?, ?, ?, ?)';
         const params = [item.receipt_id, 
+            item.user_id,
             item.name, 
-            item.price,
-            item.payee];
+            item.price,];
         const [results] = await connection.execute(query, params);
         connection.end();
 
@@ -174,7 +176,7 @@ export default class itemTableAPI extends itemAPI{
         const exist = receipts.find(r => r.receipt_id === item.receipt_id)
         if(!exist){
             // Throw an error if the receipt already exists
-            throw new Error("item doesn't exists");
+            throw new Error("item's receipt_id doesn't exists in receipt table");
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -200,7 +202,7 @@ export default class itemTableAPI extends itemAPI{
         const exist = receipts.find(r => r.receipt_id === item.receipt_id)
         if(!exist){
             // Throw an error if the receipt already exists
-            throw new Error("item doesn't exists");
+            throw new Error("item's receipt_id doesn't exists in receipt table");
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -218,15 +220,15 @@ export default class itemTableAPI extends itemAPI{
     }
 
     // Override the changeItem_payee method
-    // Static async function to change payee of item in the database
-    static async changeItem_payee(item, payee){
+    // Static async function to change user_id of the payee in the database
+    static async changeItem_payee(item, user_id){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt already exists
         const exist = receipts.find(r => r.receipt_id === item.receipt_id)
         if(!exist){
             // Throw an error if the receipt already exists
-            throw new Error("item doesn't exists");
+            throw new Error("item's receipt_id doesn't exists in receipt table");
         }
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
@@ -236,17 +238,28 @@ export default class itemTableAPI extends itemAPI{
             database: DATABASE
         });
         // Execute the query to update the payee of item in the database
-        const query = 'UPDATE items SET item_payee = ? WHERE item_id = ?';
-        const params = [payee, item.item_id];
+        const query = 'UPDATE items SET user_id = ? WHERE item_id = ?';
+        const params = [user_id, item.item_id];
         const [results] = await connection.execute(query, params);
         connection.end();
 
     }
 
+    static async deleteItem(item){
+         // Get all the receipts
+         const receipts = await receiptTable_api.getAllReceipts();
+         // Check if the receipt already exists
+         const exist = receipts.find(r => r.receipt_id === item.receipt_id)
+         if(!exist){
+             // Throw an error if the receipt already exists
+             throw new Error("item's receipt_id doesn't exists in receipt table");
+         }
+    }
+
     // Override the deleteItem method
     // Static async function to delete a item from the database
     // Call when deleting receipt
-    static async deleteItem(receipt_id){
+    static async deleteAllItemOfReceipt(receipt_id){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt is already deleted

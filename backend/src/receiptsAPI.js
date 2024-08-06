@@ -219,6 +219,10 @@ export default class receiptTable_api extends receipt_api{
             await expenseRateAPI.addExpRt(receipt.expense_rate);
         }
         // add all items to the item table
+        for(let i = 0; i < receipt.items.length; i++){
+            await itemAPI.addItem(receipt.items[i]);
+        
+        }
         connection.end();
     }
 
@@ -345,7 +349,7 @@ export default class receiptTable_api extends receipt_api{
         await taxAPI.deleteTax(receipt_id);
         await tipAPI.deleteTip(receipt_id);
         await expenseRateAPI.deleteExpRt(receipt_id);
-        await itemAPI.deleteItem(receipt_id);
+        await itemAPI.deleteAllItemOfReceipt(receipt_id);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,

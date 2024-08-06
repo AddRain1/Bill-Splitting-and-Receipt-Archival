@@ -93,10 +93,10 @@ CREATE TABLE items (
     FOREIGN KEY (receipt_id) REFERENCES receipts(receipt_id)
 );
 -- @block
-INSERT INTO items(receipt_id, user_id, item_name, item_price)
-VALUES('20240715000000', '001', 'Item 1', 10.0),
-    ('20240715000000', '002', 'Item 2', 20.0),
-    ('20240716021644', '001', 'Item 1', 10.0);
+INSERT INTO items(receipt_id, item_name, item_price, item_payee)
+VALUES('20240715000000', 'Item 1', 10.0, 'John'),
+    ('20240715000000', 'Item 2', 20.0, 'Jane'),
+    ('20240716021644', 'Item 1', 10.0, 'Jason');
 -- @block
 SELECT *
 FROM receipts;

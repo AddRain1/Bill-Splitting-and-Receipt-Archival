@@ -1,9 +1,11 @@
 import receiptTable_api from '../../src/receiptsAPI.js';
-import taxTable_api from "../../src/taxAPI.js";
 import { Receipts } from '../../src/receiptsClass.js';
 import { Tax } from '../../src/taxClass.js';
 import { Tip } from '../../src/tipClass.js';
+import { Item } from '../../src/itemClass.js';
+import taxTable_api from "../../src/taxAPI.js";
 import tipTable_api from '../../src/tipAPI.js';
+import itemTableAPI from '../../src/itemTableAPI.js';
 
 function _isDate(date){
     return date instanceof Date && !isNaN(date);
@@ -34,6 +36,7 @@ const receipt = new Receipts(receipt_id, 2, 'image.png', 'mcdonald', 'mcdonald r
 receipt.vendor = 'vendor';
 receipt.tax = new Tax(1, receipt_id, 'taxname', 0.08);
 receipt.tip = new Tip(1, receipt_id, 0.1);
+const item1 = new Item(1, receipt_id, 'item1', 1.00, 1);
 
 test('test getting all receipts from database', async () => {
     await receiptTable_api.getAllReceipts().then((res) => {

@@ -8,6 +8,8 @@ import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
 import { ExpenseRate } from "./expenseRateClass.js";
 import expRateTableAPI from "./expenseRateAPI.js";
+import { Item } from "./itemClass.js";
+import itemTableAPI from "./itemTableAPI.js";
 
 // helper function to check if given var is a date obj
 function _isDate(date){
@@ -87,6 +89,12 @@ app.get('/gettax', async (req, res) => {
     const tax = await taxAPI.getTax(receipt);
     console.log(tax);
     res.send(tax);
+});
+
+// test additem
+app.get('/additem', async (req, res) => {
+    const item = new Item(0, '20240803000655', '005', 'item 1', 100.00);
+    await itemTableAPI.addItem(item);
 });
 
 app.listen(3000);
