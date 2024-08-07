@@ -29,7 +29,7 @@
     "start": "nodemon ./src/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "unit:test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "lint": "node_modules/eslint/bin/eslint.js node."
+    "lint": "node_modules/eslint/bin/eslint.js ."
   },
   "type": "module"
 }
