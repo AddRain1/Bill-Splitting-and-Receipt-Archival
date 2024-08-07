@@ -2,6 +2,7 @@ const paymentRequestAPI = require('../api/paymentRequestAPI');
 const receiptAPI = require('../api/receiptsAPI');
 const groupAPI = require('../api/groupAPI');
 const expenseRateAPI = require('../api/expenseRateAPI');
+const taxAPI = require('../api/taxAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = (user_id) => {
@@ -73,6 +74,24 @@ const check_group_accessible = (user_id, group_id) => {
     else return false;
 }
 
+const get_accessible_taxes = user_id => {
+    const receipts = get_accessible_receipts(user_id);
+    const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
+
+    //Get taxes assigned to each receipt
+    const tax_receipt_query = `SELECT * FROM taxes WHERE receipt_id IN (${receiptIds})`;
+    return taxAPI.getTax(tax_receipt_query);
+}
+
+const check_tax_accesible = (user_id, tax_id) => {
+    const receipts = get_accessible_receipts(user_id);
+    const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
+
+    const tax = taxAPI.getTaxById(tax_id);
+    if(tax.receipt_id in receiptIds) return true;
+    else return false;
+}
+
 module.exports = {
     get_payment_requests_payer_or_receiver, 
     get_payment_requests_with_receipt_access, 
@@ -82,5 +101,7 @@ module.exports = {
     check_receipt_accessible, 
     get_accessible_expense_rates, 
     get_accessible_groups, 
-    check_group_accessible
+    check_group_accessible,
+    get_accessible_taxes,
+    check_tax_accesible
 }
