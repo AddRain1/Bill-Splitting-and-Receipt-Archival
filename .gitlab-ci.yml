@@ -1,0 +1,52 @@
+image: node:22.4.1-alpine
+
+stages:
+  - lint_stage
+  - build_stage
+  - test_stage
+
+cache:
+  - key:
+    paths:
+        - ./backend/.npm
+  - key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - ./frontend/billy/.npm
+
+lint:
+  stage: lint_stage
+  script:
+    - cd backend
+    - npm i eslint
+    - npm run lint
+    - cd ../frontend/billy
+    - npm run check
+
+build: 
+  stage: build_stage
+  script:
+    - cd backend
+    - npm ci --cache .npm
+    - echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env        
+    - echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env 
+    - cd ../frontend/billy
+    - npm ci --cache .npm
+    - apk add --no-cache bash
+    - EXPO_TOKEN=$EXPO_TOKEN npx expo prebuild
+  artifacts:
+    paths: 
+      - ./frontend/billy/node_modules
+      - ./frontend/billy/package-lock.json
+      - ./backend/node_modules
+      - ./backend/package-lock.json
+      - ./backend/.env
+      - ./frontend/billy/ios
+      - ./frontend/billy/android
+
+test: 
+  stage: test_stage
+  script:
+    - cd backend
+    - npm run test
+    - cd ../frontend/billy
+    - npm run test
