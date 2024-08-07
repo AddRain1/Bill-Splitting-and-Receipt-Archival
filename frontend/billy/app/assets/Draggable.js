@@ -1,16 +1,43 @@
 
-import React, { useRef, useState } from 'react'; 
+import React, { useRef, useState, useEffect } from 'react'; 
 import { PanResponder, Animated, Text } from 'react-native'; 
 import styles from '../styles';
 import COLORS from "../assets/colors";
 import { Feather } from 'react-native-vector-icons';
   
-const Draggable = ({ item_name, item_price, setDragging, initialIndex, boxStarts }) => { 
+const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, boxStarts, boxCounts, onIndexChange }) => { 
 
     const position = useRef(new Animated.ValueXY()).current; 
-    const [index, setIndex] = useState(initialIndex);
+    const [dragging, setDragging] = useState(false);
+    // const [index, setIndex] = useState(initialIndex);
+
+    useEffect(() => {
+        if (!isNaN(index)) {
+            //itemList[index].box
+            console.log(item_name + " is indexed " + itemList[index].index + " and at " + (boxStarts[0] + 40 * (itemList[index].index - 1)));
+            Animated.spring(position, {
+                toValue: { x: 0, y: boxStarts[0] + 40 * (itemList[index].index - 1) },
+                useNativeDriver: false
+            }).start();
+        }
+    }, [itemList, boxStarts]);
 
     function calcIndex() {
+        // let box = 0;
+        // for(i = boxStarts.length; i >= 0; i--) {
+        //     if (position.y_value > boxStarts[i]) {
+        //         box = i;
+        //         break;
+        //     }
+        // }
+        // temp = Math.floor((position.y._value - boxStarts[box]) / 40) + 1;
+        // if (temp < 1) {temp = 1;}
+        // if (temp > boxCounts[box]) {temp = boxCounts[box];}
+        // for(i = 0; i < box; i++) {
+        //     temp += boxCounts[i];
+        // }
+        // return temp;
+
         temp = Math.floor((position.y._value - boxStarts[0]) / 40) + 1;
         if (temp < 1) {temp = 1;}
         if (temp > 4) {temp = 4;}
@@ -23,6 +50,7 @@ const Draggable = ({ item_name, item_price, setDragging, initialIndex, boxStarts
             onMoveShouldSetPanResponder: () => true, 
             onPanResponderGrant: () => { 
                 setDragging(true); 
+                onDraggingChange(true);
                 position.setOffset({
                     x: position.x._value,
                     y: position.y._value
@@ -40,14 +68,31 @@ const Draggable = ({ item_name, item_price, setDragging, initialIndex, boxStarts
             ), 
             onPanResponderRelease: () => { 
                 setDragging(false); 
+                onDraggingChange(false);
                 position.flattenOffset();
                 const newIndex = calcIndex();
-                setIndex(newIndex);
-                Animated.spring(position, {
-                    toValue: { x: 0, y: boxStarts[0] + 40 * (newIndex-1) },
-                    useNativeDriver: false
-                }).start();
+                console.log("This is item indexed " + index + " at position " + itemList[index].index);
+                onIndexChange(itemList[index].index, newIndex);
+                // setIndex(newIndex);
+                // Animated.spring(position, {
+                //     toValue: { x: 0, y: boxStarts[0] + 40 * (newIndex-1) },
+                //     useNativeDriver: false
+                // }).start();
             }, 
+            // onPanResponderRelease: () => {
+            //     setDragging(false);
+            //     position.flattenOffset();
+            //     const newIndex = calcIndex();
+            //     if (newIndex !== index) {
+            //         onIndexChange(index, newIndex);
+            //         setIndex(newIndex);
+            //     } else {
+            //         Animated.spring(position, {
+            //             toValue: { x: 0, y: boxStarts[0] + 40 * (index - 1) },
+            //             useNativeDriver: false
+            //         }).start();
+            //     }
+            // },
         }) 
     ).current; 
   
@@ -58,12 +103,16 @@ const Draggable = ({ item_name, item_price, setDragging, initialIndex, boxStarts
                     transform: position.getTranslateTransform(),  
                     backgroundColor: COLORS.softWhite,
                     position: 'absolute',
+                    // top: boxStarts[0] + 40 & (itemList[index].index - 1),
+                    zIndex: dragging ? 1 : 0,
+                    opacity: dragging ? 0.8 : 1, 
                 }, 
             ]} 
             {...panResponder.panHandlers} 
         > 
             <Text style={[styles.editInput, {backgroundColor: COLORS.white, flex: 1}]} numberOfLines={1}> {item_name} </Text> 
-            <Text style={[styles.editInput, {backgroundColor: COLORS.white, marginLeft: 10, marginRight: 10,}]}> ${item_price} </Text> 
+            {/* <Text style={[styles.editInput, {backgroundColor: COLORS.white, marginLeft: 10, marginRight: 10,}]}> ${item_price} </Text>  */}
+            <Text style={[styles.editInput, {backgroundColor: COLORS.white, marginLeft: 10, marginRight: 10,}]}> {itemList[index].index} </Text>
             <Feather name="move"  size={20} color={COLORS.gray} />
         </Animated.View> 
     ); 

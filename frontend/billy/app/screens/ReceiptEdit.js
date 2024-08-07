@@ -13,7 +13,7 @@ import {
     PlayfairDisplay_800ExtraBold_Italic,
     PlayfairDisplay_900Black_Italic,
 } from '@expo-google-fonts/playfair-display';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, Text, TouchableOpacity, ScrollView } from 'react-native';
@@ -23,30 +23,62 @@ import NavigationBar from '../assets/NavigationBar';
 import { Octicons, Feather } from 'react-native-vector-icons';
 import Draggable from '../assets/Draggable';
 
-itemList = [
+initialItemList = [
     {
         item_id: 1,
         item_name: "Driscoll’s Raspberries (12oz)",
         item_price: 5.94,
         index: 1,
+        box: 0,
     },
     {
         item_id: 2,
         item_name: "3x Fuji Apples",
         item_price: 6.97,
         index: 2,
+        box: 0,
     },
     {
         item_id: 3,
         item_name: "Chocolate Chip Cookies",
         item_price: 4.55,
         index: 3,
+        box: 0,
     },
     {
         item_id: 4,
         item_name: "Ralph’s Purified Drinking Water",
         item_price: 5.24,
         index: 4,
+        box: 0,
+    },
+    {
+        item_id: 5,
+        item_name: "Driscoll’s Raspberries (12oz)",
+        item_price: 5.94,
+        index: 5,
+        box: 1,
+    },
+    {
+        item_id: 6,
+        item_name: "3x Fuji Apples",
+        item_price: 6.97,
+        index: 6,
+        box: 1,
+    },
+    {
+        item_id: 7,
+        item_name: "Chocolate Chip Cookies",
+        item_price: 4.55,
+        index: 7,
+        box: 1,
+    },
+    {
+        item_id: 8,
+        item_name: "Ralph’s Purified Drinking Water",
+        item_price: 5.24,
+        index: 8,
+        box: 1,
     },
 ];
 
@@ -60,6 +92,98 @@ function ReceiptEdit(props) {
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const setDragging = (isDragging) => { setScrollEnabled(!isDragging);};
+
+    // const [boxStartsSet, setBoxStartsSet] = useState(false);
+
+    // useEffect(() => {
+    //     if (boxStarts[0] !== 0 && boxStarts[1] !== 0) {
+    //         setBoxStartsSet(true);
+    //     }
+    // }, [boxStarts]);
+
+    const [itemList, setItemList] = useState(initialItemList);
+    const boxCounts = [4, 4];
+
+    const calcBox = (index) => {
+        box = 0;
+        indexCount = 0;
+        for(i = 0; i < boxCounts.length; i++) {
+            indexCount += boxCounts[i];
+            if (index <= indexCount) {
+                box = i;
+                break;
+            }
+        }
+        return box;
+    }
+
+
+    const handleIndexChange = (index, newIndex) => {
+        console.log("Attempting to switch item at index " + index + " to index " + newIndex);
+        // const oldBox = calcBox(index);
+        // const newBox = calcBox(newIndex);
+
+        // const updatedItemList = [...itemList];
+        // const itemToMove = updatedItemList.find(item => item.index === index);
+
+        // if (!itemToMove) return;
+
+        // if (oldBox === newBox) {
+        //     updatedItemList.forEach(item => {
+        //         if (item.index !== index) {
+        //             if (index < newIndex && item.index > index && item.index <= newIndex) {
+        //                 item.index -= 1;
+        //             } else if (index > newIndex && item.index < index && item.index >= newIndex) {
+        //                 item.index += 1;
+        //             }
+        //         }
+        //     });
+        // } else {
+        //     boxCounts[oldBox] -= 1;
+        //     boxCounts[newBox] += 1;
+
+        //     updatedItemList.forEach(item => {
+        //         if (item.index !== index) {
+        //             if (item.box === oldBox && item.index > itemToMove.index) {
+        //                 item.index -= 1;
+        //             } else if (item.box === newBox && item.index >= newIndex) {
+        //                 item.index += 1;
+        //             }
+        //         }
+        //     });
+
+        //     itemToMove.box = newBox;
+        // }
+
+        // itemToMove.index = newIndex;
+        // setItemList(updatedItemList);
+
+
+        const updatedItemList = [...itemList];
+
+        const itemToMove = updatedItemList.find(item => item.index === index);
+
+        if (!itemToMove) return;
+
+        updatedItemList.forEach(item => {
+            // console.log("Currently examining " + item.item_name + " at " + item.index);
+            if (item.index !== index) {
+                if (index < newIndex && item.index > index && item.index <= newIndex) {
+                    item.index -= 1;
+                } else if (index > newIndex && item.index < index && item.index >= newIndex) {
+                    item.index += 1;
+                }
+                // console.log(item.item_name + " had position updated to " + item.index);
+            }
+        });
+
+        itemToMove.index = newIndex;
+        setItemList(updatedItemList);
+
+        // itemList.forEach(item => {
+        //     console.log(item.item_name + ": " + item.index);
+        // });
+    };
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -127,22 +251,38 @@ function ReceiptEdit(props) {
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * 4 + 10}]}
                         onLayout={e => {
-                            boxStarts[1] = e.nativeEvent.layout.y;
+                            boxStarts[1] = e.nativeEvent.layout.y + 10;
                         }}
                     > 
                     </SafeAreaView>
 
-                    {itemList.map((prop) => {
+                    {itemList.map((item, i) => {
                     return (
                         <Draggable
-                            item_name={prop.item_name}
-                            item_price={prop.item_price}
-                            setDragging={setDragging}
-                            index={prop.index}
+                            key={item.item_id}
+                            item_name={item.item_name}
+                            item_price={item.item_price}
+                            onDraggingChange={setDragging}
+                            index={i}
+                            itemList={itemList}
                             boxStarts={boxStarts}
+                            boxCounts={boxCounts}
+                            onIndexChange={handleIndexChange}
                         />
                     );
                     })}
+                    {/* {boxStartsSet && itemList.map((item, i) => (
+                        <Draggable
+                            key={item.item_id}
+                            item_name={item.item_name}
+                            item_price={item.item_price}
+                            onDraggingChange={setDragging}
+                            index={i}
+                            itemList={itemList}
+                            boxStarts={boxStarts}
+                            onIndexChange={handleIndexChange}
+                        />
+                    ))} */}
                 </SafeAreaView>
 
             </ScrollView>
