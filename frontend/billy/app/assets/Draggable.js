@@ -11,11 +11,19 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
     const [dragging, setDragging] = useState(false);
     // const [index, setIndex] = useState(initialIndex);
 
+    function calcBoxPosition() {
+        let count = 0;
+        for(i = 0; i < itemList[index].box; i++) {
+            count += boxCounts[i];
+        }
+        return itemList[index].index - count;
+    }
+
     useEffect(() => {
         if (!isNaN(index)) {
             // console.log(item_name + " is indexed " + itemList[index].index + " and at " + (boxStarts[itemList[index].box] + 40 * (itemList[index].index - 1)));
             Animated.spring(position, {
-                toValue: { x: 0, y: boxStarts[itemList[index].box] + 40 * (itemList[index].index - 1) },
+                toValue: { x: 0, y: boxStarts[itemList[index].box] + 40 * (calcBoxPosition() - 1) },
                 useNativeDriver: false
             }).start();
         }
