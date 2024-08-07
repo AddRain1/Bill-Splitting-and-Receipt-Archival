@@ -3,6 +3,7 @@ const receiptAPI = require('../api/receiptsAPI');
 const groupAPI = require('../api/groupAPI');
 const expenseRateAPI = require('../api/expenseRateAPI');
 const taxAPI = require('../api/taxAPI');
+const tipAPI = require('../api/tipAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = (user_id) => {
@@ -92,6 +93,24 @@ const check_tax_accesible = (user_id, tax_id) => {
     else return false;
 }
 
+const get_accessible_tips = user_id => {
+    const receipts = get_accessible_receipts(user_id);
+    const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
+
+    //Get tips assigned to each receipt
+    const tip_receipt_query = `SELECT * FROM tips WHERE receipt_id IN (${receiptIds})`;
+    return tipAPI.getTip(tip_receipt_query);
+}
+
+const check_tip_accesible = (user_id, tip_id) => {
+    const receipts = get_accessible_receipts(user_id);
+    const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
+
+    const tip = tipAPI.getTipByID(tip_id);
+    if(tip.receipt_id in receiptIds) return true;
+    else return false;
+}
+
 module.exports = {
     get_payment_requests_payer_or_receiver, 
     get_payment_requests_with_receipt_access, 
@@ -103,5 +122,7 @@ module.exports = {
     get_accessible_groups, 
     check_group_accessible,
     get_accessible_taxes,
-    check_tax_accesible
+    check_tax_accesible,
+    get_accessible_tips,
+    check_tip_accesible
 }
