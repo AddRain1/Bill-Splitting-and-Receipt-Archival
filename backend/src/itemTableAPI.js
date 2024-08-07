@@ -1,11 +1,13 @@
 import { Item } from "./itemClass.js";
 import mysql from "mysql2/promise";
 import receiptTable_api from "./receiptsAPI.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'daniel2002';
-const DATABASE = 'receipts';
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
 export class itemAPI{

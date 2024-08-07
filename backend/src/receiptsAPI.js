@@ -5,10 +5,13 @@ import tipAPI from "./tipAPI.js";
 import  expenseRateAPI from "./expenseRateAPI.js"; 
 import itemAPI from "./itemTableAPI.js"
 
-const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'daniel2002';
-const DATABASE = 'receipts';
+import dotenv from "dotenv";
+dotenv.config();
+
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 async function _checkExistence(receipt){
     // Connect to the MySQL database
