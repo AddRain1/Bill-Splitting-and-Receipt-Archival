@@ -68,14 +68,6 @@ export class receipt_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteReceipt(receipt){
-        // check if the subclass has defined this method
-        if(!this.deleteReceipt){
-            throw new Error("deleteReceipt method must be defined")
-        }
-    }
-
-    // Abstract method to be overridden by subclasses
     static async updateGroupID(receipt, group_id){
         // Check if the subclass has defined this method
         if(!this.updateGroupID){
