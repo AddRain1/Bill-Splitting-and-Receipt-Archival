@@ -12,11 +12,11 @@ CREATE TABLE receipts (
 -- @block
 INSERT INTO receipts (
         receipt_id,
-        group_id,INSERT INTO items(receipt_id, item_name, item_price, item_payee)
-VALUES('20240715000000', 'Item 1', 10.0, 'John'),
-    ('20240715000000', 'Item 2', 20.0, 'Jane'),
-    ('20240716021644', 'Item 1', 10.0, 'Jason');
-
+        group_id,
+        INSERT INTO items(receipt_id, item_name, item_price, item_payee)
+        VALUES('20240715000000', 'Item 1', 10.0, 'John'),
+            ('20240715000000', 'Item 2', 20.0, 'Jane'),
+            ('20240716021644', 'Item 1', 10.0, 'Jason');
 INSERT INTO expense_rate(
         receipt_id,
         expenseRate_name,
@@ -24,12 +24,12 @@ INSERT INTO expense_rate(
     )
 VALUES('20240715000000', 'ER 1', 6.0),
     ('20240716021723', 'ER 2', 5.0);
-        images,
-        receipt_name,
-        receipt_description,
-        receipt_category,
-        vendor_name
-    )
+images,
+receipt_name,
+receipt_description,
+receipt_category,
+vendor_name
+)
 VALUES (
         '20240715000000',
         1,
@@ -97,22 +97,22 @@ VALUES('20240715000000', 'ER 1', 6.0),
 CREATE TABLE items (
     item_id INT AUTO_INCREMENT PRIMARY KEY,
     receipt_id CHAR(15) NOT NULL,
+    user_id CHAR(15) NOT NULL,
     item_name TEXT,
     item_price DECIMAL(65, 2) DEFAULT 0,
-    item_payee TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (receipt_id) REFERENCES receipts(receipt_id)
 );
 -- @block
-INSERT INTO items(receipt_id, item_name, item_price, item_payee)
-VALUES('20240715000000', 'Item 1', 10.0, 'John'),
-    ('20240715000000', 'Item 2', 20.0, 'Jane'),
-    ('20240716021644', 'Item 1', 10.0, 'Jason');
+INSERT INTO items(receipt_id, user_id, item_name, item_price)
+VALUES('20240715000000', '001', 'Item 1', 10.0),
+    ('20240715000000', '001', 'Item 2', 20.0),
+    ('20240716021644', '002', 'Item 1', 10.0);
 -- @block
 SELECT *
 FROM receipts;
 -- @block
-DROP TABLE receipts;
+DROP TABLE items;
 -- @block
 DELETE FROM receipts
 WHERE receipt_id = 3;
