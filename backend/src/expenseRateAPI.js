@@ -2,14 +2,11 @@ import { ExpenseRate } from "./expenseRateClass.js";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const HOST = process.env.DB_HOST;
-const USER = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_NAME;
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
 
 // Export the abstract class receipt_api
 export class expenseRateAPI{
@@ -81,8 +78,10 @@ export default class expRateTableAPI extends expenseRateAPI{
             result.expenseRate_id,
             result.receipt_id,
             result.expenseRate_name,
-            result.expenseRate_percentage
+            Number(result.expenseRate_percentage)
         ));
+        connection.end();
+
         // Return the expense rate object
         return expRt;
     }
@@ -116,7 +115,9 @@ export default class expRateTableAPI extends expenseRateAPI{
         const params = [expense_rate.receipt_id, 
             expense_rate.name, 
             expense_rate.percentage];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeExpRt_name method
@@ -140,7 +141,9 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to update the name of expense rate into the database
         const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
         const params = [name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeExpRt_percentage method
@@ -164,7 +167,9 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to update expense rate percentage into the database
         const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
         const params = [percentage, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteExpRt method
@@ -189,8 +194,9 @@ export default class expRateTableAPI extends expenseRateAPI{
         // Execute the query to delete expense rate from the database
         const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
-        
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
 };

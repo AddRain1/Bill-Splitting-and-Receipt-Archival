@@ -1,22 +1,14 @@
-import express from "express";
 import mysql from "mysql2/promise";
 import { Receipts } from "./receiptsClass.js";
-import { Tax } from "./taxClass.js";
 import taxAPI from "./taxAPI.js";
-import { Tip } from "./tipClass.js";
 import tipAPI from "./tipAPI.js";
-import { ExpenseRate } from "./expenseRateClass.js";
 import  expenseRateAPI from "./expenseRateAPI.js"; 
-import { Item } from "./itemClass.js";
 import itemAPI from "./itemTableAPI.js"
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const HOST = process.env.DB_HOST;
-const USER = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_NAME;
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
 
 async function _checkExistence(receipt){
     // Connect to the MySQL database
@@ -34,6 +26,8 @@ async function _checkExistence(receipt){
     const getInfo = await connection.execute(recQuery, recParams);
     const exist = getInfo[0].length > 0;
     
+    connection.end();
+
     if(!exist){
         // Throw an error if the receipt already exists
         throw new Error("receipt with receipt_id doesn't exist");
@@ -62,6 +56,22 @@ export class receipt_api{
         // Check if the subclass has defined this method
         if(!this.addReceipt){
             throw new Error("addReceipt method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async addItemToReceipt(receipt, item){
+        // Check if the subclass has defined this method
+        if(!this.addItemToReceipt){
+            throw new Error("addItemToReceipt method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async deleteReceipt(receipt){
+        // check if the subclass has defined this method
+        if(!this.deleteReceipt){
+            throw new Error("deleteReceipt method must be defined")
         }
     }
 
@@ -141,7 +151,7 @@ export default class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to get all the receipts from the database
-        const [results, fields] = await connection.execute('SELECT * FROM receipts');
+        const [results] = await connection.execute('SELECT * FROM receipts');
         
         // Map the results to an array of Receipts objects
         const allReceipts = results.map(result => new Receipts(
@@ -161,6 +171,9 @@ export default class receiptTable_api extends receipt_api{
             allReceipts[i].expense_rate = await expenseRateAPI.getExpRt(allReceipts[i]);
             allReceipts[i].items = await itemAPI.getAllItems(allReceipts[i]);
         }
+
+        connection.end();
+
         return allReceipts;
     }
 
@@ -200,11 +213,23 @@ export default class receiptTable_api extends receipt_api{
         if(receipt.expense_rate){
             await expenseRateAPI.addExpRt(receipt.expense_rate);
         }
+        // add all items to the item table
+        for(let i = 0; i < receipt.items.length; i++){
+            await itemAPI.addItem(receipt.items[i]);
         
+        }
+        connection.end();
+    }
+
+    // given a receipt object, add the item to the receipt
+    static async addItemToReceipt(receipt, item){
+        await itemAPI.addItem(item);
+        receipt.item = item;
+        return receipt
     }
 
     static async updateGroupID(receipt, group_id){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -215,11 +240,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET group_id = ? WHERE receipt_id = ?';
         const params = [group_id, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateImage(receipt, image){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -230,7 +257,9 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET images = ? WHERE receipt_id = ?';
         const params = [image, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptName(receipt, receipt_name){
@@ -246,10 +275,12 @@ export default class receiptTable_api extends receipt_api{
         const params = [receipt_name, receipt.receipt_id];
         
         const [results] = await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptDescription(receipt, receipt_description){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -260,11 +291,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET receipt_description = ? WHERE receipt_id = ?';
         const params = [receipt_description, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptCategory(receipt, receipt_category){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -275,11 +308,13 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET receipt_category = ? WHERE receipt_id = ?';
         const params = [receipt_category, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     static async updateReceiptVendor(receipt, receipt_vendor){
-        const exist = _checkExistence(receipt);
+        _checkExistence(receipt);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -290,7 +325,9 @@ export default class receiptTable_api extends receipt_api{
         const query = 'UPDATE receipts SET vendor_name = ? WHERE receipt_id = ?';
         const params = [receipt_vendor, receipt.receipt_id];
         
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteReceipt method
@@ -307,7 +344,7 @@ export default class receiptTable_api extends receipt_api{
         await taxAPI.deleteTax(receipt_id);
         await tipAPI.deleteTip(receipt_id);
         await expenseRateAPI.deleteExpRt(receipt_id);
-        await itemAPI.deleteItem(receipt_id);
+        await itemAPI.deleteAllItemOfReceipt(receipt_id);
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -317,7 +354,9 @@ export default class receiptTable_api extends receipt_api{
 
         const query = 'DELETE FROM receipts WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the getReceiptByID method
@@ -348,6 +387,17 @@ export default class receiptTable_api extends receipt_api{
             results[0].receipt_category,
             results[0].created_at,
             results[0].vendor_name);
+        const receiptTax = await taxAPI.getTax(receipt);
+        const receiptTip = await tipAPI.getTip(receipt);
+        const receiptExpr = await expenseRateAPI.getExpRt(receipt);
+        const receiptItems = await itemAPI.getAllItems(receipt);
+        receipt.tax = receiptTax[0];
+        receipt.tip = receiptTip[0];
+        receipt.expense_rate = receiptExpr[0];
+        receipt.items = receiptItems;
+
+        connection.end();
+
         return receipt;
     }
 }

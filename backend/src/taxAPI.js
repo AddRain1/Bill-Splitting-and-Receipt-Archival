@@ -1,15 +1,11 @@
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 import { Tax } from "./taxClass.js";
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const HOST = process.env.DB_HOST;
-const USER = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_NAME;
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
 
 // Export the abstract class receipt_api
 export class tax_api{
@@ -82,8 +78,10 @@ export default class taxTable_api extends tax_api{
             result.tax_id,
             result.receipt_id,
             result.tax_name,
-            result.tax_percentage
+            Number(result.tax_percentage)
         ));
+        connection.end();
+
         // Return the tax object
         return tax;
     }
@@ -91,6 +89,7 @@ export default class taxTable_api extends tax_api{
     // Override the addTax method
     // Static async function to add tax to the database
     static async addTax(tax){
+
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -116,7 +115,9 @@ export default class taxTable_api extends tax_api{
         const params = [tax.receipt_id, 
             tax.name, 
             tax.percentage];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTaxPercentage method
@@ -140,7 +141,9 @@ export default class taxTable_api extends tax_api{
         // Execute the query to update the tax percentage in the database
         const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
         const params = [tax_percentage, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTaxName method
@@ -164,7 +167,9 @@ export default class taxTable_api extends tax_api{
         // Execute the query to update the name of tax in the database
         const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
         const params = [tax_name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteTax method
@@ -190,7 +195,7 @@ export default class taxTable_api extends tax_api{
         // Execute the query to delete the tax with receipt_id from the database
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
-        
+        await connection.execute(query, params);
+        connection.end();
     }
 }

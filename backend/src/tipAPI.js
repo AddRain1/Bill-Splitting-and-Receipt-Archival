@@ -1,15 +1,11 @@
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
 import { Tip } from "./tipClass.js";
 import receiptTable_api from "./receiptsAPI.js";
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const HOST = process.env.DB_HOST;
-const USER = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_NAME;
+const HOST = 'localhost';
+const USER = 'root';
+const PASSWORD = 'daniel2002';
+const DATABASE = 'receipts';
 
 // Export the abstract class receipt_api
 export class tip_api{
@@ -72,8 +68,10 @@ export default class tipTable_api extends tip_api{
         const tip = results.map(result => new Tip(
             result.tip_id,
             result.receipt_id,
-            result.tip_amount
+            Number(result.tip_amount)
         ));
+        connection.end();
+
         // Return the tip object
         return tip;
     }
@@ -104,7 +102,9 @@ export default class tipTable_api extends tip_api{
         // Execute the query to insert the new tip into the database
         const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
         const params = [ tip.receipt_id, tip.amount];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the changeTipAmount method
@@ -128,7 +128,9 @@ export default class tipTable_api extends tip_api{
         // Execute the query to update tips amount in the database
         const query = 'UPDATE tips SET tip_amount = ? WHERE receipt_id = ?';
         const params = [tip_amount, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        await connection.execute(query, params);
+        connection.end();
+
     }
 
     // Override the deleteTip method
@@ -154,7 +156,8 @@ export default class tipTable_api extends tip_api{
         // Execute the query to delete the tip with receipt_id from the database
         const query = 'DELETE FROM tips WHERE receipt_id = ?'
         const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
-        
+        await connection.execute(query, params);
+        connection.end();
+
     }
 }
