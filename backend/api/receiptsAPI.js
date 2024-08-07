@@ -2,7 +2,7 @@ const mysql = require("mysql2/promise");
 const Receipts = require("../class/receiptsClass.js");
 const taxAPI = require("./taxAPI.js");
 const tipAPI = require("./tipAPI.js");
-const  expenseRateAPI = require("./expenseRateAPI.js"); 
+const expenseRateAPI = require("./expenseRateAPI.js"); 
 const itemAPI = require("./itemAPI.js");
 const dotenv = require('dotenv');
 

@@ -6,13 +6,11 @@ const paymentRequestAPI = require('../api/paymentRequestAPI');
 const PaymentRequest = require('../class/paymentRequestClass');
 const accessHelper = require('../helpers/access');
 
-const Receipt = require('../api/receiptsAPI');
-
 //get a list of payment requests 
 //Authorization: Must be logged in. Can only see payment request if they are the payer, they are the receiver, or have access to the linked receipt.
 router.get('/', async (req, res) => {
     const payment_request_list = await accessHelper.get_accessible_payment_requests();
-    res.json(JSON.stringify(payment_request_list));
+    res.sendStatus(200).json(JSON.stringify(payment_request_list));
 });
 
 //create a new payment request
@@ -84,11 +82,11 @@ router.get('/:id/update', [
       .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
       .matches(/^\d+.{0,1}\d{0,2}$/)
       .escape(),
-    body("description")
+    body("description", "description must be 250 characters max")
         .trim()
         .isLength({max: 250})
         .escape(),
-    body("is_declined")
+    body("is_declined", "is_declined must have a boolean value")
         .trim()
         .isBoolean()
         .escape(),
@@ -106,7 +104,7 @@ router.get('/:id/update', [
             else if(req.user == payment_request.receiver_id) {
                 if(req.body.pay_by) paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by);
                 if(req.body.amount) paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount);
-                if(req.body.description) paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by);
+                if(req.body.description) paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description);
                 res.sendStatus(200).json(JSON.stringify(payment_request));
             }
             else res.sendStatus(401).json({msg: 'User must be the payer or receiver to modify request'});

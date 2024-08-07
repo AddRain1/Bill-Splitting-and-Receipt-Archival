@@ -73,7 +73,7 @@ class expRateTableAPI extends expenseRateAPI{
             password: PASSWORD,
             database: DATABASE
         });
-        // Execute the query to get all the receipts from the database
+        // Execute the query to get all the expense rates of a receipt from the database
         const [results] = await connection.execute('SELECT * FROM expense_rate WHERE receipt_id = ?', [receipt.receipt_id]);
         
         // get expense rate object from results
