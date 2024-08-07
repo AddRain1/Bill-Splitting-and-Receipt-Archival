@@ -13,34 +13,28 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
 
     useEffect(() => {
         if (!isNaN(index)) {
-            //itemList[index].box
-            console.log(item_name + " is indexed " + itemList[index].index + " and at " + (boxStarts[0] + 40 * (itemList[index].index - 1)));
+            // console.log(item_name + " is indexed " + itemList[index].index + " and at " + (boxStarts[itemList[index].box] + 40 * (itemList[index].index - 1)));
             Animated.spring(position, {
-                toValue: { x: 0, y: boxStarts[0] + 40 * (itemList[index].index - 1) },
+                toValue: { x: 0, y: boxStarts[itemList[index].box] + 40 * (itemList[index].index - 1) },
                 useNativeDriver: false
             }).start();
         }
     }, [itemList, boxStarts]);
 
     function calcIndex() {
-        // let box = 0;
-        // for(i = boxStarts.length; i >= 0; i--) {
-        //     if (position.y_value > boxStarts[i]) {
-        //         box = i;
-        //         break;
-        //     }
-        // }
-        // temp = Math.floor((position.y._value - boxStarts[box]) / 40) + 1;
-        // if (temp < 1) {temp = 1;}
-        // if (temp > boxCounts[box]) {temp = boxCounts[box];}
-        // for(i = 0; i < box; i++) {
-        //     temp += boxCounts[i];
-        // }
-        // return temp;
-
-        temp = Math.floor((position.y._value - boxStarts[0]) / 40) + 1;
+        let box = 0;
+        for(i = boxStarts.length-1; i >= 0; i--) {
+            if (position.y._value > boxStarts[i]) {
+                box = i;
+                break;
+            }
+        }
+        temp = Math.floor((position.y._value - boxStarts[box]) / 40) + 1;
         if (temp < 1) {temp = 1;}
-        if (temp > 4) {temp = 4;}
+        if (temp > boxCounts[box]) {temp = boxCounts[box];}
+        for(i = 0; i < box; i++) {
+            temp += boxCounts[i];
+        }
         return temp;
     }
 
@@ -71,7 +65,7 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
                 onDraggingChange(false);
                 position.flattenOffset();
                 const newIndex = calcIndex();
-                console.log("This is item indexed " + index + " at position " + itemList[index].index);
+                // console.log("This is item indexed " + index + " at position " + itemList[index].index);
                 onIndexChange(itemList[index].index, newIndex);
                 // setIndex(newIndex);
                 // Animated.spring(position, {
