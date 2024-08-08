@@ -11,4 +11,5 @@ export default COLORS = {
     red: '#FF6F61',
     yellow: '#FFC107',
     softGray: '#E2E9EF',
+    hoverGray: '#D6DEE5',
   }

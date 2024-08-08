@@ -288,10 +288,22 @@ function ReceiptEdit(props) {
                     > 
                     </SafeAreaView>
 
-                    <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 25,}]}> Others: </Text>
+                    {/* <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 25,}]}> Others: </Text> */}
+                    <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 0}]}>
+                        <SafeAreaView style = {[styles.container2, { flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 25}]}>
+                            <Text style = {[styles.caption, {fontSize: 14, }]}> Others: </Text>
+                            <Text style = {[styles.editInput, {}]}> 1 </Text>
+                        </SafeAreaView>
+                        <TouchableOpacity><Octicons name="plus-circle"  size={24} color={COLORS.black} style = {{marginTop: 20, marginRight:8}}/></TouchableOpacity>
+                    </SafeAreaView>
                     <SafeAreaView style = {[styles.container3, {backgroundColor: COLORS.softGray, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Jordan </Text>
-                        <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
+                        <SafeAreaView style = {[styles.container2, { flexDirection: 'row', alignItems: 'center', marginBottom:0}]}>
+                            <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
+                            <TouchableOpacity style = {{backgroundColor: COLORS.hoverGray, width: 40, justifyContent: 'center', alignItems: 'center',}}>
+                                <Octicons name="x"  size={24} color={COLORS.red} style = {{ marginTop: 25, marginBottom: 10}}/>
+                            </TouchableOpacity>
+                        </SafeAreaView>
                     </SafeAreaView>
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * boxCounts[1] + 10}]}
