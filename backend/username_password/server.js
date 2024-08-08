@@ -184,7 +184,7 @@ app.post("/signup", checkNotAuthenticated, async (req, res) => {
 app.delete("/logout", (req, res) => {
     req.logOut(function(error){
         if (error) {
-            return next(error);
+            return error;
         }
         res.redirect("/loginUsername")
     });
