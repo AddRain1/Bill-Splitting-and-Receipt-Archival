@@ -20,7 +20,7 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
     }
 
     useEffect(() => {
-        if (!isNaN(index)) {
+        if (boxStarts[0] !== undefined && !isNaN(index)) {
             // console.log(item_name + " is indexed " + itemList[index].index + " and at " + (boxStarts[itemList[index].box] + 40 * (itemList[index].index - 1)));
             Animated.spring(position, {
                 toValue: { x: 0, y: boxStarts[itemList[index].box] + 40 * (calcBoxPosition() - 1) },
@@ -73,7 +73,7 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
                 onDraggingChange(false);
                 position.flattenOffset();
                 const newIndex = calcIndex();
-                // console.log("This is item indexed " + index + " at position " + itemList[index].index);
+                console.log("This is item indexed " + index + " at position " + itemList[index].index);
                 onIndexChange(itemList[index].index, newIndex);
                 // setIndex(newIndex);
                 // Animated.spring(position, {

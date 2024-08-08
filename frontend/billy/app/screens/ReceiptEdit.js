@@ -16,7 +16,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import styles from '../styles';
 import COLORS from "../assets/colors";
 import NavigationBar from '../assets/NavigationBar';
@@ -83,6 +83,7 @@ initialItemList = [
 ];
 
 boxStarts = [0, 0];
+boxCounts = [4, 4];
 
 function ReceiptEdit(props) {
     const [font] = useFonts({
@@ -102,7 +103,17 @@ function ReceiptEdit(props) {
     // }, [boxStarts]);
 
     const [itemList, setItemList] = useState(initialItemList);
-    const boxCounts = [4, 4];
+    const [boxStarts, setBoxStarts] = useState([0, 0]);
+    // const [isMounted, setIsMounted] = useState(true);
+
+    useEffect(() => {
+        console.log("boxStarts updated:", boxStarts);
+    }, [boxStarts]);
+
+    // useEffect(() => {
+    //     setIsMounted(true);
+    //     return () => setIsMounted(false);
+    // }, []);
 
     const calcBox = (index) => {
         box = 0;
@@ -120,70 +131,91 @@ function ReceiptEdit(props) {
 
     const handleIndexChange = (index, newIndex) => {
         console.log("Attempting to switch item at index " + index + " to index " + newIndex);
-        // const oldBox = calcBox(index);
-        // const newBox = calcBox(newIndex);
-
-        // const updatedItemList = [...itemList];
-        // const itemToMove = updatedItemList.find(item => item.index === index);
-
-        // if (!itemToMove) return;
-
-        // if (oldBox === newBox) {
-        //     updatedItemList.forEach(item => {
-        //         if (item.index !== index) {
-        //             if (index < newIndex && item.index > index && item.index <= newIndex) {
-        //                 item.index -= 1;
-        //             } else if (index > newIndex && item.index < index && item.index >= newIndex) {
-        //                 item.index += 1;
-        //             }
-        //         }
-        //     });
-        // } else {
-        //     boxCounts[oldBox] -= 1;
-        //     boxCounts[newBox] += 1;
-
-        //     updatedItemList.forEach(item => {
-        //         if (item.index !== index) {
-        //             if (item.box === oldBox && item.index > itemToMove.index) {
-        //                 item.index -= 1;
-        //             } else if (item.box === newBox && item.index >= newIndex) {
-        //                 item.index += 1;
-        //             }
-        //         }
-        //     });
-
-        //     itemToMove.box = newBox;
-        // }
-
-        // itemToMove.index = newIndex;
-        // setItemList(updatedItemList);
-
+        const oldBox = calcBox(index);
+        const newBox = calcBox(newIndex);
 
         const updatedItemList = [...itemList];
-
         const itemToMove = updatedItemList.find(item => item.index === index);
 
         if (!itemToMove) return;
 
-        updatedItemList.forEach(item => {
-            // console.log("Currently examining " + item.item_name + " at " + item.index);
-            if (item.index !== index) {
-                if (index < newIndex && item.index > index && item.index <= newIndex) {
-                    item.index -= 1;
-                } else if (index > newIndex && item.index < index && item.index >= newIndex) {
-                    item.index += 1;
+        if (oldBox === newBox) {
+            updatedItemList.forEach(item => {
+                if (item.index !== index) {
+                    if (index < newIndex && item.index > index && item.index <= newIndex) {
+                        item.index -= 1;
+                    } else if (index > newIndex && item.index < index && item.index >= newIndex) {
+                        item.index += 1;
+                    }
                 }
-                // console.log(item.item_name + " had position updated to " + item.index);
-            }
-        });
+            });
+        } else {
+            boxCounts[oldBox] -= 1;
+            boxCounts[newBox] += 1;
+
+            updatedItemList.forEach(item => {
+                if (item.index !== index) {
+                    // if (item.box === oldBox && item.index > itemToMove.index) {
+                    //     item.index -= 1;
+                    // } else if (item.box === newBox && item.index >= newIndex) {
+                    //     item.index += 1;
+                    // }
+                    if (index < newIndex && item.index > index && item.index <= newIndex) {
+                        item.index -= 1;
+                    } else if (index > newIndex && item.index < index && item.index >= newIndex) {
+                        item.index += 1;
+                    }
+                }
+            });
+
+            itemToMove.box = newBox;
+        }
 
         itemToMove.index = newIndex;
         setItemList(updatedItemList);
 
-        // itemList.forEach(item => {
-        //     console.log(item.item_name + ": " + item.index);
+
+        // const updatedItemList = [...itemList];
+
+        // const itemToMove = updatedItemList.find(item => item.index === index);
+
+        // if (!itemToMove) return;
+
+        // updatedItemList.forEach(item => {
+        //     // console.log("Currently examining " + item.item_name + " at " + item.index);
+        //     if (item.index !== index) {
+        //         if (index < newIndex && item.index > index && item.index <= newIndex) {
+        //             item.index -= 1;
+        //         } else if (index > newIndex && item.index < index && item.index >= newIndex) {
+        //             item.index += 1;
+        //         }
+        //         // console.log(item.item_name + " had position updated to " + item.index);
+        //     }
         // });
+
+        // itemToMove.index = newIndex;
+        // setItemList(updatedItemList);
+
+        itemList.forEach(item => {
+            console.log(item.item_name + ": " + item.index);
+        });
     };
+
+    // const handleLayout = useCallback((index, event) => {
+    //     if (isMounted) {
+    //         const { nativeEvent } = event;
+    //         if (nativeEvent && nativeEvent.layout) {
+    //             console.log(`Box ${index} Layout:`, nativeEvent.layout);
+    //             setBoxStarts(prev => {
+    //                 const newBoxStarts = [...prev];
+    //                 newBoxStarts[index] = nativeEvent.layout.y + 10;
+    //                 return newBoxStarts;
+    //             });
+    //         } else {
+    //             console.warn(`Layout event or layout property is null for box ${index}`);
+    //         }
+    //     }
+    // }, [isMounted]);
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -214,20 +246,20 @@ function ReceiptEdit(props) {
                 <SafeAreaView style = {[styles.container2, {width: 380}]}>
 
                     <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
-                        <Text style = {[styles.caption, {fontSize: 14,}]}> Title: </Text>
-                        <Text style = {[styles.editInput, {}]}> Ralph’s Fresh Fare </Text>
+                        <Text style = {[styles.caption, {fontSize: 14, }]}> Title: </Text>
+                        <TextInput style = {[styles.editInput, {paddingLeft:10, paddingRight:10}]}>Ralph’s Fresh Fare</TextInput>
                     </SafeAreaView>
                     <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
                         <Text style = {[styles.caption, {fontSize: 14,}]}> Date: </Text>
-                        <Text style = {[styles.editInput, {}]}> 06/21/2024 </Text>
+                        <TextInput style = {[styles.editInput, {paddingLeft:10, paddingRight:10}]}>06/21/2024</TextInput>
                     </SafeAreaView>
                     <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
                         <Text style = {[styles.caption, {fontSize: 14,}]}> Subtotal ($): </Text>
-                        <Text style = {[styles.editInput, {}]}> 40.66 </Text>
+                        <TextInput style = {[styles.editInput, {paddingLeft:10, paddingRight:10}]}>40.66</TextInput>
                     </SafeAreaView>
                     <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', alignItems: 'center', marginBottom: 10}]}>
                         <Text style = {[styles.caption, {fontSize: 14,}]}> Tip: </Text>
-                        <Text style = {[styles.editInput, {}]}> 2.00 </Text>
+                        <TextInput style = {[styles.editInput, {paddingLeft:10, paddingRight:10}]}>2.00</TextInput>
                     </SafeAreaView>
                     <SafeAreaView style = {[styles.grayDivider, {width:430, marginTop:10}]} />
 
@@ -236,10 +268,23 @@ function ReceiptEdit(props) {
                         <Text style = {[styles.body1, {fontSize: 18, color: COLORS.black, marginTop: 25, marginBottom: 10, left: 10}]}> Taylor </Text>
                     </SafeAreaView>
                     <SafeAreaView 
-                        style = {[styles.container3, {height: 40 * 4 + 10}]} 
+                        style = {[styles.container3, {height: 40 * boxCounts[0] + 10}]} 
                         onLayout={e => {
                             boxStarts[0] = e.nativeEvent.layout.y + 10;
                         }}
+                        // onLayout={e => {
+                        //     if (e.nativeEvent && e.nativeEvent.layout) {
+                        //         console.log("Box 0 Layout:", e.nativeEvent.layout);
+                        //         setBoxStarts(prev => {
+                        //             const newBoxStarts = [...prev];
+                        //             newBoxStarts[0] = e.nativeEvent.layout.y + 10;
+                        //             return newBoxStarts;
+                        //         });
+                        //     } else {
+                        //         console.warn("Layout event or layout property is null for box 0");
+                        //     }
+                        // }}
+                        // onLayout={e => handleLayout(0, e)}
                     > 
                     </SafeAreaView>
 
@@ -249,10 +294,23 @@ function ReceiptEdit(props) {
                         <Octicons name="clock"  size={24} color={COLORS.yellow} style = {{marginRight: 15, marginTop: 25, marginBottom: 10}}/>
                     </SafeAreaView>
                     <SafeAreaView 
-                        style = {[styles.container3, {height: 40 * 4 + 10}]}
+                        style = {[styles.container3, {height: 40 * boxCounts[1] + 10}]}
                         onLayout={e => {
                             boxStarts[1] = e.nativeEvent.layout.y + 10;
                         }}
+                        // onLayout={e => {
+                        //     if (e.nativeEvent && e.nativeEvent.layout) {
+                        //         console.log("Box 1 Layout:", e.nativeEvent.layout);
+                        //         setBoxStarts(prev => {
+                        //             const newBoxStarts = [...prev];
+                        //             newBoxStarts[1] = e.nativeEvent.layout.y + 10;
+                        //             return newBoxStarts;
+                        //         });
+                        //     } else {
+                        //         console.warn("Layout event or layout property is null for box 1");
+                        //     }
+                        // }}
+                        // onLayout={e => handleLayout(1, e)}
                     > 
                     </SafeAreaView>
 
@@ -271,7 +329,7 @@ function ReceiptEdit(props) {
                         />
                     );
                     })}
-                    {/* {boxStartsSet && itemList.map((item, i) => (
+                    {/* {boxStarts.every(start => start !== 0) && itemList.map((item, i) => (
                         <Draggable
                             key={item.item_id}
                             item_name={item.item_name}
@@ -280,6 +338,7 @@ function ReceiptEdit(props) {
                             index={i}
                             itemList={itemList}
                             boxStarts={boxStarts}
+                            boxCounts={boxCounts}
                             onIndexChange={handleIndexChange}
                         />
                     ))} */}
