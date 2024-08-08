@@ -24,6 +24,8 @@ import ReceiptsArchivePage from "./app/screens/ReceiptsArchivePage";
 import ResetPassword from "./app/screens/ResetPassword";
 import ScanPage from "./app/screens/ScanPage";
 import Settings from "./app/screens/Settings";
+import AddFriendPage from "./app/screens/AddFriendPage";
+import FriendsPage from "./app/screens/FriendsPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,9 @@ export default function App() {
 					component={ReceiptsArchivePage}
 				/>
 				<Stack.Screen name="BillsPage" component={BillsPage} />
+				<Stack.Screen name="AddFriendsPage" component={AddFriendPage} />
+				<Stack.Screen name="FriendsPage" component={FriendsPage}/>
+				
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

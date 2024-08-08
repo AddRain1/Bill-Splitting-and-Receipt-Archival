@@ -6,11 +6,13 @@ import BillsPage from "../screens/BillsPage";
 import HomePage from "../screens/Home";
 import ReceiptsPage from "../screens/ReceiptsArchivePage";
 import ScanPage from "../screens/ScanPage";
+import FriendsPage from "../screens/FriendsPage";
 
 const Tab = createBottomTabNavigator();
 
 function NavigationBar() {
 	return (
+		
 		<Tab.Navigator
 			screenOptions={{
 				headerShown: false,
@@ -41,13 +43,14 @@ function NavigationBar() {
 			}}
 		>
 			<Tab.Screen
-				name="HomePage"
+				name="home"
 				component={HomePage}
 				style={styles.tabButton}
 			/>
 			<Tab.Screen name="receipts" component={ReceiptsPage} />
 			<Tab.Screen name="scan" component={ScanPage} />
 			<Tab.Screen name="bills" component={BillsPage} />
+			<Tab.Screen name="friends" component={FriendsPage} />
 		</Tab.Navigator>
 	);
 }

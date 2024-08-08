@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 		fontSize: 48,
 	},
 	heading1: {
-		fontFamily: "PlayfairDisplay_700Bold",
+		fontFamily: "PlayfairDisplay_400Regular",
 		fontSize: 32,
 	},
 	backButton: {
@@ -209,6 +209,101 @@ const styles = StyleSheet.create({
 		fontFamily: "SplineSansMono",
 		color: COLORS.teal,
 	},
+	goArrow: {
+		width: 25,
+		height: 25,
+		backgroundColor: COLORS.teal,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 4,
+		right: 3,
+	},
+	icon: {
+		size: 25,
+		color: COLORS.white,
+		
+	},
+	arrowContainer: {
+		flexDirection: "row",
+		
+	},
+	returnButtonContainer: {
+		top:40,
+		left: 25,
+		flexDirection: "row", 
+		alignItems: 'center'
+
+
+	},
+	returnButtonText: {
+		fontFamily: "SplineSansMono",
+		fontSize: 16,
+		color: COLORS.white,
+		
+	},
+	addFriend: {
+		width:380,
+		height: 102,
+		top:75,
+		left:25
+
+	},
+	qrCodePlaceHolder:{
+		width:275,
+		height: 275,
+		backgroundColor: COLORS.teal,
+		alignSelf: 'center',
+		borderRadius:10
+
+
+	},
+	switchButton: {
+		backgroundColor: COLORS.softWhite,
+		padding: 10,
+		borderRadius: 5,
+		alignItems: 'center',
+		marginBottom: 20,
+		top: 110,
+		marginTop: 10,
+	  },
+	  switchButtonText: {
+		
+		color: COLORS.black,
+		fontSize: 16,
+		fontFamily:"SplineSansMono", 
+	  },
+	  qrCodeContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		top:50,
+	  },
+	  qrCodeScanner: {
+		width: 275,
+		height: 275,
+		backgroundColor: '#ccc',
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 10,
+		overflow: 'hidden',
+	  },
+	  cameraButtonWrapper: {
+		position: 'absolute',
+		bottom: 10,
+		alignItems: 'center',
+	  },
+	  qrCodeText: {
+		color: '#fff',
+		fontSize: 18,
+	  },
+	  cameraButton2:{
+		position:'absolute',
+		top:120,
+		borderRadius: 40,
+		alignItems:'center',
+		width:60,
+		height:60,
+	  }
+
 });
 
 export default styles;
