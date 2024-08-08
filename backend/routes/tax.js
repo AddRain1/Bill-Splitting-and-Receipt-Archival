@@ -42,7 +42,6 @@ router.get('/add', [
   
       if (errors.isEmpty()) {
         taxAPI.addTax(tax);
-        
         res.sendStatus(200).json(JSON.stringify(tax));
       }
     }

@@ -154,13 +154,15 @@ class taxTable_api extends tax_api{
             database: DATABASE
         });
 
-        const [tax] = this.getTaxById(tax_Id);
+        const [tax] = this.getTaxById(tax_id);
         if (property_id == "name") {
             await connection.execute('UPDATE taxes SET tax_name = ? WHERE receipt_id = ?', [property_value], [tax.receipt_id]);
         }
         else if (property_id == "percentage") {
             await connection.execute('UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?', [property_value], [tax.receipt_id]);
         }
+
+        connection.end;
     }
 
     // Override the deleteTax method
