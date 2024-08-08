@@ -37,30 +37,33 @@ function App() {
   };
 
   const sortText = (text) => {
-    // Split each line
-    const lines = text.split('\n');
+    // Split each line by deciaml
+    const regex = /(.*?)(\s+\d+\s+)(\d+\.\d{2})(?!\d)/g;
+    let match;
     const items = [];
     const specialLines = { tax: null, tip: null, total: null};
 
-    lines.forEach(line => {
-      const itemMatch = line.match(/(.*)\s+(\d+\.\d{2})$/);
-      const taxMatch = line.match(/\b(TAX|SALES TAX)\b/i);
-      const tipMatch = line.match(/\b(TIP)\b/i);
-      const totalMatch = line.match(/\b(TOTAL|SUBTOTAL|AMOUNT)\b/i);
+    while ((match = regex.exec(text)) !== null) {
+      const [_, itemName, itemId, price] = match;
+      const trimmedName = itemName.trim();
+      const trimmedId = itemId.trim();
+      const parsedPrice = parseFloat(price);
+  
+      const taxMatch = trimmedName.match(/\b(TAX|SALES TAX)\b(AX)/i) || trimmedId.match(/\b(TAX|SALES TAX)\b(AX)/i);
+      const tipMatch = trimmedName.match(/\b(TIP)\b/i) || trimmedId.match(/\b(TIP)\b/i);
+      const totalMatch = trimmedName.match(/\b(TOTAL|SUBTOTAL|AMOUNT)\b/i) || trimmedId.match(/\b(TOTAL|SUBTOTAL|AMOUNT)\b/i);
 
-      if (itemMatch) {
-        items.push({ name: itemMatch[1].trim(), price: parseFloat(itemMatch[2]) });
-      } else if (taxMatch) {
-        const taxValue = line.match(/\d+\.\d{2}/);
-        if (taxValue) specialLines.tax = parseFloat(taxValue[0]);
+      if (taxMatch) {
+        specialLines.tax = parsedPrice;
       } else if (tipMatch) {
-        const tipValue = line.match(/\d+\.\d{2}/);
-        if (tipValue) specialLines.tip = parseFloat(tipValue[0]);
+        specialLines.tip = parsedPrice;
       } else if (totalMatch) {
-        const totalValue = line.match(/\d+\.\d{2}/);
-        if (totalValue) specialLines.total = parseFloat(totalValue[0]);
+        specialLines.total = parsedPrice;
       }
-    });
+      else {
+        items.push({ name: itemName, price: parsedPrice });
+      }
+    }
 
     const itemResults = items.map(item => `${item.name}: $${item.price.toFixed(2)}`).join('\n');
     const specialResults = `
@@ -69,7 +72,7 @@ function App() {
       Total: ${specialLines.total !== null ? `$${specialLines.total.toFixed(2)}` : 'Not found'}
     `;
 
-    setSorted(`${itemResults}\n\n${specialResults}`);
+    setSorted(`${itemResults}\n\n${specialResults.trim()}`);
   };
 
   return (
