@@ -131,7 +131,7 @@ class friendsAPI extends friends_api{
     }
 
     // Static method to get a friend by their friend_id from the database
-    static async getFriendById(friend_id){
+    static async getFriendById(user_id, friend_id){
         // Create a connection to the database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -140,9 +140,9 @@ class friendsAPI extends friends_api{
             database: DATABASE
         });
         // Query to select a friend from the friends table by their friend_id
-        const friendQuery = 'SELECT * FROM friends WHERE friend_id = ?';
+        const friendQuery = 'SELECT * FROM friends WHERE (requestor_id = ? AND receiver_id = ?) OR (requestor_id = ? AND receiver_id = ?)';
         // Parameter to pass into the query
-        const friendParam = [friend_id];
+        const friendParam = [user_id, friend_id, user_id, friend_id];
         // Execute the query and store the results
         const [results] = await connection.execute(friendQuery, friendParam);
         // Create a new Friends object with the results
