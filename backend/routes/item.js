@@ -88,8 +88,7 @@ router.get('/:id/update', [
 
         if(req.body.name) itemAPI.changeItem(req.params.id, "name", req.body.name);
         if(req.body.price) itemAPI.changeItem(req.params.id, "price", req.body.price);
-
-        if(req.body.payee) itemAPI.changeItem(req.params.id, "price", req.body.price);
+        if(req.body.payee) itemAPI.changeItem(req.params.id, "payee", req.body.price);
 
       }
       else res.sendStatus(401).json({msg: 'User be an admin to the receipt linked to this item'});
