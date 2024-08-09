@@ -1,5 +1,11 @@
 const Users = require("../class/userClass");
 const connection = require('../db');
+const mysql = require("mysql2/promise");
+
+const HOST = process.env.DB_HOST;
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class user_api
 class user_api{
@@ -11,15 +17,31 @@ class user_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async getAllUsers(){
+    static async getUsers(query){
         // Check if the subclass has defined this method
-        if(!this.getAllUsers) throw new Error("getAllUsers method must be defined");
+        if(!this.getUsers) throw new Error("getUsers method must be defined");
     }
 
     // Abstract method to be overridden by subclasses
-    static async addUser(){
+    static async addUser(user){
         // Check if the subclass has defined this method
         if(!this.addUser) throw new Error("addUser method must be defined");
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async changeUser(user_id, property_name, property_value){
+        // Check if the subclass has defined this method
+        if(!this.changeUser){
+            throw new Error("changeUser method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async deleteUser(user_id){
+        // Check if the subclass has defined this method
+        if(!this.deleteUser){
+            throw new Error("deleteUser method must be defined");
+        }
     }
 }
 
@@ -68,6 +90,49 @@ class userTable_api extends user_api{
             user.profile_description,
         ];
         await connection.execute(query, params);
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async changeUser(user_id, property_name, property_value){
+        // Get all the user
+        const users = await userTable_api.getUsers();
+        // Check if the user already exists
+        const exist = users.find(u => u.user_id === user_id)
+        if(!exist) throw new Error("User doesn't exists");
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+        // Execute the query to update tips amount in the database
+        const query = 'UPDATE users SET' +  property_name + '= ? WHERE user_id = ?';
+        const params = [property_value, user_id];
+        const [results] = await connection.execute(query, params);
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async deleteUser(user_id){
+        // Get all the users
+        const users = await userTable_api.getUsers();
+        // Check if the user already exists
+        const exist = users.find(u => u.user_id === user_id)
+        if(!exist) throw new Error("User doesn't exist");
+
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+
+        // Execute the query to delete the tip with receipt_id from the database
+        const query = 'DELETE FROM users WHERE user_id = ?'
+        const params = [user_id];
+        const [results] = await connection.execute(query, params);
+        
     }
 }
 
