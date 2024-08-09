@@ -57,7 +57,7 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     //TODO: Allow for dynamic queries
     static async getPaymentRequests(query){
         // Execute the query to get all the payment requests from the database
-        const [results] = await connection.execute('SELECT * FROM payment_request');
+        const [results] = await connection.execute('SELECT * FROM payment_request WHERE ');
         
         // get group object from results
         const paymentRequestObj = results.map(result => new PaymentRequest(
