@@ -173,7 +173,14 @@ class friendsAPI extends friends_api{
         const friendParam = [user_id, true, user_id, true];
         // Execute the query and store the results
         const [results] = await connection.execute(friendQuery, friendParam);
-        return results;
+        const allFriends = results.map(result => new Friends(
+            result.friend_id, 
+            result.requester_id, 
+            result.receiver_id, 
+            result.is_confirmed,
+            result.creation_date));
+        
+        return allFriends;
     }
 
     // Static method to add a friend to the database
