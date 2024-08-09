@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require("express-validator");
 const Friends = require('../class/friendsClass.js');
 const friendsAPI = require('../api/friendsAPI.js');
 const router = express.Router();
