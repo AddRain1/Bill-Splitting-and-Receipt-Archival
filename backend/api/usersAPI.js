@@ -23,6 +23,12 @@ class user_api{
     }
 
     // Abstract method to be overridden by subclasses
+    static async getUserByID(query){
+        // Check if the subclass has defined this method
+        if(!this.getUserByID) throw new Error("getUserByID method must be defined");
+    }
+
+    // Abstract method to be overridden by subclasses
     static async addUser(user){
         // Check if the subclass has defined this method
         if(!this.addUser) throw new Error("addUser method must be defined");
@@ -48,12 +54,12 @@ class user_api{
 // Export the class userTable_api which extends the abstract class user_api
 class userTable_api extends user_api{
     // Override the getAllUsers method
-    static async getAllUsers(){
+    static async getUsers(query=''){
         // Execute the query to get all the users from the database
-        const results = await connection.execute('SELECT * FROM users')[0];
+        const results = await connection.execute('SELECT * FROM users ' + query);
         
         // Map the results to an array of User objects
-        const allUsers = results.map(result => new Users(
+        const users = results.map(result => new Users(
             result.user_id,
             result.username,
             result.first_name,
@@ -64,7 +70,26 @@ class userTable_api extends user_api{
             result.creation_date
         ));
         // Return the array of User objects
-        return allUsers;
+        return users;
+    }
+
+    static async getUserByID(user_id){
+        // Execute the query to get all the users from the database
+        const results = await connection.execute('SELECT * FROM users WHERE user_id = ?', [user_id]);
+        
+        // Map the results to an array of User objects
+        const users = results.map(result => new Users(
+            result.user_id,
+            result.username,
+            result.first_name,
+            result.last_name,
+            result.email,
+            result.password,
+            result.profile_description,
+            result.creation_date
+        ));
+        // Return the array of User objects
+        return users;
     }
 
     // Override the addUser method
