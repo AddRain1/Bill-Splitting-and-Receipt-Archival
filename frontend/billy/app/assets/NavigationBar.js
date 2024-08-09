@@ -1,12 +1,17 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon2 from 'react-native-vector-icons/FontAwesome';
 import colors from "../assets/colors";
 import BillsPage from "../screens/BillsPage";
 import HomePage from "../screens/Home";
 import ReceiptsPage from "../screens/ReceiptsArchivePage";
 import ScanPage from "../screens/ScanPage";
 import FriendsPage from "../screens/FriendsPage";
+import HomeStackNavigator from "./HomeStackNavigator";
+import BillsStackNavigator from "./BillsStackNavigator";
+import FriendsStackNavigator from "./FriendsStackNavigator";
+import ReceiptsStackNavigator from "./ReceiptsStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -44,13 +49,56 @@ function NavigationBar() {
 		>
 			<Tab.Screen
 				name="home"
-				component={HomePage}
+				component={HomeStackNavigator}
 				style={styles.tabButton}
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="house" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'home', // Optional: Customize the title
+                }}
+            />
+			<Tab.Screen 
+			    name="receipts" 
+				component={ReceiptsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="receipt" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'receipts', 
+                }}
+				
 			/>
-			<Tab.Screen name="receipts" component={ReceiptsPage} />
-			<Tab.Screen name="scan" component={ScanPage} />
-			<Tab.Screen name="bills" component={BillsPage} />
-			<Tab.Screen name="friends" component={FriendsPage} />
+			<Tab.Screen 
+				name="scan" 
+				component={ScanPage} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="camera" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'scan', 
+                }}
+			/>
+			<Tab.Screen name="bills" 
+				component={BillsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="money-bill" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'bills', // Optional: Customize the title
+                }}
+				
+			/>
+			<Tab.Screen name="friends" 
+				component={FriendsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="people-group" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'friends', 
+                }}
+				
+			/>
 		</Tab.Navigator>
 	);
 }

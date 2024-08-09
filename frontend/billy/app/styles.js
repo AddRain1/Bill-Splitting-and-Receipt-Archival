@@ -245,7 +245,6 @@ const styles = StyleSheet.create({
 		width:380,
 		height: 102,
 		top:75,
-		left:25
 
 	},
 	qrCodePlaceHolder:{
@@ -263,8 +262,10 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		alignItems: 'center',
 		marginBottom: 20,
-		top: 110,
+		top: 300,
 		marginTop: 10,
+		alignSelf: 'center',
+		width: 360
 	  },
 	  switchButtonText: {
 		
@@ -297,8 +298,8 @@ const styles = StyleSheet.create({
 	  },
 	  cameraButton2:{
 		position:'absolute',
-		top:120,
-		borderRadius: 40,
+		top:100,
+		borderRadius: 4,
 		alignItems:'center',
 		width:60,
 		height:60,

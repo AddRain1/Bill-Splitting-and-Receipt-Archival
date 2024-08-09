@@ -24,9 +24,10 @@ import NavigationBar from "../assets/NavigationBar";
 import COLORS from "../assets/colors.js";
 import BillsPage from "./BillsPage";
 import ReceiptsArchivePage from "./ReceiptsArchivePage";
+import Settings from "./Settings.js";
 
 function HomePage(props) {
-	const Tab = createBottomTabNavigator();
+	
 	const [font] = useFonts({
 		SplineSansMono: require("../assets/fonts/SplineSansMono-Regular.ttf"),
 		PlayfairDisplay_400Regular: require("../assets/fonts/PlayfairDisplay-Regular.ttf"),
@@ -43,7 +44,7 @@ function HomePage(props) {
 			<WelcomeBar />
 			<TouchableOpacity
 				style={styles.settingsButton}
-				onPress={() => navigation.navigate("LogIn")}
+				onPress={() => navigation.navigate("Settings")}
 			>
 				<Octicons name="gear" size={32} color={"#008080"} />
 			</TouchableOpacity>

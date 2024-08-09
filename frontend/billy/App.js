@@ -26,6 +26,7 @@ import ScanPage from "./app/screens/ScanPage";
 import Settings from "./app/screens/Settings";
 import AddFriendPage from "./app/screens/AddFriendPage";
 import FriendsPage from "./app/screens/FriendsPage";
+import HomePage from "./app/screens/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,14 +38,8 @@ export default function App() {
 				<Stack.Screen name="CreateAccount" component={CreateAccount} />
 				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 				<Stack.Screen name="ResetPassword" component={ResetPassword} />
-				<Stack.Screen name="HomePage" component={NavigationBar} />
+				<Stack.Screen name="Main" component={NavigationBar} />								
 				<Stack.Screen name="Settings" component={Settings} />
-				<Stack.Screen name="ScanPage" component={ScanPage} />
-				<Stack.Screen
-					name="ReceiptsArchivePage"
-					component={ReceiptsArchivePage}
-				/>
-				<Stack.Screen name="BillsPage" component={BillsPage} />
 				<Stack.Screen name="AddFriendsPage" component={AddFriendPage} />
 				<Stack.Screen name="FriendsPage" component={FriendsPage}/>
 				
