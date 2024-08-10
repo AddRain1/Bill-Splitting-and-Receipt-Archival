@@ -37,7 +37,7 @@ router.get('/add', async (req, res) => {
                 is_confirmed: req.body.is_confirmed
             });
             if(errors.isEmpty()){
-                friendsAPI.create_friend_request(req.body.requestor_id, req.body.receiver_id)
+                friendsAPI.addFriend(req.body.requestor_id, req.body.receiver_id)
                 res.sendStatus(200).json(JSON.stringify(friend_request));
             }
         }
@@ -46,7 +46,7 @@ router.get('/add', async (req, res) => {
 //get information of friend with ID
 //Authorization: Must be logged in. If the user not the requester or the receiver, only has access if the friend request was accepted.
 router.get('/:id', async (req, res) => {
-    const friend = friendsAPI.getFriendById(req.params.id);
+    const friend = friendsAPI.getFriendById(req.user, req.params.id);
     if(!accessHelper.check_friend_accesible(req.user, req.params.id)){
         res.sendStatus(401).json({msg: 'User must accept the friend request and be the requester or the receiver'});
     }
@@ -56,13 +56,26 @@ router.get('/:id', async (req, res) => {
 //update friend with ID
 //Authorization: Must be the receiver, only can toggle is_confirmed to true.
 router.get('/:id/update', async (req, res) => {
-    
+    if(!accessHelper.check_user_is_receiver(req.user, req.params.id)){
+        res.sendStatus(401).json({msg: 'User must be the receiver'});
+    }
+    else {
+        await friendsAPI.acceptAddFriend(req.params.id, req.user);
+        const friend = await friendsAPI.getFriendById(req.user, req.params.id);
+        res.sendStatus(200).json(JSON.stringify(friend));
+    }
 });
 
 //delete friend with ID
 //Authorization: Must be the receiver or the requester.
 router.get('/:id/delete', async (req, res) => {
-
+    if(!accessHelper.check_friend_accesible(req.user, req.params.id)){
+        res.sendStatus(401).json({msg: 'User must be the requester or the receiver'});
+    }
+    else{
+        await friendsAPI.deleteFriend(req.params.id, req.user);
+        res.sendStatus(200).json({msg: 'Friend deleted'});
+    }
 });
 
 module.exports = router;

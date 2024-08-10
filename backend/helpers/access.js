@@ -130,7 +130,7 @@ const get_not_accepted_friends = (user_id) => {
     return not_accepted_friends;
 }
 
-const check_friend_accesible = (user_id, friend_id) => {
+const check_friend_accesible_for_request = (user_id, friend_id) => {
     const friendsById = friendsAPI.getFriendById(user_id, friend_id);
     const req_id = friendsById.requestor_id;
     const rec_id = friendsById.receiver_id;
@@ -140,7 +140,22 @@ const check_friend_accesible = (user_id, friend_id) => {
     return false;
 }
 
-const check_user_is_receiver = (user_id) => {}
+const check_friend_accesible_for_delete = (user_id, friend_id) => {
+    const friendsById = friendsAPI.getFriendById(user_id, friend_id);
+    const req_id = friendsById.requestor_id;
+    const rec_id = friendsById.receiver_id;
+    if(user_id === req_id || user_id === rec_id){
+        return true;
+    };
+    return false;
+}
+
+const check_user_is_receiver = (user_id, friend_id) => {
+    const friendQuery = `SELECT * FROM friends WHERE requestor_id = ${friend_id} AND receiver_id = ${user_id}`;
+    const friend = friendsAPI.getFriendByQuery(friendQuery);
+    if(friend.length > 0) return true;
+    else return false;
+}
 
 module.exports = {
     get_payment_requests_payer_or_receiver, 
@@ -158,5 +173,7 @@ module.exports = {
     check_tip_accesible,
     get_accepted_friends,
     get_not_accepted_friends,
-    check_friend_accesible
+    check_friend_accesible_for_request,
+    check_friend_accesible_for_delete,
+    check_user_is_receiver
 }
