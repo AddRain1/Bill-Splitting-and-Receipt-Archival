@@ -2,7 +2,7 @@ const express = require('express');
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
 
-const API = require('../api/itemAPI');
+const itemAPI = require('../api/itemAPI');
 const Item = require('../class/itemClass');
 const accessHelper = require('../helpers/access');
 
