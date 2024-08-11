@@ -82,7 +82,7 @@ initialItemList = [
     },
 ];
 
-boxStarts = [0, 0];
+initialBoxStarts = [0, 0];
 boxCounts = [4, 4];
 
 function ReceiptEdit(props) {
@@ -103,12 +103,13 @@ function ReceiptEdit(props) {
     // }, [boxStarts]);
 
     const [itemList, setItemList] = useState(initialItemList);
-    const [boxStarts, setBoxStarts] = useState([0, 0]);
+    // const [forceUpdate, setForceUpdate] = useState(true);
+    const [boxStarts, setBoxStarts] = useState(initialBoxStarts);
     // const [isMounted, setIsMounted] = useState(true);
 
-    useEffect(() => {
-        console.log("boxStarts updated:", boxStarts);
-    }, [boxStarts]);
+    // useEffect(() => {
+    //     console.log("boxStarts updated:", boxStarts);
+    // }, [boxStarts]);
 
     // useEffect(() => {
     //     setIsMounted(true);
@@ -196,9 +197,9 @@ function ReceiptEdit(props) {
         // itemToMove.index = newIndex;
         // setItemList(updatedItemList);
 
-        itemList.forEach(item => {
-            console.log(item.item_name + ": " + item.index);
-        });
+        // itemList.forEach(item => {
+        //     console.log(item.item_name + ": " + item.index);
+        // });
     };
 
     // const handleLayout = useCallback((index, event) => {
@@ -270,7 +271,11 @@ function ReceiptEdit(props) {
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * boxCounts[0] + 10}]} 
                         onLayout={e => {
-                            boxStarts[0] = e.nativeEvent.layout.y + 10;
+                            // boxStarts[0] = e.nativeEvent.layout.y + 10;
+                            const newBoxStarts = [...boxStarts];
+                            newBoxStarts[0] = e.nativeEvent.layout.y + 10;
+                            setBoxStarts(newBoxStarts);
+                            // setForceUpdate(!forceUpdate);
                         }}
                         // onLayout={e => {
                         //     if (e.nativeEvent && e.nativeEvent.layout) {
@@ -308,7 +313,11 @@ function ReceiptEdit(props) {
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * boxCounts[1] + 10}]}
                         onLayout={e => {
-                            boxStarts[1] = e.nativeEvent.layout.y + 10;
+                            // boxStarts[1] = e.nativeEvent.layout.y + 10;
+                            const newBoxStarts = [...boxStarts];
+                            newBoxStarts[1] = e.nativeEvent.layout.y + 10;
+                            setBoxStarts(newBoxStarts);
+                            // setForceUpdate(!forceUpdate);
                         }}
                         // onLayout={e => {
                         //     if (e.nativeEvent && e.nativeEvent.layout) {
