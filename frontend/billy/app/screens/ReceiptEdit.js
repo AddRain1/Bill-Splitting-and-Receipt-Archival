@@ -94,27 +94,8 @@ function ReceiptEdit(props) {
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const setDragging = (isDragging) => { setScrollEnabled(!isDragging);};
 
-    // const [boxStartsSet, setBoxStartsSet] = useState(false);
-
-    // useEffect(() => {
-    //     if (boxStarts[0] !== 0 && boxStarts[1] !== 0) {
-    //         setBoxStartsSet(true);
-    //     }
-    // }, [boxStarts]);
-
     const [itemList, setItemList] = useState(initialItemList);
-    // const [forceUpdate, setForceUpdate] = useState(true);
     const [boxStarts, setBoxStarts] = useState(initialBoxStarts);
-    // const [isMounted, setIsMounted] = useState(true);
-
-    // useEffect(() => {
-    //     console.log("boxStarts updated:", boxStarts);
-    // }, [boxStarts]);
-
-    // useEffect(() => {
-    //     setIsMounted(true);
-    //     return () => setIsMounted(false);
-    // }, []);
 
     const calcBox = (index) => {
         box = 0;
@@ -131,7 +112,6 @@ function ReceiptEdit(props) {
 
 
     const handleIndexChange = (index, newIndex) => {
-        console.log("Attempting to switch item at index " + index + " to index " + newIndex);
         const oldBox = calcBox(index);
         const newBox = calcBox(newIndex);
 
@@ -156,11 +136,6 @@ function ReceiptEdit(props) {
 
             updatedItemList.forEach(item => {
                 if (item.index !== index) {
-                    // if (item.box === oldBox && item.index > itemToMove.index) {
-                    //     item.index -= 1;
-                    // } else if (item.box === newBox && item.index >= newIndex) {
-                    //     item.index += 1;
-                    // }
                     if (index < newIndex && item.index > index && item.index <= newIndex) {
                         item.index -= 1;
                     } else if (index > newIndex && item.index < index && item.index >= newIndex) {
@@ -174,49 +149,7 @@ function ReceiptEdit(props) {
 
         itemToMove.index = newIndex;
         setItemList(updatedItemList);
-
-
-        // const updatedItemList = [...itemList];
-
-        // const itemToMove = updatedItemList.find(item => item.index === index);
-
-        // if (!itemToMove) return;
-
-        // updatedItemList.forEach(item => {
-        //     // console.log("Currently examining " + item.item_name + " at " + item.index);
-        //     if (item.index !== index) {
-        //         if (index < newIndex && item.index > index && item.index <= newIndex) {
-        //             item.index -= 1;
-        //         } else if (index > newIndex && item.index < index && item.index >= newIndex) {
-        //             item.index += 1;
-        //         }
-        //         // console.log(item.item_name + " had position updated to " + item.index);
-        //     }
-        // });
-
-        // itemToMove.index = newIndex;
-        // setItemList(updatedItemList);
-
-        // itemList.forEach(item => {
-        //     console.log(item.item_name + ": " + item.index);
-        // });
     };
-
-    // const handleLayout = useCallback((index, event) => {
-    //     if (isMounted) {
-    //         const { nativeEvent } = event;
-    //         if (nativeEvent && nativeEvent.layout) {
-    //             console.log(`Box ${index} Layout:`, nativeEvent.layout);
-    //             setBoxStarts(prev => {
-    //                 const newBoxStarts = [...prev];
-    //                 newBoxStarts[index] = nativeEvent.layout.y + 10;
-    //                 return newBoxStarts;
-    //             });
-    //         } else {
-    //             console.warn(`Layout event or layout property is null for box ${index}`);
-    //         }
-    //     }
-    // }, [isMounted]);
     
     return (
         <SafeAreaView style = {styles.container}>
@@ -271,25 +204,10 @@ function ReceiptEdit(props) {
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * boxCounts[0] + 10}]} 
                         onLayout={e => {
-                            // boxStarts[0] = e.nativeEvent.layout.y + 10;
                             const newBoxStarts = [...boxStarts];
                             newBoxStarts[0] = e.nativeEvent.layout.y + 10;
                             setBoxStarts(newBoxStarts);
-                            // setForceUpdate(!forceUpdate);
                         }}
-                        // onLayout={e => {
-                        //     if (e.nativeEvent && e.nativeEvent.layout) {
-                        //         console.log("Box 0 Layout:", e.nativeEvent.layout);
-                        //         setBoxStarts(prev => {
-                        //             const newBoxStarts = [...prev];
-                        //             newBoxStarts[0] = e.nativeEvent.layout.y + 10;
-                        //             return newBoxStarts;
-                        //         });
-                        //     } else {
-                        //         console.warn("Layout event or layout property is null for box 0");
-                        //     }
-                        // }}
-                        // onLayout={e => handleLayout(0, e)}
                     > 
                     </SafeAreaView>
 
@@ -313,25 +231,10 @@ function ReceiptEdit(props) {
                     <SafeAreaView 
                         style = {[styles.container3, {height: 40 * boxCounts[1] + 10}]}
                         onLayout={e => {
-                            // boxStarts[1] = e.nativeEvent.layout.y + 10;
                             const newBoxStarts = [...boxStarts];
                             newBoxStarts[1] = e.nativeEvent.layout.y + 10;
                             setBoxStarts(newBoxStarts);
-                            // setForceUpdate(!forceUpdate);
                         }}
-                        // onLayout={e => {
-                        //     if (e.nativeEvent && e.nativeEvent.layout) {
-                        //         console.log("Box 1 Layout:", e.nativeEvent.layout);
-                        //         setBoxStarts(prev => {
-                        //             const newBoxStarts = [...prev];
-                        //             newBoxStarts[1] = e.nativeEvent.layout.y + 10;
-                        //             return newBoxStarts;
-                        //         });
-                        //     } else {
-                        //         console.warn("Layout event or layout property is null for box 1");
-                        //     }
-                        // }}
-                        // onLayout={e => handleLayout(1, e)}
                     > 
                     </SafeAreaView>
 
@@ -350,19 +253,6 @@ function ReceiptEdit(props) {
                         />
                     );
                     })}
-                    {/* {boxStarts.every(start => start !== 0) && itemList.map((item, i) => (
-                        <Draggable
-                            key={item.item_id}
-                            item_name={item.item_name}
-                            item_price={item.item_price}
-                            onDraggingChange={setDragging}
-                            index={i}
-                            itemList={itemList}
-                            boxStarts={boxStarts}
-                            boxCounts={boxCounts}
-                            onIndexChange={handleIndexChange}
-                        />
-                    ))} */}
                 </SafeAreaView>
 
             </ScrollView>
