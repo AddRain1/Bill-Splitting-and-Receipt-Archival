@@ -1,6 +1,6 @@
-import { ExpenseRate } from "./expenseRateClass.js";
+import { ExpenseRate } from "../class/expenseRateClass.js";
 import mysql from "mysql2/promise";
-import { Receipts } from "./receiptsClass.js";
+import { Receipts } from "../class/receiptsClass.js";
 import receiptTable_api from "./receiptsAPI.js";
 import dotenv from 'dotenv';
 

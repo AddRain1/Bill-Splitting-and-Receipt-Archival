@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon ./src/index.js",
-    "start": "nodemon ./src/index.js"
+    "start": "nodemon ./src/index.js",
+    "test": "jest",
+    "lint": "node_modules/eslint/bin/eslint.js ."
   },
   "keywords": [],
   "author": "",
@@ -27,9 +29,5 @@
     "eslint-plugin-jest": "^28.6.0",
     "globals": "^15.8.0",
     "jest": "^29.7.0"
-  },
-  "scripts": {
-    "test": "jest",
-    "lint": "node_modules/eslint/bin/eslint.js ."
   }
 }
