@@ -211,7 +211,6 @@ function ReceiptEdit(props) {
                     > 
                     </SafeAreaView>
 
-                    {/* <Text style = {[styles.caption, {fontSize: 14, marginBottom: 5, marginTop: 25,}]}> Others: </Text> */}
                     <SafeAreaView style = {[styles.container2, { width: 380, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 0}]}>
                         <SafeAreaView style = {[styles.container2, { flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 25}]}>
                             <Text style = {[styles.caption, {fontSize: 14, }]}> Others: </Text>
