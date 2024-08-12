@@ -91,7 +91,6 @@ router.get('/:id/update', [
 <<<<<<< HEAD
 =======
 
->>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         if(req.body.payee) itemAPI.changeItem(req.params.id, "payee", req.body.price);
 
       }
