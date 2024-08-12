@@ -5,8 +5,11 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	ScrollView
 } from "react-native";
 import Styles from "../styles";
+import Bill from "../assets/Bill";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
@@ -25,6 +28,41 @@ function BillsPage(props) {
 				return bills;
 		}
 	};
+
+	const bills = [
+		{
+			storeName: "Ralph’s Fresh Fare",
+			amount: 35.16,
+			date: "2024-06-21",
+			items: 8,
+			splitBetween: 2,
+		},
+		{
+			storeName: "Costco",
+			amount: 77.32,
+			date: "2024-06-17",
+			items: 11,
+			splitBetween: 4,
+	
+		},
+		{
+			storeName: "Tacos El Gordos",
+			amount: 16.98,
+			date: "2024-06-17",
+			items: 2,
+			splitBetween: 1,
+	
+		},
+		{
+			storeName: "Legoland California",
+			amount: 89.80,
+			date: "2024-05-29",
+			items: 2,
+			splitBetween: 1,
+		
+		}
+	];
+	
 
 	return (
 		<View style={Styles.container}>
@@ -104,6 +142,18 @@ function BillsPage(props) {
 					</TouchableOpacity>
 				</View>
 			</View>
+			<ScrollView style={Styles.billContainer}>
+				{bills.map((bill, index) => (
+					<Bill
+						key={index}
+						storeName={bill.storeName}
+						amount={bill.amount}
+						date={bill.date}
+						items={bill.items}
+						splitBetween={bill.splitBetween}
+					/>
+				))}
+			</ScrollView>
 		</View>
 	);
 }

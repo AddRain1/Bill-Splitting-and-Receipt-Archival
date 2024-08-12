@@ -303,6 +303,17 @@ const styles = StyleSheet.create({
 		alignItems:'center',
 		width:60,
 		height:60,
+	  },
+	  receiptContainer: {
+		
+		flex: 1,
+		backgroundColor: '#FFFFFF',
+		padding: 20,
+		
+	  },
+	  billContainer:{
+		flex:1,
+		
 	  }
 
 });
