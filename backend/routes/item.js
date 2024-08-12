@@ -88,6 +88,10 @@ router.get('/:id/update', [
 
         if(req.body.name) itemAPI.changeItem(req.params.id, "name", req.body.name);
         if(req.body.price) itemAPI.changeItem(req.params.id, "price", req.body.price);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         if(req.body.payee) itemAPI.changeItem(req.params.id, "payee", req.body.price);
 
       }

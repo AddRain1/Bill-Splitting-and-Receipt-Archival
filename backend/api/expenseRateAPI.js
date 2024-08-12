@@ -1,6 +1,5 @@
 const ExpenseRate = require("../class/expenseRateClass.js");
 const mysql = require("mysql2/promise");
-const Receipts = require("../class/receiptsClass.js");
 const receiptTable_api = require("./receiptsAPI.js");
 const dotenv = require('dotenv');
 
@@ -21,51 +20,50 @@ class expenseRateAPI{
     }
 
     // Abstract method to be overridden by subclasses
-    static async getExpRt(receipt){
+    static async getExpenseRate(query){
         // Check if the subclass has defined this method
-        if(!this.getExpRt){
-            throw new Error("getExpRt method must be defined");
+        if(!this.getExpenseRate){
+            throw new Error("getExpenseRate method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async addExpRt(expense_rate){
+    static async getExpenseRateByID(expense_rate_id){
         // Check if the subclass has defined this method
-        if(!this.addExpRt){
-            throw new Error("addExpRt method must be defined");
-        }
-    }
-
-
-    // Abstract method to be overridden by subclasses
-    static async changeExpRt_name(receipt, name){
-        // Check if the subclass has defined this method
-        if(!this.changeExpRt_name){
-            throw new Error("changeExpRt_name method must be defined");
+        if(!this.getExpenseRateByID){
+            throw new Error("getExpenseRateByID method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async changeExpRt_percentage(receipt, percentage){
+    static async addExpenseRate(expense_rate){
         // Check if the subclass has defined this method
-        if(!this.changeExpRt_percentage){
-            throw new Error("changeExpRt_percentage method must be defined");
+        if(!this.addExpenseRate){
+            throw new Error("addExpenseRate method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteExpRt(receipt_id){
+    static async changeExpenseRate(expense_rate_id, property_name, property_value){
         // Check if the subclass has defined this method
-        if(!this.deleteExpRt){
-            throw new Error("deleteExpRt method must be defined");
+        if(!this.changeExpenseRate){
+            throw new Error("changeExpenseRate method must be defined");
+        }
+    }
+
+    // Abstract method to be overridden by subclasses
+    static async deleteExpenseRate(expense_rate_id){
+        // Check if the subclass has defined this method
+        if(!this.deleteExpenseRate){
+            throw new Error("deleteExpenseRate method must be defined");
         }
     }
 }
 
 class expRateTableAPI extends expenseRateAPI{
-    // Override the getExpRt method
-    // Static async function to get expense rate of a receipt from the database
-    static async getExpRt(receipt){
+    // Override the getExpenseRate method
+    // Static async function to get expense rate from the database
+    static async getExpenseRate(query){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -74,7 +72,31 @@ class expRateTableAPI extends expenseRateAPI{
             database: DATABASE
         });
         // Execute the query to get all the expense rates of a receipt from the database
-        const [results] = await connection.execute('SELECT * FROM expense_rate WHERE receipt_id = ?', [receipt.receipt_id]);
+        const [results] = await connection.execute('SELECT * FROM expense_rate ' + query);
+        
+        // get expense rate object from results
+        const expRt = results.map(result => new ExpenseRate(
+            result.expenseRate_id,
+            result.receipt_id,
+            result.expenseRate_name,
+            result.expenseRate_percentage
+        ));
+        // Return the expense rate object
+        return expRt;
+    }
+
+    // Override the getExpenseRateByID method
+    // Static async function to get expense rate from the database by ID
+    static async getExpenseRateByID(expense_rate_id){
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+        // Execute the query to get all the expense rates of a receipt from the database
+        const [results] = await connection.execute('SELECT * FROM expense_rate WHERE expense_rate_id = ?', [expense_rate_id]);
         
         // get expense rate object from results
         const expRt = results.map(result => new ExpenseRate(
@@ -119,17 +141,13 @@ class expRateTableAPI extends expenseRateAPI{
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the changeExpRt_name method
-    // Static async function to change name of expense rate in the database
-    static async changeExpRt_name(receipt, name){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt already exists
-        const exist = receipts.find(r => r.receipt_id === receipt.receipt_id)
-        if(!exist){
-            // Throw an error if the receipt already exists
-            throw new Error("Receipt doesn't exists");
-        }
+    // Override the changeExpRt method
+    // Static async function to change a property of expense rate in the database
+    static async changeExpRt(expense_rate_id, property_name, property_value){
+        // Get the expense rate
+        const expense_rate = this.getExpRtByID(expense_rate_id);
+        if(!expense_rate) throw new Error("expense rate doesn't exist");
+        
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -138,32 +156,8 @@ class expRateTableAPI extends expenseRateAPI{
             database: DATABASE
         });
         // Execute the query to update the name of expense rate into the database
-        const query = 'UPDATE expense_rate SET expenseRate_name = ? WHERE receipt_id = ?';
-        const params = [name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
-    }
-
-    // Override the changeExpRt_percentage method
-    // Static async function to change the percentage of expense rate in the database
-    static async changeExpRt_percentage(receipt, percentage){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt already exists
-        const exist = receipts.find(r => r.receipt_id === receipt.receipt_id)
-        if(!exist){
-            // Throw an error if the receipt already exists
-            throw new Error("Receipt doesn't exists");
-        }
-        // Connect to the MySQL database
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-        // Execute the query to update expense rate percentage into the database
-        const query = 'UPDATE expense_rate SET expenseRate_percentage = ? WHERE receipt_id = ?';
-        const params = [percentage, receipt.receipt_id];
+        const query = 'UPDATE expense_rate SET ' + property_name + ' = ?';
+        const params = [property_value];
         const [results] = await connection.execute(query, params);
     }
 
@@ -190,7 +184,6 @@ class expRateTableAPI extends expenseRateAPI{
         const query = 'DELETE FROM expense_rate WHERE receipt_id = ?'
         const params = [receipt_id];
         const [results] = await connection.execute(query, params);
-        
     }
 
 };

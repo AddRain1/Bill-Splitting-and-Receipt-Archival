@@ -20,6 +20,7 @@ class itemAPI{
         }
     }
 
+<<<<<<< HEAD
     static async checkExistItem(id){
         // Check if the subclass has defined this method
         if(!this.checkExistItem){
@@ -32,11 +33,16 @@ class itemAPI{
         // Check if the subclass has defined this method
         if(!this.getItems){
             throw new Error("getItems method must be defined");
+=======
+    static async getItems() {
+        if (!this.getItems) {
+            throw new Error("getITems method must be defined");
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async getItemById(item_id){
+    static async getItemById(id){
         // Check if the subclass has defined this method
         if(!this.getItemById){
                 throw new Error("getItemById method must be defined");
@@ -53,7 +59,11 @@ class itemAPI{
 
 
     // Abstract method to be overridden by subclasses
+<<<<<<< HEAD
     static async changeItem(id, proeprty_id, property_value){
+=======
+    static async changeItem(item_id, property_id, property_value){
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         // Check if the subclass has defined this method
         if(!this.changeItem){
             throw new Error("changeItem method must be defined");
@@ -61,7 +71,11 @@ class itemAPI{
     }
 
     // Abstract method to be overridden by subclasses
+<<<<<<< HEAD
     static async deleteItem(receipt_id){
+=======
+    static async deleteItem(id){
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         // Check if the subclass has defined this method
         if(!this.deleteItem){
             throw new Error("deleteItem method must be defined");
@@ -100,7 +114,11 @@ class itemTableAPI extends itemAPI{
 
     // Override the getAllItems method
     // Static async function to get all items of a receipt from the database
+<<<<<<< HEAD
     static async getItems(receipt){
+=======
+    static async getItems(){
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -109,7 +127,7 @@ class itemTableAPI extends itemAPI{
             database: DATABASE
         });
         // Execute the query to get all items with receipt id = receipt_id from the database
-        const [results] = await connection.execute('SELECT * FROM items WHERE receipt_id = ?', [receipt.receipt_id]);
+        const [results] = await connection.execute('SELECT * FROM items');
         
         // get items object from results
         const items = results.map(result => new Item(
@@ -127,12 +145,17 @@ class itemTableAPI extends itemAPI{
     // Override the getItemById method
     // Static async function to get an item by item_id from the database
     static async getItemById(id){
+<<<<<<< HEAD
+=======
+        // Connect to the MySQL database
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
             password: PASSWORD,
             database: DATABASE
         });
+<<<<<<< HEAD
 
         const itemquery = 'SELECT * FROM items WHERE item_id = ?';
         const receiptquery = 'SELECT * FROM items WHERE receipt_id = ?';
@@ -146,6 +169,23 @@ class itemTableAPI extends itemAPI{
             } catch (error) {
                 await connection.end();
                 throw new Error("Cannot find item");
+=======
+        
+        let results;
+        try {
+            [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [id]);
+            if (!results) {
+                throw new Error (`No item by item_id = ${id} found.`);
+            }
+        } catch (error) {
+            try {
+                [results] = await connection.execute('SELECT * FROM items WHERE receipt_id = ?', [id]);
+                if (!results) {
+                    throw new Error (`No item by receipt_id = ${id} found.`);
+                }
+            } catch (error) {
+                throw new Error ('No item found.');
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
             }
         }
         
@@ -160,12 +200,23 @@ class itemTableAPI extends itemAPI{
         const item = new Item(
             result.item_id,
             result.receipt_id,
+<<<<<<< HEAD
             result.name,
             result.price,
             result.payee,
             result.created_at 
         );
 
+=======
+            result.expenseRate_name,
+            result.expenseRate_percentage
+        ));
+
+        // Close connection
+        await connection.end();
+
+        // Return the item object
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         return item;
     }
 
@@ -199,10 +250,16 @@ class itemTableAPI extends itemAPI{
             item.price,
             item.payee];
         await connection.execute(query, params);
+<<<<<<< HEAD
+=======
+
+        await connection.close();
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
     }
 
     // Override the changeItem_name method
     // Static async function to change name of item in the database
+<<<<<<< HEAD
     static async changeItem(id, property_id, property_value){
          // Get all the receipts
          const receipts = await receiptTable_api.getAllReceipts();
@@ -249,18 +306,62 @@ class itemTableAPI extends itemAPI{
          }
  
          await connection.end();
+=======
+    static async changeItem(item_id, property_id, property_value){
+
+        // Get all items
+        const items = await this.getItems();
+        const exist = items.find(i => i.item_id === item_id)
+        if(!exist) throw new Error("Item doesn't exists");
+
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+
+        // Execute the query to update the item's property in the database
+        if (property_id === "name") {
+            await connection.execute('UPDATE items SET item_name = ? WHERE item_id = ?', [property_value], [item_id]);
+        }
+        else if (property_id === "price") {
+            await connection.execute('UPDATE items SET item_price = ? WHERE item_id = ?', [property_value], [item_id]);
+        }
+        else if (property_id === "receipt_id") {
+            await connection.execute('UPDATE items SET receipt_id = ? WHERE item_id = ?', [property_value], [item_id]);
+        }
+        else if (property_id === "payee") {
+            await connection.execute('UPDATE items SET item_payee = ? WHERE item_id = ?', [property_value], [item_id]);
+        }
+        
+        await connection.close();
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
     }
 
     // Override the deleteItem method
     // Static async function to delete a item from the database
     // Call when deleting receipt
-    static async deleteItem(receipt_id){
+    static async deleteItem(id){
         // Get all the receipts
         const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt is already deleted
-        const exist = receipts.find(r => r.receipt_id === receipt_id)
-        if(!exist){
-            throw new Error("Receipt doesn't exists");
+        let exist;
+        try {
+            [exist] = receipts.find(r => r.receipt_id === id);
+            if(!exist){
+                throw new Error("Receipt doesn't exists");
+            }
+        } catch (error) {
+            try {
+                [exist] = receipts.find(r => r.item_id === id);
+                if(!exist){
+                    throw new Error("Receipt doesn't exists");
+                }
+            } catch (error) {
+                throw new Error("Receipt doesn't exist");
+            }
         }
 
         const connection = await mysql.createConnection({
@@ -271,11 +372,32 @@ class itemTableAPI extends itemAPI{
         });
 
         // Execute the query to delete the item from in the database
+<<<<<<< HEAD
         const query = 'DELETE FROM items WHERE receipt_id = ?'
         const params = [receipt_id];
         await connection.execute(query, params);
 
         await connection.end();
+=======
+        let results;
+        try {
+            [results] = await connection.execute('DELETE FROM items WHERE item_id = ?', [id]);
+            if (!results) {
+                throw new Error (`No item by item_id = ${id} found.`);
+            }
+        } catch (error) {
+            try {
+                [results] = await connection.execute('DELETE FROM items WHERE receipt_id = ?', [id]);
+                if (!results) {
+                    throw new Error (`No item by receipt_id = ${id} found.`);
+                }
+            } catch (error) {
+                throw new Error ('No item found.');
+            }
+        }
+
+        await connection.close();
+>>>>>>> 571cfd8533cf83221433dd12fae0569ec922c018
         
     }
 

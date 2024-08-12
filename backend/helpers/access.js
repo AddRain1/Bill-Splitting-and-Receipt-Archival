@@ -4,6 +4,7 @@ const groupAPI = require('../api/groupAPI');
 const expenseRateAPI = require('../api/expenseRateAPI');
 const taxAPI = require('../api/taxAPI');
 const tipAPI = require('../api/tipAPI');
+const friendsAPI = require('../api/friendsAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = (user_id) => {
@@ -111,6 +112,51 @@ const check_tip_accesible = (user_id, tip_id) => {
     else return false;
 }
 
+const get_accepted_friends = (user_id) => {
+    const accepted_friends_query = `
+        (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = TRUE) 
+        UNION 
+        (SELECT requester_id AS friend FROM friends WHERE receiver_id = ${user_id} AND is_confirmed = TRUE);`;
+    const accepted_friends = friendsAPI.getFriendByQuery(accepted_friends_query);
+    return accepted_friends;
+}
+
+const get_not_accepted_friends = (user_id) => {
+    const not_accepted_friends_query = `
+        (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = FALSE) 
+        UNION 
+        (SELECT requester_id AS friend FROM friends WHERE receiver_id = ${user_id} AND is_confirmed = FALSE);`;
+    const not_accepted_friends = friendsAPI.getFriendByQuery(not_accepted_friends_query);
+    return not_accepted_friends;
+}
+
+const check_friend_accesible_for_request = (user_id, friend_id) => {
+    const friendsById = friendsAPI.getFriendById(user_id, friend_id);
+    const req_id = friendsById.requestor_id;
+    const rec_id = friendsById.receiver_id;
+    if(user_id === req_id || user_id === rec_id){
+        if(friendsById.is_confirmed === true) return true;
+    };
+    return false;
+}
+
+const check_friend_accesible_for_delete = (user_id, friend_id) => {
+    const friendsById = friendsAPI.getFriendById(user_id, friend_id);
+    const req_id = friendsById.requestor_id;
+    const rec_id = friendsById.receiver_id;
+    if(user_id === req_id || user_id === rec_id){
+        return true;
+    };
+    return false;
+}
+
+const check_user_is_receiver = (user_id, friend_id) => {
+    const friendQuery = `SELECT * FROM friends WHERE requestor_id = ${friend_id} AND receiver_id = ${user_id}`;
+    const friend = friendsAPI.getFriendByQuery(friendQuery);
+    if(friend.length > 0) return true;
+    else return false;
+}
+
 module.exports = {
     get_payment_requests_payer_or_receiver, 
     get_payment_requests_with_receipt_access, 
@@ -124,5 +170,10 @@ module.exports = {
     get_accessible_taxes,
     check_tax_accesible,
     get_accessible_tips,
-    check_tip_accesible
+    check_tip_accesible,
+    get_accepted_friends,
+    get_not_accepted_friends,
+    check_friend_accesible_for_request,
+    check_friend_accesible_for_delete,
+    check_user_is_receiver
 }
