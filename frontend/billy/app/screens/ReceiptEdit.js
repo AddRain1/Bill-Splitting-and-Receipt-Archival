@@ -121,28 +121,32 @@ function ReceiptEdit(props) {
         if (!itemToMove) return;
 
         if (oldBox === newBox) {
-            updatedItemList.forEach(item => {
-                if (item.index !== index) {
-                    if (index < newIndex && item.index > index && item.index <= newIndex) {
-                        item.index -= 1;
-                    } else if (index > newIndex && item.index < index && item.index >= newIndex) {
-                        item.index += 1;
+            for(i = 0; i < updatedItemList.length; i++) {
+            // updatedItemList.forEach(item => {
+                if (updatedItemList[i].index !== index) {
+                    if (index < newIndex && updatedItemList[i].index > index && updatedItemList[i].index <= newIndex) {
+                        updatedItemList[i].index -= 1;
+                    } else if (index > newIndex && updatedItemList[i].index < index && updatedItemList[i].index >= newIndex) {
+                        updatedItemList[i].index += 1;
                     }
                 }
-            });
+            // });
+            }
         } else {
             boxCounts[oldBox] -= 1;
             boxCounts[newBox] += 1;
 
-            updatedItemList.forEach(item => {
-                if (item.index !== index) {
-                    if (index < newIndex && item.index > index && item.index <= newIndex) {
-                        item.index -= 1;
-                    } else if (index > newIndex && item.index < index && item.index >= newIndex) {
-                        item.index += 1;
+            for(i = 0; i < updatedItemList.length; i++) {
+            // updatedItemList.forEach(item => {
+                if (updatedItemList[i].index !== index) {
+                    if (index < newIndex && updatedItemList[i].index > index && updatedItemList[i].index <= newIndex) {
+                        updatedItemList[i].index -= 1;
+                    } else if (index > newIndex && updatedItemList[i].index < index && updatedItemList[i].index >= newIndex) {
+                        updatedItemList[i].index += 1;
                     }
                 }
-            });
+            // });
+            }
 
             itemToMove.box = newBox;
         }
