@@ -27,7 +27,7 @@ const Draggable = ({ item_name, item_price, onDraggingChange, index, itemList, b
                 useNativeDriver: false
             }).start();
         }
-    }, [itemList, boxStarts, index, position]);
+    }, [itemList, boxStarts, index, position, calcBoxPosition]);
 
     useEffect(() => {
         selfBoxStarts = [...boxStarts];

@@ -91,7 +91,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {[styles.container2, {height: 15, marginBottom: 0}]}></SafeAreaView>
                         {itemList.map((prop) => {
                             return (
-                                <SafeAreaView style = {[styles.listRow, {}]}>
+                                <SafeAreaView style = {[styles.listRow, {}]} key={prop.item_id}>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> {prop.item_name} </Text>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> ${prop.item_price} </Text>
                                 </SafeAreaView>
@@ -135,7 +135,7 @@ function ReceiptView(props) {
                         <SafeAreaView style = {[styles.container2, {height: 15, marginBottom: 0}]}></SafeAreaView>
                         {itemList.map((prop) => {
                             return (
-                                <SafeAreaView style = {[styles.listRow, {}]}>
+                                <SafeAreaView style = {[styles.listRow, {}]} key={prop.item_id}>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> {prop.item_name} </Text>
                                     <Text style = {[styles.caption, {fontSize: 14, }]} key={prop.item_id}> ${prop.item_price} </Text>
                                 </SafeAreaView>
