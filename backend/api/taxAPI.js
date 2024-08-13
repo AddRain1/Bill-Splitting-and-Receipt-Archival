@@ -19,12 +19,6 @@ class tax_api{
         }
     }
 
-    static async checkExistTax(id) {
-        if(!this.checkExistTax){
-            throw new Error("getTaxById method must be defined");
-        }
-    }
-
     static async getTaxById(id) {
         if(!this.getTaxById){
             throw new Error("getTaxById method must be defined");
@@ -40,7 +34,7 @@ class tax_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async changeTax(tax_id, property_id, property_value){
+    static async changeTax(id, property_id, property_value){
         // Check if the subclass has defined this method
         if(!this.changeTax){
             throw new Error("changeTax method must be defined");
@@ -48,7 +42,7 @@ class tax_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async deleteTax(receipt_id){
+    static async deleteTax(id){
         // Check if the subclass has defined this method
         if(!this.deleteTax){
             throw new Error("deleteTax method must be defined");
@@ -58,33 +52,6 @@ class tax_api{
 
 // Export the class taxTable_api which extends the abstract class tax_api
 class taxTable_api extends tax_api{
-
-    static async checkExistTax(id) {
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-    
-        try {
-            const [results] = await connection.execute('SELECT * FROM taxes WHERE tax_id = ?', [id]);
-            if (results) {
-                return results.length() > 0;
-            }
-        } catch (error) {
-            try {
-            const [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [id]);
-            if (results) {
-                return results.length() > 0;
-            }
-            } catch (error) {
-                throw new Error('No tax found');
-            }
-        } 
-
-        await connection.end();
-    }
 
     static async getTaxById(id){
         const connection = await mysql.createConnection({
@@ -100,16 +67,20 @@ class taxTable_api extends tax_api{
 
         try {
             [results] = await connection.execute(taxquery, [id]);
+            if(!results) {
+                throw new Error (`Cannot find tax by tax_id = ${id}`);
+            }
         } catch (error) {
             try {
             [results] = await connection.execute(receiptquery, [id]);
+            if(!results) {
+                throw new Error (`Cannot find tax by receipt_id = ${id}`);
+            }
             } catch (error) {
                 await connection.end();
                 throw new Error("Cannot find tax");
             }
         }
-        
-        await connection.end();
 
         if (results.length === 0) {
             throw new Error("No tax found for the given ID");
@@ -123,6 +94,8 @@ class taxTable_api extends tax_api{
             result.tax_name,
             result.tax_percentage
         );
+
+        await connection.end();
 
         return tax;
     }
@@ -152,32 +125,19 @@ class taxTable_api extends tax_api{
 
         // Execute the query to insert the new receipt into the database
         const query = 'INSERT INTO taxes (receipt_id, tax_name, tax_percentage) VALUES (?, ?, ?)';
-        const params = [tax.receipt_id, 
-            tax.name, 
-            tax.percentage];
-        const [results] = await connection.execute(query, params);
+        const params = [tax.receipt_id, tax.name, tax.percentage];
+        await connection.execute(query, params);
+        await connection.end();
     }
 
     // Override the changeTaxmethod
     // Static async function to change percentage/name of tax in the database
     static async changeTax(id, property_id, property_value){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt already exists
-        let exist;
-        try {
-           exist = receipts.find(r => r.tax.tax_id === id);
-        } catch (error) {
-           try {
-           exist = receipts.find(r => r.tax.receipt_id === id);
-           } catch (error) {
-               throw new Error('Receipt does not exist');
-           }
-        }
-        
-        if(!exist){
-            // Throw an error if the receipt already exists
-            throw new Error("Receipt doesn't exists");
+
+        // Get tax by Id
+        const [tax] = await this.getTaxById(id);
+        if (!tax) {
+            throw new Error('Tax does not exist');
         }
 
         // Connect to the MySQL database
@@ -187,9 +147,6 @@ class taxTable_api extends tax_api{
             password: PASSWORD,
             database: DATABASE
         });
-
-        // Get tax by Id
-        const [tax] = await this.getTaxById(tax_id);
 
         // Update tax bassed on property_id
         if (property_id == "name") {
@@ -205,13 +162,12 @@ class taxTable_api extends tax_api{
     // Override the deleteTax method
     // Static async function to delete a receipt from the database
     // Call when deleting receipt
-    static async deleteTax(receipt_id){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt is already deleted
-        const exist = receipts.find(r => r.receipt_id === receipt_id)
-        if(!exist){
-            throw new Error("Receipt doesn't exists");
+    static async deleteTax(id){
+        
+        // Get tax by id
+        const [tax] = await this.getTaxById(id);
+        if(!tax) {
+            throw new Error('No tax found.');
         }
         
         // Connect to the MySQL database
@@ -224,8 +180,10 @@ class taxTable_api extends tax_api{
 
         // Execute the query to delete the tax with receipt_id from the database
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
-        const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        const params = [tax.receipt_id];
+        await connection.execute(query, params);
+
+        await connection.end();
         
     }
 }

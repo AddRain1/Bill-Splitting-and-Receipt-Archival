@@ -45,7 +45,7 @@ router.get('/add', [
         receipt_id: req.body.receipt_id,
         name: req.body.name,
         price: req.body.price,
-        payee: req.body.payee
+        payee: req.body.payee,
       });
   
       if (errors.isEmpty()) {
@@ -88,8 +88,6 @@ router.get('/:id/update', [
 
         if(req.body.name) itemAPI.changeItem(req.params.id, "name", req.body.name);
         if(req.body.price) itemAPI.changeItem(req.params.id, "price", req.body.price);
-<<<<<<< HEAD
-=======
 
         if(req.body.payee) itemAPI.changeItem(req.params.id, "payee", req.body.price);
 
