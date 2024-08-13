@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
+// import * as ImagePicker from "expo-image-picker";
+// import * as Permissions from "expo-permissions";
 import { React, useEffect, useState } from "react";
 import {
 	Alert,
@@ -97,7 +97,7 @@ function ScanPage(props) {
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={Styles.cameraButton1}
-				onPress={handleLaunchCamera}
+				// onPress={handleLaunchCamera}
 			>
 				<Image
 					source={require("../assets/Photo button.jpg")}

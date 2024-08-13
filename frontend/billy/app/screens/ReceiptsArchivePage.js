@@ -13,7 +13,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { SearchBar } from "react-native-elements";
+// import { SearchBar } from "react-native-elements";
 import COLORS from "../assets/colors.js";
 import Styles from "../styles.js";
 //import { getAllReceipts } from '../../../../backend/src/receiptsAPI';
@@ -45,7 +45,7 @@ function ReceiptsArchivePage(props) {
 					Receipt Archive
 				</Text>
 
-				<SearchBar
+				{/*<SearchBar
 					placeholder="enter keywords"
 					placeholderTextColor={COLORS.black}
 					onChangeText={updateSearch}
@@ -74,6 +74,7 @@ function ReceiptsArchivePage(props) {
 						justifyContent: "center",
 					}}
 				/>
+				*/}
 			</View>
 
 			<ScrollView style={Styles.scrollContainer} />
