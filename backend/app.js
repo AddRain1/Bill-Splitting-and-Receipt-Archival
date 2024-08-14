@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const path = require('path');
 
 const session = require('express-session');
@@ -23,7 +24,8 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-const db = require('./db');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.listen(PORT, (error) =>{
     if(!error) console.log("Server is Successfully Running, and App is listening on port "+ PORT)
@@ -49,3 +51,9 @@ app.use('/receipts', receiptRouter);
 app.use('/taxes', taxRouter);
 app.use('/tips', tipRouter);
 app.use('/users', userRouter);
+
+app.use((err, req, res, next) => {
+  res.status(500).send(err.stack);
+})
+
+module.exports = app;
