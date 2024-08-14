@@ -181,9 +181,7 @@ function ReceiptEdit(props) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<SafeAreaView style={styles.topBar}>
-				<SafeAreaView
-					style={[styles.container2, { height: 50 }]}
-				></SafeAreaView>
+				<SafeAreaView style={[styles.container2, { height: 50 }]} />
 				<Text style={[styles.caption2, { left: 25 }]}> 06/21/2024 </Text>
 				<SafeAreaView
 					style={[
@@ -335,7 +333,7 @@ function ReceiptEdit(props) {
 							newBoxStarts[0] = e.nativeEvent.layout.y + 10;
 							setBoxStarts(newBoxStarts);
 						}}
-					></SafeAreaView>
+					/>
 
 					<SafeAreaView
 						style={[
@@ -434,7 +432,7 @@ function ReceiptEdit(props) {
 							newBoxStarts[1] = e.nativeEvent.layout.y + 10;
 							setBoxStarts(newBoxStarts);
 						}}
-					></SafeAreaView>
+					/>
 
 					{itemList.map((item, i) => {
 						return (

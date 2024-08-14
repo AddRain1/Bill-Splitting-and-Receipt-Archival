@@ -19,13 +19,21 @@ const Draggable = ({
 	const position = useRef(new Animated.ValueXY()).current;
 	const [dragging, setDragging] = useState(false);
 
-	function calcBoxPosition() {
+	// function calcBoxPosition() {
+	// 	let count = 0;
+	// 	for (i = 0; i < itemList[index].box; i++) {
+	// 		count += boxCounts[i];
+	// 	}
+	// 	return itemList[index].index - count;
+	// }
+
+	const calcBoxPosition = useCallback(() => {
 		let count = 0;
 		for (i = 0; i < itemList[index].box; i++) {
 			count += boxCounts[i];
 		}
 		return itemList[index].index - count;
-	}
+	}, [itemList, index, boxCounts]);
 
 	useEffect(() => {
 		if (boxStarts[0] !== undefined && !Number.isNaN(index)) {
