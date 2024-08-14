@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Animated, PanResponder, Text } from "react-native";
 import { Feather } from "react-native-vector-icons";
 import COLORS from "../assets/colors";
