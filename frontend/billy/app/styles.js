@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		alignItems: 'center',
 		marginBottom: 20,
-		top: 300,
+		top: 120,
 		marginTop: 10,
 		alignSelf: 'center',
 		width: 360
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
 	  cameraButton2:{
 		position:'absolute',
 		top:100,
-		borderRadius: 4,
+		borderRadius: 30,
 		alignItems:'center',
 		width:60,
 		height:60,
