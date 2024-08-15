@@ -1,5 +1,5 @@
 const Group = require("../class/groupClass.js");
-const connection = require("../db.js");
+const connection = require("../db/db.js");
 
 // Export the abstract class group_api
 class groupAPI{

@@ -1,5 +1,5 @@
 const PaymentRequest = require("../class/paymentRequestClass.js");
-const connection = require("../db.js");
+const connection = require("../db/db.js");
 
 // Export the abstract class paymentAPI
 class paymentRequestAPI{
