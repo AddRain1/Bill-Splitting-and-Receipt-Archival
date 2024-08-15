@@ -28,6 +28,7 @@ import * as MediaLibrary from 'expo-media-library';
 function AddFriendPage(props) {
   
   const [isScanning, setIsScanning] = useState(false);
+  const [displayImage, setDisplayImage] = useState(false);
   
   const [permission, requestPermission] = useCameraPermissions();
   const navigation = useNavigation();
@@ -48,18 +49,17 @@ function AddFriendPage(props) {
   const [isTakingPicture, setIsTakingPicture] = useState(false);
 
   useEffect(() => {
-    if (scanned) {
-      // Perform an action when QR code is scanned
-      Alert.alert("QR Code Scanned", `Data: ${barcodeData}`);
+    if (!isScanning) {
+      setImage(null);  // Reset image when scanning is turned off
     }
-  }, [scanned]);
+  }, [isScanning]);
 
 
 
   const handlePress = () => {
-    if (!isTakingPicture) { // Prevent toggling if a picture is being taken
+    if (!isTakingPicture) { 
       setIsScanning((prevState) => !prevState);
-      setScanned(false);  // Reset scanning state when toggling the scanner
+     
     }
   };
 
@@ -79,21 +79,19 @@ function AddFriendPage(props) {
     );
   }
 
-  const takePicture = async() => {
-    if(cameraRef.current) {
+  const takePicture = async () => {
+    if (cameraRef.current && isCameraReady) {
       try {
-        setIsTakingPicture(true); // Indicate that a picture is being taken
-        const picture = await cameraRef.current.takePictureAsync();
-        setImage(picture.uri);
-        setIsScanning(false); // Hide the camera and show the captured image
-      } catch(err) {
-        console.log('Error while taking picture: ', err);
-      }finally {
-        setIsTakingPicture(false); // Reset the flag after the process
+        const result = await cameraRef.current.takePictureAsync();
+        setImage(result.uri); // Set the image URI to the state
+        console.log(image)
+      } catch (error) {
+        console.error("Error taking picture:", error);
       }
+    } else {
+      console.error("Camera reference is null");
     }
-
-  }
+  };
 
   const handleCameraReady = () => {
     setIsCameraReady(true);
@@ -104,6 +102,7 @@ function AddFriendPage(props) {
     setBarcodeData(data);
     setIsScanning(false);  
   };
+  
 
 
   
@@ -152,20 +151,14 @@ function AddFriendPage(props) {
          {isScanning ? (
           <View style={Styles.qrCodeContainer}>
             <CameraView
-                  style={Styles. qrCodeScanner} 
-                  zoom={cameraProps.zoom}
+                  style={Styles. qrCodeScanner}               
                   facing={cameraProps.facing}
-                  flash= {cameraProps.flash}
-                  animateShutter= {cameraProps.animateShutter}
-                  enableTorch= {cameraProps.enableTorch}
                   onCameraReady={handleCameraReady} // Set camera ready state
                   ref = {cameraRef}
-                  onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                  onBarCodeScanned={isScanning ? handleBarCodeScanned : undefined}
                   barcodeScannerSettings={{
                     barcodeTypes: ["qr"]
-                  }}
-                  
-              
+                  }}    
             />
             <TouchableOpacity
               style={Styles.cameraButton2}
@@ -180,10 +173,11 @@ function AddFriendPage(props) {
           </View>
         ) : (
           <View style={Styles.qrCodeContainer}>
-            <Image
-              source={{ uri: image || "your-qr-code-image-url" }} // Replace with your QR code image URI
-              style={Styles.qrCodeScanner}
-            />
+            {image ? (
+					<Image source={{ uri: image }} style={Styles.qrCodePlaceHolder} />
+				) : (
+					<View style={Styles.qrCodePlaceHolder} />
+				)}
           </View>
         )}
 
