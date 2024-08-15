@@ -8,13 +8,13 @@ const User = require('../class/userClass');
 //get a list of users
 //Authorization: Must be logged in. 
 router.get('/', async (req, res) => {
-    const user_list = userAPI.getUsers();
-    return user_list;
+    const user_list = await userAPI.getUsers();
+    res.status(200).json(user_list);
 });
 
 //create a new user
 //Authorization: TODO: Must verify email to successfully create account
-router.get('/add', [
+router.post('/add', [
     body("username", "username must be under 100 characters")
         .trim()
         .isLength({max: 100})
@@ -39,30 +39,35 @@ router.get('/add', [
         .trim()
         .isLength({max: 250})
         .escape(),
-    (req, res, next) => {
+    async (req, res, next) => {
       const errors = validationResult(req);
-      const user = new User({
-        username: req.body.username,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        email: req.body.email,
-        password: req.body.password,
-        profile_description: req.body.profile_description,
-      });
+      const user = new User(
+        req.body.username,
+        req.body.first_name,
+        req.body.last_name,
+        req.body.email,
+        req.body.password,
+        req.body.profile_description,
+      );
   
       if (errors.isEmpty()) {
-        userAPI.addUser(user);
-        
-        res.sendStatus(200).json(JSON.stringify(user));
+        try {
+            await userAPI.addUser(user);
+            res.status(200).json(JSON.stringify(user));
+        }
+        catch (err){
+            res.status(err.code).send(err);
+        }
       }
+      else res.status(400).send(errors);
     }
 ]);
 
 //get information of user with ID
 //Authorization: Must be logged in.
 router.get('/:id', async (req, res) => {
-    const user = userAPI.getUserByID(req.params.id);
-    res.sendStatus(200).json(JSON.stringify(user));
+    const user = await userAPI.getUserByID(req.params.id);
+    res.status(200).json(JSON.stringify(user));
 });
 
 //update user with ID
