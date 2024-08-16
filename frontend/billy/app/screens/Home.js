@@ -65,7 +65,7 @@ function HomePage(props) {
 	
 			const query = new URLSearchParams(params).toString();
 
-			const response = await fetch('/routes/paymentrequests/?${query}', {
+			const response = await fetch('http://localhost:3000/routes/paymentrequests/?${query}', {
 				method: 'GET',
 				headers: {
 					// 'Authorization': '${authToken}' // Add auth token here
@@ -90,7 +90,7 @@ function HomePage(props) {
 	
 			const query = new URLSearchParams(params).toString();
 
-			const response = await fetch('/routes/receipts/?${query}', {
+			const response = await fetch('http://localhost:3000/routes/receipts/?${query}', {
 				method: 'GET',
 				headers: {
 					// 'Authorization': '${authToken}' // Add auth token here
