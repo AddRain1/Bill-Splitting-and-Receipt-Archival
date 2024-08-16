@@ -26,6 +26,13 @@ class itemAPI{
         }
     }
 
+    static async getItemByQuery(query){
+        // Check if the subclass has defined this method
+        if(!this.getItemByQuery){
+            throw new Error("getItemById method must be defined");
+    }
+    }
+
     // Abstract method to be overridden by subclasses
     static async getItemById(id){
         // Check if the subclass has defined this method
@@ -87,6 +94,47 @@ class itemTableAPI extends itemAPI{
         return items;
     }
 
+    //
+    static async getItemByQuery(query){
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+        
+        let results;
+        try {
+            [results] = await connection.execute(query);
+            if (!results) {
+                throw new Error (`No item found with query: ${query}`);
+            }
+        } catch (error) {
+                throw new Error (`error with current query: ${query}`);
+        }
+        
+        if (results.length === 0) {
+            throw new Error("No item found for the given ID");
+        }
+
+        // get item object from results
+        const result = results[0];
+        const item = new Item(
+            result.item_id,
+            result.receipt_id,
+            result.user_id,
+            result.name,
+            result.price,
+            result.created_at   
+        );
+
+
+        // Close connection
+        await connection.end();
+
+        // Return the item object
+        return item;
+    }
     // Override the getItemById method
     // Static async function to get an item by item_id from the database
     static async getItemById(id){

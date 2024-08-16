@@ -11,8 +11,31 @@ const receiptAPI = require('../api/receiptsAPI');
 //get a list of items assigned to the user
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
-    const items = itemAPI.getItems();
-    res.sendStatus(200).json(JSON.stringify(items));
+    if(req.query.receipt_id){
+      const query = `SELECT * FROM items WHERE receipt_id = ${req.query.receipt_id}`;
+      const items = itemAPI.getItemByQuery(query)
+      res.sendStatus(200).json(JSON.stringify(items));
+    }
+    else if(req.query.user_id){
+      const query = `SELECT * FROM items WHERE user_id = ${req.query.user_id}`;
+      const items = itemAPI.getItemByQuery(query)
+      res.sendStatus(200).json(JSON.stringify(items));
+    }
+    else if(req.query.name){
+      const query = `SELECT * FROM items WHERE name LIKE '%${req.query.name}%'`;
+      const items = itemAPI.getItemByQuery(query)
+      res.sendStatus(200).json(JSON.stringify(items));
+    }
+    else if(req.query.price){
+      const query = `SELECT * FROM items WHERE price = ${req.query.price}`;
+      const items = itemAPI.getItemByQuery(query)
+      res.sendStatus(200).json(JSON.stringify(items));
+    }
+    else{
+      const items = itemAPI.getItems();
+      res.sendStatus(200).json(JSON.stringify(items));
+    }
+    
 });
 
 //create a new item
