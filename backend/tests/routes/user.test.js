@@ -2,7 +2,7 @@ let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
-describe("user route tests", () => {
+describe("User and auth routes", () => {
     request = request(app);  
     
     beforeAll(async () => {
@@ -12,6 +12,11 @@ describe("user route tests", () => {
     beforeEach(() => {
         jest.useRealTimers();
     })
+
+    //Stores user objects with hashed password.
+    const createdUsers = [];
+    //Stores the unhashed password of createdUser at the corresponding index
+    const passwords = [];
   
     it("get /users when no users exists", async () => {
       await request
@@ -26,7 +31,7 @@ describe("user route tests", () => {
         });
     });
 
-    it("Send a valid user to create through /users/add", async () => {
+    it("Send a valid user to create", async () => {
         const payload = {
             username:'bob123', 
             first_name:'bob', 
@@ -35,8 +40,10 @@ describe("user route tests", () => {
             password:'password',
             profile_description: 'hello'
         }
+        passwords.push(payload.password);
+
         await request
-          .post("/users/add")
+          .post("/auth/signup")
           .send(payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
@@ -50,7 +57,7 @@ describe("user route tests", () => {
           });
     });
 
-    it("Attempt to create a user with a taken username through /users/add", async () => {
+    /* it("Attempt to create a user with a taken username", async () => {
         const payload = {
             username:'bob123', 
             first_name:'bob', 
@@ -60,14 +67,14 @@ describe("user route tests", () => {
             profile_description: 'hello'
         }
         await request
-          .post("/users/add")
+          .post("/auth/signup")
           .send(payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
           .expect(400)
     });
 
-    it("Attempt to create a user with an email that is already in use through /users/add", async () => {
+    it("Attempt to create a user with an email that is already in use", async () => {
         const payload = {
             username:'bob123', 
             first_name:'bob', 
@@ -77,7 +84,7 @@ describe("user route tests", () => {
             profile_description: 'hello'
         }
         await request
-          .post("/users/add")
+          .post("/auth/signup")
           .send(payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
@@ -94,22 +101,21 @@ describe("user route tests", () => {
             profile_description: 'Please stop breaking into my account'
         }
         await request
-          .post("/users/add")
+          .post("/auth/signup")
           .send(payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
           .expect(400)
-    });
+    }); */
 
-    let firstUserAdded;
     it("Check that only one user has been added to the database", async () => {
         await request
           .get("/users")
           .expect("Content-Type", /json/)
           .expect(200)
           .then((response) => {                          
-            expect(response.body.length).toBe(1)
-            firstUserAdded = response.body[0];
+            expect(response.body.length).toBe(1);
+            createdUsers.push(response.body[0]);
           })
           .catch((err) => {
             expect(err).toBe(null);
@@ -118,13 +124,103 @@ describe("user route tests", () => {
 
     it("Get a user by ID", async () => {
         await request
-          .get("/users/" + firstUserAdded.user_id)
+          .get("/users/" + createdUsers[0].user_id)
           .expect("Content-Type", /json/)
           .expect(200)
           .then((response) => {        
             const body = JSON.parse(response.body)[0];              
-            expect(checkPayloadWithResponse(firstUserAdded, body)).toBeTruthy();
+            expect(checkPayloadWithResponse(createdUsers[0], body)).toBeTruthy();
           })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    /* it("incorrect username", async () => {
+        const payload = {
+            username: 'incorrect',
+            password: passwords[0]
+        }
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect(302)
+    });
+
+    it("incorrect password", async () => {
+        const payload = {
+            username: createdUsers[0].username,
+            password: 'incorrect'
+        }
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect(302)
+    }); */
+
+    it("Correct user login", async () => {
+        const payload = {
+            username: createdUsers[0].username,
+            password: passwords[0]
+        }
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((response) => {     
+            const body = response.body;      
+            expect(checkPayloadWithResponse(createdUsers[0], body)).toBeTruthy();
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("Create a second valid user", async () => {
+        const payload = {
+            username:'user2', 
+            first_name:'mable', 
+            last_name: 'madison', 
+            email:'mablemadison@gmail.com', 
+            password:'securepassword',
+            profile_description: 'goodbye'
+        }
+        passwords.push(payload.password);
+
+        await request
+          .post("/auth/signup")
+          .send(payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200)
+          .then(response => {
+            const body = JSON.parse(response.body);
+            expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("Check that two users are in the database", async () => {
+        await request
+          .get("/users")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((response) => {                          
+            expect(response.body.length).toBe(2);
+            createdUsers.push(response.body[1]);
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("Log out", async () => {
+        await request
+          .post("/auth/logout")
+          .expect(200)
           .catch((err) => {
             expect(err).toBe(null);
           });

@@ -3,7 +3,6 @@ const { body, validationResult } = require("express-validator");
 const router = express.Router();
 
 const userAPI = require('../api/usersAPI');
-const User = require('../class/userClass');
 
 //get a list of users
 //Authorization: Must be logged in. 
@@ -11,57 +10,6 @@ router.get('/', async (req, res) => {
     const user_list = await userAPI.getUsers();
     res.status(200).json(user_list);
 });
-
-//create a new user
-//Authorization: TODO: Must verify email to successfully create account
-router.post('/add', [
-    body("username", "username must be under 100 characters")
-        .trim()
-        .isLength({max: 100})
-        .escape(),
-    body("first_name", "first_name must be under 100 characters")
-        .trim()
-        .isLength({max: 100})
-        .escape(),
-    body("last_name", "last_name must be under 100 characters")
-        .trim()
-        .isLength({max: 100})
-        .escape(),
-    body("email", "email must be a valid email")
-        .trim()
-        .isEmail()
-        .escape(),
-    body("password", "password must be at least 8 characters")
-        .trim()
-        .isLength({min: 8})
-        .escape(),
-    body("profile_description", "profile_description must be 250 characters or less")
-        .trim()
-        .isLength({max: 250})
-        .escape(),
-    async (req, res, next) => {
-      const errors = validationResult(req);
-      const user = new User(
-        req.body.username,
-        req.body.first_name,
-        req.body.last_name,
-        req.body.email,
-        req.body.password,
-        req.body.profile_description,
-      );
-  
-      if (errors.isEmpty()) {
-        try {
-            await userAPI.addUser(user);
-            res.status(200).json(JSON.stringify(user));
-        }
-        catch (err){
-            res.status(err.code).send(err);
-        }
-      }
-      else res.status(400).send(errors);
-    }
-]);
 
 //get information of user with ID
 //Authorization: Must be logged in.

@@ -1,11 +1,10 @@
 const mysql = require("mysql2/promise");
 
 const checkPayloadWithResponse = (payload, response) => {
+    const exempt_properties = ['password'];
     for (const property in payload) {
-        console.log('for the property '+ property);
-        console.log(payload[property]);
-        console.log(response[property]);
-        if(payload[property] != response[property]) return false;
+        if(exempt_properties.includes(property)) continue;
+        else if(payload[property] != response[property]) return false;
     }
     return true;
 }
