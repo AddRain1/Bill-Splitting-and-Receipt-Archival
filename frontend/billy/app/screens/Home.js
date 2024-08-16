@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Alert,
 	Image,
@@ -34,8 +34,75 @@ function HomePage(props) {
 	});
 	const navigation = useNavigation();
 
+	const [outstandingBills, setOutstandingBills] = useState([]);
+	const [recentReceipts, setRecentReceipts] = useState([]);
+	
+	useEffect(() => {
+		async function fetchOutstandingBills() {
+			const bills = await getOutstandingBills();
+			setOutstandingBills(bills); 
+		}
+		async function fetchRecentReceipts() {
+			const receipts = await getRecentReceipts();
+			setRecentReceipts(receipts); 
+		}
+		
+		fetchOutstandingBills();
+		fetchRecentReceipts(); 
+	}, []); 
+
 	if (!font) {
 		return <AppLoading />;
+	}
+
+	async function getOutstandingBills() {
+		try {
+			const params = {
+				limit: 3,
+				sortBy: 'created_at',
+				order: 'desc'
+			};
+	
+			const query = new URLSearchParams(params).toString();
+
+			const response = await fetch('/routes/paymentrequests/?${query}', {
+				method: 'GET',
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
+				}
+			});
+
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error('Error:', error);
+			return [];
+		}
+	}
+
+	async function getRecentReceipts() {
+		try {
+			const params = {
+				limit: 3,
+				sortBy: 'created_at',
+				order: 'desc'
+			};
+	
+			const query = new URLSearchParams(params).toString();
+
+			const response = await fetch('/routes/receipts/?${query}', {
+				method: 'GET',
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
+				}
+			});
+
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error('Error:', error);
+			return [];
+		}
 	}
 
 	return (
@@ -43,7 +110,7 @@ function HomePage(props) {
 			<WelcomeBar />
 			<TouchableOpacity
 				style={styles.settingsButton}
-				onPress={() => navigation.navigate("LogIn")}
+				onPress={() => navigation.navigate("Settings")}
 			>
 				<Octicons name="gear" size={32} color={"#008080"} />
 			</TouchableOpacity>
@@ -80,7 +147,28 @@ function HomePage(props) {
 						</TouchableOpacity>
 					</View>
 
-					<View style={styles.Placeholder} />
+					<View style={styles.Placeholder} > 
+						{outstandingBills.map((prop) => {
+							return (
+								<SafeAreaView style={[styles.listRow, {}]} key={prop.receipt_id}>
+									<Text
+										style={[styles.caption, { fontSize: 14 }]}
+										key={prop.receipt_id}
+									>
+										{" "}
+										{prop.receipt_name}{" "}
+									</Text>
+									<Text
+										style={[styles.caption, { fontSize: 14 }]}
+										key={prop.receipt_id}
+									>
+										{" "}
+										${prop.created_at}{" "}
+									</Text>
+								</SafeAreaView>
+							);
+						})}
+					</View>
 				</View>
 
 				<View style={styles.summaryContainers}>
@@ -98,8 +186,29 @@ function HomePage(props) {
 							/>
 						</TouchableOpacity>
 					</View>
+					<View style={styles.Placeholder} >
+						{recentReceipts.map((prop) => {
+							return (
+								<SafeAreaView style={[styles.listRow, {}]} key={prop.receipt_id}>
+									<Text
+										style={[styles.caption, { fontSize: 14 }]}
+										key={prop.receipt_id}
+									>
+										{" "}
+										{prop.receipt_name}{" "}
+									</Text>
+									<Text
+										style={[styles.caption, { fontSize: 14 }]}
+										key={prop.receipt_id}
+									>
+										{" "}
+										${prop.created_at}{" "}
+									</Text>
+								</SafeAreaView>
+							);
+						})}
 
-					<View style={styles.Placeholder} />
+					</View>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
