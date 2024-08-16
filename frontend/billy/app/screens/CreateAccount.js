@@ -11,12 +11,13 @@ import {
 	PlayfairDisplay_800ExtraBold_Italic,
 	PlayfairDisplay_900Black,
 	PlayfairDisplay_900Black_Italic,
-	useFonts,
 } from "@expo-google-fonts/playfair-display";
-import { NavigationContainer } from "@react-navigation/native";
+import { useFonts } from "expo-font";  // Correct import for useFonts
+import { useNavigation, NavigationContainer } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import CustomInput from '../assets/CustomInput';
 import {
 	Alert,
 	SafeAreaView,
@@ -25,8 +26,11 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
+
 } from "react-native";
 import styles from "../styles";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 function CreateAccount(props) {
 	const [font] = useFonts({
@@ -40,17 +44,50 @@ function CreateAccount(props) {
 	const [retypePassword, setRetypePassword] = useState("");
 	const navigation = useNavigation();
 
-	const handleSignUp = () => {
-		Alert.alert(
-			"Account Created",
-			"Your account has been created. You can now log in.",
-			[
-				{
+	const handleSignUp = async () => {
+		if (!email || !username || !firstName || !lastName || !password || !retypePassword) {
+			Alert.alert("Error", "Please fill out all fields.");
+			return;
+		  }
+		if (password !== retypePassword) {
+		    Alert.alert("Error", "Passwords do not match.");
+			return;
+	    }
+	  
+
+		try {
+			const response = await fetch("http://localhost:5000/users/add", {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify({
+				email,
+				username,
+				firstName,
+				lastName,
+				password,
+			  }),
+			});
+	  
+			if (response.ok) {
+			  Alert.alert(
+				"Account Created",
+				"Your account has been created. You can now log in.",
+				[
+				  {
 					text: "OK",
 					onPress: () => navigation.navigate("LogIn"),
-				},
-			],
-		);
+				  },
+				]
+			  );
+			} else {
+			  const errorData = await response.json();
+			  Alert.alert("Error", errorData.error || "Failed to create account.");
+			}
+		  } catch (error) {
+			Alert.alert("Error", "Something went wrong. Please try again later.");
+		  }
 	};
 	if (!font) {
 		return <AppLoading />;
