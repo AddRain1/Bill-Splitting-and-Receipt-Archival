@@ -9,8 +9,25 @@ const accessHelper = require("../helpers/access.js");
 //get a list of expense rates for the receipts that the user has access to.
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
-    const expense_rates = accessHelper.get_accessible_expense_rates(req.user);
-    res.json(JSON.stringify(expense_rates));
+    if(req.query.receipt_id){
+        const query = `WHERE receipt_id = ${req.query.receipt_id}`;
+        const expense_rates = expenseRateAPI.getExpenseRate(query);
+        res.sendStatus(200).json(JSON.stringify(expense_rates));
+    }
+    else if(req.query.name){
+        const query = `WHERE name LIKE '%${req.query.name}%'`;
+        const expense_rates = expenseRateAPI.getExpenseRate(query);
+        res.sendStatus(200).json(JSON.stringify(expense_rates));
+    }
+    else if(req.query.percentage){
+        const query = `WHERE percentage = ${req.query.percentage}`;
+        const expense_rates = expenseRateAPI.getExpenseRate(query);
+        res.sendStatus(200).json(JSON.stringify(expense_rates));
+    }
+    else{
+        const expense_rates = accessHelper.get_accessible_expense_rates(req.user);
+        res.json(JSON.stringify(expense_rates));
+    }
 });
 
 //create a new expense rate
