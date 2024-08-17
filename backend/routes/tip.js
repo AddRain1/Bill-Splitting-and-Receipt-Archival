@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 //create a new tip
 //Authorization: Must have access to the receipt that the tip is assigned to. 
-router.get('/add', [
+router.post('/add', [
     async (req, res) => {
         //check if user has access to receipt
         if(!accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
@@ -33,8 +33,9 @@ router.get('/add', [
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .matches(/^\d+.{0,1}\d{0,2}$/)
         .escape(),
-    (req, res, next) => {
+    async (req, res) => {
       const errors = validationResult(req);
+
       const tip = new Tip({
         receipt_id: req.body.receipt_id,
         name: req.body.name,
@@ -42,26 +43,30 @@ router.get('/add', [
       });
   
       if (errors.isEmpty()) {
-        tipAPI.addTip(tip);
-        
+        await tipAPI.addTip(tip);
         res.sendStatus(200).json(JSON.stringify(tip));
       }
     }
 ]);
 
-//get information of tip with ID
+//get information of tip with ID    
 //Authorization: Must have access to the receipt that the tip is assigned to.
 router.get('/:id', async (req, res) => {
-    if(!accessHelper.check_tip_accesible(req.user, req.params.id)) res.sendStatus(401).json({msg: 'User must have access to the receipt that the tip is assigned to'});
+    if(!accessHelper.check_tip_accesible(req.user, req.params.id)) {
+        res.sendStatus(401).json({msg: 'User must have access to the receipt that the tip is assigned to'});
+    }
     else {
         const tip = tipAPI.getTipById(req.params.id);
+        if (!tip) {
+            return res.status(404).json({ msg: 'Tip not found.' });
+        }
         res.sendStatus(200).json(JSON.stringify(tip));
     }
 });
 
 //update tip with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/update', [
+router.put('/:id/update', [
     body("name", "name must be 100 characters max")
         .trim()
         .isLength({max: 100})
@@ -71,33 +76,45 @@ router.get('/:id/update', [
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .matches(/^\d+.{0,1}\d{0,2}$/)
         .escape(),
-    (req, res, next) => {
+    async (req, res) => {
       const errors = validationResult(req);
-      const tip = tipAPI.getTipById(req.params.id);
-
-      if (errors.isEmpty()) {
-        const receipt = receiptAPI.getReceiptByID(tip.receipt_id)
-        if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be admin of the receipt.'});
-        else {
-            if(req.body.name) tipAPI.changeTip(req.params.id, "name", req.body.name);
-            if(req.body.amount) tipAPI.changeTip(req.params.id, "amount", req.body.amount);
-        }
-        
-        res.sendStatus(200).json(JSON.stringify(tip));
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
       }
+
+      const tip = tipAPI.getTipById(req.params.id);
+      if (!tip) {
+        return res.status(404).json({ msg: 'Tip not found.' });
+      }
+
+
+        const receipt = await receiptAPI.getReceiptByID(tip.receipt_id);
+        if (receipt.admin_id !== req.user) {
+            return res.status(401).json({ msg: 'User must be admin of the receipt.' });
+        }
+
+        if (req.body.name) await tipAPI.changeTip(req.params.id, "name", req.body.name);
+        if (req.body.amount) await tipAPI.changeTip(req.params.id, "amount", req.body.amount);
+
+        res.status(200).json(tip);
     }
 ]);
 
 //delete tip with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/delete', async (req, res) => {
-    const tip = tipAPI.getTipById(req.params.id);
-    const receipt = receiptAPI.getReceiptByID(tip.receipt_id)
-    if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete a tip from the receipt'});
-    else {
-      tipAPI.deleteTip(req.params.id);
-      res.sendStatus(200).json(JSON.stringify(tip));
+router.delete('/:id/delete', async (req, res) => {
+    const tip = await tipAPI.getTipById(req.params.id);
+    if (!tip) {
+        return res.status(404).json({ msg: 'Tip not found.' });
     }
+
+    const receipt = await receiptAPI.getReceiptByID(tip.receipt_id);
+    if (receipt.admin_id !== req.user) {
+        return res.status(401).json({ msg: 'User must be an admin to delete a tip from the receipt.' });
+    }
+
+    await tipAPI.deleteTip(req.params.id);
+    res.status(200).json({ msg: 'Tip deleted successfully.' });
 });
 
 module.exports = router;
