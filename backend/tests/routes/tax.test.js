@@ -2,44 +2,45 @@ let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
-describe("tip route tests", () => {
+describe("tax route tests", () => {
     const agent = request(app);  
     
     beforeAll(async () => {
-        await clearTable('tips');
+        await clearTable('taxes');
     })
 
     beforeEach(() => {
         jest.useRealTimers();
     })
 
-    it("GET /tips when no tips exist", async () => {
+    it("GET /tax when no taxes exist", async () => {
         await agent
-        .get("/tips")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .then((response) => {                          
-            expect(response.body.length).toBe(0)
-        })
-        .catch((err) => {
-            expect(err).toBe(null);
-        });
+            .get("/taxes")
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.length).toBe(0)
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
     });
 
-    it("POST /tips/add - create a valid tip", async () => {
+    it("POST /taxes/add - create a valid tax", async () => {
         const payload = {
+            receipt_id: '20240715000000',
             name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
+            percentage: '0.08'
         }
+
         await agent
-            .post("/tips/add")
+            .post("/taxes/add")
             .query(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .expect(200)
+            .expect(201)
             .then(response => {
-                const body = JSON.parase(response.body);
+                const body = JSON.parse(response.text);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
             })
             .catch((err) => {
@@ -47,34 +48,34 @@ describe("tip route tests", () => {
             });
     });
 
-    it("GET /tips/:id - get a tip by ID", async () => {
+    it("GET /taxes/:id - get a tax by ID", async () => {
         const payload = {
+            receipt_id: '20240715000000',
             name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
-        };
+            percentage: '0.08'
+        }
 
-        let tip_id;
+        let tax_id;
 
-        // Create the tip
+        // Create tax
         await agent
-            .post("/tips/add")
+            .post("/taxes/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                tax_id = body.tax_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
-        
-        // Retrive tip by id
+
+        // Attempt to retrieve tax by id
         await agent
-            .get(`/tips/${tip_id}`)
-            .expect("Content-Type", /json/)
+            .get(`/taxes/${tax_id}`)
+            .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
                 const body = JSON.parse(response.text);
@@ -85,39 +86,39 @@ describe("tip route tests", () => {
             });
     });
 
-    it("PUT /tips/:id/update - update a tip", async () => {
+    it("PUT /taxes/:id/update - update a tax", async () => {
         const payload = {
+            receipt_id: '20240715000000',
             name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
+            percentage: '0.08'
         };
 
         const updatedPayload = {
+            receipt_id: '20240715000000',
             name: 'updatedname',
-            amount: '10.36',
-            receipt_id: '20240715000000'
+            percentage: '8.00'
         };
 
-        let tip_id;
+        let tax_id;
 
-        //Create tip
+        // Create a tax
         await agent
-            .post("/tips/add")
+            .post("/taxes/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                tax_id = body.tax_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
 
-        // Update the tip
+        // Update the tax
         await agent
-            .put(`/tips/${tip_id}/update`)
+            .put(`/taxes/${tax_id}/update`)
             .send(updatedPayload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
@@ -131,36 +132,36 @@ describe("tip route tests", () => {
             });
     });
 
-    it("DELETE /tips/:id/delete - delete a tip", async () => {
+    it("DELETE /taxes/:id/delete - delete a tax", async () => {
         const payload = {
+            receipt_id: '20240715000000',
             name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
+            percentage: '0.08'
         };
 
-        let tip_id;
+        let tax_id;
 
-        // Create a tip
+        // Create a tax
         await agent
-            .post("/tips/add")
+            .post("/taxes/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                tax_id = body.tax_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
         
-        // Delete the tip
+        // Delete the tax
         await agent
-            .delete(`tips/${tip_id}/delete`)
+            .delete(`taxes/${tax_id}/delete`)
             .expect(200)
             .then(response => {
-                expect(response.body.msg).toBe('Tip deleted successfully.');
+                expect(response.body.msg).toBe('Tax deleted successfully.');
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -168,10 +169,11 @@ describe("tip route tests", () => {
         
         // Verify the deletion
         await agent
-            .get(`/tips/${tip_id}`)
+            .get(`/taxes/${tax_id}`)
             .expect(404)
             .catch((err) => {
                 expect(err).toBe(null);
             });
     });
+
 });

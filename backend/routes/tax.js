@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 //create a new tax
 //Authorization: Must have access to the receipt that the tax is assigned to. 
-router.get('/add', [
+router.post('/add', [
     async (req, res) => {
         //check if user has access to receipt
         if(!accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
@@ -32,7 +32,7 @@ router.get('/add', [
         .trim()
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .escape(),
-    (req, res, next) => {
+    (req, res) => {
       const errors = validationResult(req);
       const tax = new Tax({
         receipt_id: req.body.receipt_id,
@@ -59,7 +59,7 @@ router.get('/:id', async (req, res) => {
 
 //update tax with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/update', [
+router.put('/:id/update', [
     body("name", "name must be 100 characters max")
         .trim()
         .isLength({max: 100})
@@ -68,7 +68,7 @@ router.get('/:id/update', [
         .trim()
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .escape(),
-    (req, res, next) => {
+    (req, res) => {
       const errors = validationResult(req);
       const tax = taxAPI.getTaxByID(req.params.id);
 
@@ -87,7 +87,7 @@ router.get('/:id/update', [
 
 //delete tax with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/delete', async (req, res) => {
+router.delete('/:id/delete', async (req, res) => {
     const tax = taxAPI.getTaxByID(req.params.id);
     const receipt = receiptAPI.getReceiptByID(tax.receipt_id)
     if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete a tax from the receipt'});
