@@ -17,11 +17,11 @@ import {
 } from "react-native";
 import { Octicons } from "react-native-vector-icons";
 import WelcomeBar from "../assets/WelcomeBar";
-import Styles from "../styles.js";
+import Styles from "../styles";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import NavigationBar from "../assets/NavigationBar";
-import { COLORS } from "../assets/colors.js";
+import COLORS from "../assets/colors.js";
 import BillsPage from "./BillsPage";
 import ReceiptsArchivePage from "./ReceiptsArchivePage";
 

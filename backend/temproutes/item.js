@@ -1,53 +1,34 @@
-import express from 'express';
-import mysql from 'mysql2/promise';
-
+const express = require('express');
 const router = express.Router();
 
-import dotenv from 'dotenv';
+//get a list of items assigned to the user
+//Authorization: Must be logged in.
+router.get('/', async (req, res) => {
 
-dotenv.config();
-
-const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
 });
 
-router.post('/saveItem', async (req, res) => {
-    try {
-        const { item } = req.body;
+//create a new item
+//Authorization: Must have access to the receipt that the item is assigned to. 
+router.get('/add', async (req, res) => {
 
-        if (!item) {
-            return res.status(400).json({ message: 'Item content is required'});
-        }
-
-       // Get the items with same receipt_id from the database
-       const itemQuery = 'SELECT * FROM items WHERE receipt_id = ?';
-       const itemParams = [item.receipt_id];
-       
-       // Check if the item already exists
-       const getInfo = await connection.execute(itemQuery, itemParams);
-       const exist = getInfo[0].length > 0;
-       
-        if(exist){
-           // Throw an error if the receipt already exists
-           throw new Error("Item already exist");
-        }
-
-        // Execute the query to insert the new item into the database
-        const query = 'INSERT INTO items (receipt_id, item_name, item_price, item_payee) VALUES (?, ?, ?, ?)';
-        const params = [item.receipt_id, 
-            item.name, 
-            item.price,
-            item.payee];
-        await connection.execute(query, params);
-
-        res.status(201).json({ message: 'Item saved successfully'});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'An error occurred while saving the Item' });
-    }
 });
 
-export default router;
+//get information of item with ID
+//Authorization: Must have access to the receipt that the item is assigned to.
+router.get('/:id', async (req, res) => {
+
+});
+
+//update item with ID
+//Authorization: Must be an admin of the receipt
+router.get('/:id/update', async (req, res) => {
+
+});
+
+//delete item with ID
+//Authorization: Must be an admin of the receipt
+router.get('/:id/delete', async (req, res) => {
+
+});
+
+module.exports = router;

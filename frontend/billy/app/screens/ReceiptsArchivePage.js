@@ -14,7 +14,7 @@ import {
 	View,
 } from "react-native";
 import { SearchBar } from "react-native-elements";
-import { COLORS } from "../assets/colors.js";
+import COLORS from "../assets/colors.js";
 import Styles from "../styles.js";
 //import { getAllReceipts } from '../../../../backend/src/receiptsAPI';
 

@@ -1,44 +1,34 @@
-import express from 'express';
-import mysql from 'mysql2/promise';
-
+const express = require('express');
 const router = express.Router();
 
-import dotenv from 'dotenv';
+//get a list of expense rates for the receipts that the user has access to.
+//Authorization: Must be logged in.
+router.get('/', async (req, res) => {
 
-dotenv.config();
-
-const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
 });
 
-router.post('/saveExpRate', async (req, res) => {
-    try {
-        const { expense_rate } = req.body;
+//create a new expense rate
+//Authorization: Must have access to the receipt that the expense rate is assigned to. 
+router.get('/add', async (req, res) => {
 
-        if (!expense_rate) {
-            return res.status(400).json({ message: 'Text content is required'});
-        }
-
-        const ERQuery = 'SELECT * FROM expense_rate WHERE receipt_id = ?';
-        const ERParams = [expense_rate.receipt_id];
-        
-        // Check if the expense rate with receipt_id already exists
-        const getInfo = await connection.execute(ERQuery, ERParams);
-        const exist = getInfo[0].length > 0;
-        
-        if(exist){
-            // Throw an error if the expense rate already exists
-            throw new Error("expense rate already exist");
-        }
-
-        res.status(201).json({ message: 'ExpRate saved successfully'});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'An error occurred while saving the ExpRate' });
-    }
 });
 
-export default router;
+//get information of expense rate with ID
+//Authorization: Must have access to the receipt that the expense rate is assigned to.
+router.get('/:id', async (req, res) => {
+
+});
+
+//update expense rate with ID
+//Authorization: Must be an admin of the receipt
+router.get('/:id/update', async (req, res) => {
+
+});
+
+//delete expense rate with ID
+//Authorization: Must be an admin of the receipt
+router.get('/:id/delete', async (req, res) => {
+
+});
+
+module.exports = router;

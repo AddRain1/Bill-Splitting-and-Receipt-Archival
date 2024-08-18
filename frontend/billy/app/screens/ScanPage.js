@@ -17,6 +17,8 @@ import Tesseract from "tesseract.js";
 import NavigationBar from "../assets/NavigationBar";
 import colors from "../assets/colors.js";
 import Styles from "../styles.js";
+import colors from "../assets/colors.js";
+import Styles from "../styles.js";
 
 function ScanPage(props) {
 	const [image, setImage] = useState("");

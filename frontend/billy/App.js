@@ -13,12 +13,12 @@ import {
 	PlayfairDisplay_900Black_Italic,
 	useFonts,
 } from "@expo-google-fonts/playfair-display";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import NavigationBar from "./app/assets/NavigationBar";
 import BillsPage from "./app/screens/BillsPage";
 import CreateAccount from "./app/screens/CreateAccount";
 import ForgotPassword from "./app/screens/ForgotPassword";
-import HomePage from "./app/screens/Home";
 import LogIn from "./app/screens/LogIn";
 import ReceiptsArchivePage from "./app/screens/ReceiptsArchivePage";
 import ResetPassword from "./app/screens/ResetPassword";
