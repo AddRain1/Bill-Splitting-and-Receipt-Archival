@@ -5,12 +5,14 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	ScrollView,
 } from "react-native";
 import Styles from "../styles";
 
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
 	const [sortOption, setSortOption] = useState("date"); // 'date', 'group', 'person'
+	const [bills, setBills] = useState([]);
 
 	const sortBills = (bills, option) => {
 		switch (option) {
@@ -25,6 +27,24 @@ function BillsPage(props) {
 				return bills;
 		}
 	};
+
+	async function loadBills() {
+		try {
+			const response = await fetch('http://localhost:3000/routes/paymentrequests/', {
+				method: 'GET',
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
+				},
+			});
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
+
+	loadBills();
+	setBills(sortBills(sortOption));
 
 	return (
 		<View style={Styles.container}>
@@ -104,6 +124,21 @@ function BillsPage(props) {
 					</TouchableOpacity>
 				</View>
 			</View>
+			<ScrollView style={Styles.scrollContainer} >
+				{bills.map((bill) => {
+					return (
+						<SafeAreaView key={bill.receipt_id}>
+							<Text key={bill.receipt_id}>
+								{bill.receipt_name}
+							</Text>
+							<Text key={bill.receipt_id}>
+								{bill.created_at}
+							</Text>
+						</SafeAreaView>
+					);
+				})}
+
+			</ScrollView>
 		</View>
 	);
 }
