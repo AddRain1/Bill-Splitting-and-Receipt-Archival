@@ -42,7 +42,7 @@ function AddFriendPage(props) {
 
   const [image,setImage]= useState(null);
 
-  const cameraRef = useRef(null);
+  cam
   const [isCameraReady, setIsCameraReady] = useState(false); // Add camera readiness state
   const [barcodeData, setBarcodeData] = useState(null);
   const [scanned, setScanned] = useState(false);
