@@ -56,7 +56,7 @@ function CreateAccount(props) {
 	  
 
 		try {
-			const response = await fetch("http://localhost:5000/users/add", {
+			const response = await fetch("http://132.249.238.159/users/add", {
 			  method: "POST",
 			  headers: {
 				"Content-Type": "application/json",
