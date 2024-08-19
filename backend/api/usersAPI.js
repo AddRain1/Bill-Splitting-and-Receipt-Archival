@@ -74,7 +74,8 @@ class userTable_api extends user_api{
     }
 
     static async getUserByID(user_id){
-        return this.getUsers('WHERE user_id = ' + user_id);
+        const users = await this.getUsers('WHERE user_id = ' + user_id);
+        return users[0];
     }
 
     // Override the addUser method
@@ -125,13 +126,11 @@ class userTable_api extends user_api{
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         });
-        // Get all the user
-        const users = await userTable_api.getUsers();
-        // Check if the user already exists
-        const exist = users.find(u => u.user_id === user_id)
-        if(!exist) throw new Error("User doesn't exists");
+        // Get the user
+        const users = await userTable_api.getUserByID(user_id);
+        if(!users) throw new Error("User doesn't exists");
         // Execute the query to update tips amount in the database
-        const query = 'UPDATE users SET' +  property_name + '= ? WHERE user_id = ?';
+        const query = 'UPDATE users SET ' +  property_name + ' = ? WHERE user_id = ?';
         const params = [property_value, user_id];
         const [results] = await connection.execute(query, params);
     }
@@ -144,11 +143,9 @@ class userTable_api extends user_api{
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         });
-        // Get all the users
-        const users = await userTable_api.getUsers();
-        // Check if the user already exists
-        const exist = users.find(u => u.user_id === user_id)
-        if(!exist) throw new Error("User doesn't exist");
+        // Get the user
+        const users = await userTable_api.getUserByID(user_id);
+        if(!users) throw new Error("User doesn't exists");
 
         // Execute the query to delete the tip with receipt_id from the database
         const query = 'DELETE FROM users WHERE user_id = ?'
