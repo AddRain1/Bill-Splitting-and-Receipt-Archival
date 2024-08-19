@@ -97,7 +97,7 @@ class groupTableAPI extends groupAPI{
     //Optional query to select from groups
     static async getGroups(query){
         // Execute the query to get all the groups from the database
-        const [results] = await connection.execute('SELECT * FROM group WHERE group_id = ?');
+        const [results] = await connection.execute('SELECT * FROM group ' + query);
         
         // get group object from results
         const groupObj = results.map(result => new Group(

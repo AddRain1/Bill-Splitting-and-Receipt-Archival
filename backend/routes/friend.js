@@ -47,7 +47,7 @@ router.get('/add', async (req, res) => {
 //Authorization: Must be logged in. If the user not the requester or the receiver, only has access if the friend request was accepted.
 router.get('/:id', async (req, res) => {
     const friend = friendsAPI.getFriendById(req.user, req.params.id);
-    if(!accessHelper.check_friend_accesible(req.user, req.params.id)){
+    if(!accessHelper.check_friend_accesible_for_request(req.user, req.params.id)){
         res.sendStatus(401).json({msg: 'User must accept the friend request and be the requester or the receiver'});
     }
     else res.sendStatus(200).json(JSON.stringify(friend));
@@ -69,7 +69,7 @@ router.get('/:id/update', async (req, res) => {
 //delete friend with ID
 //Authorization: Must be the receiver or the requester.
 router.get('/:id/delete', async (req, res) => {
-    if(!accessHelper.check_friend_accesible(req.user, req.params.id)){
+    if(!accessHelper.check_friend_accesible_for_delete(req.user, req.params.id)){
         res.sendStatus(401).json({msg: 'User must be the requester or the receiver'});
     }
     else{

@@ -9,8 +9,20 @@ const accessHelper = require('../helpers/access');
 //get a list of groups that the user is part of
 //Authorization: Must be logged in. Can only see groups that they are a member of. 
 router.get('/', async (req, res) => {
-    const groups = accessHelper.get_accessible_groups(req.user);
-    res.json(JSON.stringify(groups));
+    if(req.query.admin_id){
+        const query = `WHERE admin_id = ${req.query.admin_id}`
+        const groups = groupAPI.getGroups(query)
+        res.sendStatus(200).json(JSON.stringify(groups));
+    }
+    else if(req.query.name){
+        const query = `WHERE name LIKE '%${req.query.name}%'`
+        const groups = groupAPI.getGroups(query);
+        res.sendStatus(200).json(JSON.stringify(groups));
+    }
+    else {
+        const groups = accessHelper.get_accessible_groups(req.user);
+        res.json(JSON.stringify(groups));
+    }
 });
 
 //create a new group
