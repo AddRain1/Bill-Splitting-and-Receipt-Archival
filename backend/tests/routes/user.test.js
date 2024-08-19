@@ -2,13 +2,16 @@ let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 const usersAPI = require('../../api/usersAPI');
-const bcrypt = require('bcrypt');
 
 describe("User and auth routes", () => {
     request = request.agent(app);  
     
     beforeAll(async () => {
         await clearTable('users');
+    })
+
+    afterAll(async () => {
+      await clearTable('users');
     })
 
     beforeEach(() => {
