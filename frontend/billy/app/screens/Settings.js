@@ -55,6 +55,7 @@ function Settings(props) {
 		setIsSummaryEnabled((previousState) => !previousState);
 
 	const handleUpdate = () => {
+		updateProfile();
 		Alert.alert("Profile Updated", "Your profile has been updated.", [
 			{
 				text: "OK",
@@ -70,7 +71,7 @@ function Settings(props) {
 			[
 				{
 					text: "Confirm",
-					onPress: () => navigation.navigate("LogIn"),
+					onPress: () => handleDelete(),
 				},
 				{
 					text: "Cancel",
@@ -79,6 +80,42 @@ function Settings(props) {
 			],
 		);
 	};
+
+	async function updateProfile() {
+		try {
+			const updateData = {
+				username: username,
+				first_name: firstName,
+				last_name: lastName,
+				email: email,
+				password: password,
+			}
+			const response = await fetch('http://localhost:3000/routes/user/${id}/update', {
+				method: 'PUT',
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
+				},
+				body: JSON.stringify(updateData),
+			});
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
+
+	async function handleDelete() {
+		try {
+			const response = await fetch('http://localhost:3000/routes/user/${id}/delete', {
+				method: 'DELETE',
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
+				}
+			});
+
+			navigation.navigate("LogIn")
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
 
 	return (
 		<SafeAreaView style={styles.container}>
