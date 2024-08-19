@@ -41,8 +41,8 @@ app.use(session({
   store: new SQLiteStore({ db: 'sessions.db', dir: './db' })
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
 passport.serializeUser((user, done) => done(null, user.user_id));
 passport.deserializeUser(async (id, done) => {
@@ -51,7 +51,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 function checkUser(req, res, next) {
-  //if (!req.session.name) res.redirect('/auth/login');
+  if(!req.isAuthenticated()) res.status(401).json({msg: 'Must be logged in to access this resource'});
   next();
 }
 

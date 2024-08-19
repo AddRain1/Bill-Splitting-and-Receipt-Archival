@@ -1,9 +1,11 @@
 let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
+const usersAPI = require('../../api/usersAPI');
+const bcrypt = require('bcrypt');
 
 describe("User and auth routes", () => {
-    request = request(app);  
+    request = request.agent(app);  
     
     beforeAll(async () => {
         await clearTable('users');
@@ -13,25 +15,15 @@ describe("User and auth routes", () => {
         jest.useRealTimers();
     })
 
-    //Stores user objects with hashed password.
+    //Stores payload of created users
     const createdUsers = [];
-    //Stores the unhashed password of createdUser at the corresponding index
-    const passwords = [];
   
-    it("get /users when no users exists", async () => {
-      await request
-        .get("/users")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .then((response) => {                          
-          expect(response.body.length).toBe(0)
-        })
-        .catch((err) => {
-          expect(err).toBe(null);
-        });
+    it("Check initial users table is empty", async () => {
+        const users = await usersAPI.getUsers();
+        expect(users.length).toBe(0);
     });
 
-    it("Send a valid user to create", async () => {
+    it("POST a valid user to create", async () => {
         const payload = {
             username:'bob123', 
             first_name:'bob', 
@@ -40,7 +32,7 @@ describe("User and auth routes", () => {
             password:'password',
             profile_description: 'hello'
         }
-        passwords.push(payload.password);
+        createdUsers.push(payload);
 
         await request
           .post("/auth/signup")
@@ -57,7 +49,7 @@ describe("User and auth routes", () => {
           });
     });
 
-    /* it("Attempt to create a user with a taken username", async () => {
+    it("Attempt to create a user with a taken username", async () => {
         const payload = {
             username:'bob123', 
             first_name:'bob', 
@@ -106,40 +98,26 @@ describe("User and auth routes", () => {
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
           .expect(400)
-    }); */
+    }); 
 
-    it("Check that only one user has been added to the database", async () => {
+    it("GET users before logging in", async () => {
         await request
           .get("/users")
-          .expect("Content-Type", /json/)
-          .expect(200)
-          .then((response) => {                          
-            expect(response.body.length).toBe(1);
-            createdUsers.push(response.body[0]);
-          })
-          .catch((err) => {
-            expect(err).toBe(null);
-          });
+          .expect(401)
     });
 
-    it("Get a user by ID", async () => {
+    it("GET user by ID before logging in", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
         await request
-          .get("/users/" + createdUsers[0].user_id)
-          .expect("Content-Type", /json/)
-          .expect(200)
-          .then((response) => {        
-            const body = JSON.parse(response.body)[0];              
-            expect(checkPayloadWithResponse(createdUsers[0], body)).toBeTruthy();
-          })
-          .catch((err) => {
-            expect(err).toBe(null);
-          });
+          .get("/users/" + userID)
+          .expect(401)
     });
 
-    /* it("incorrect username", async () => {
+    it("Login with incorrect username", async () => {
         const payload = {
             username: 'incorrect',
-            password: passwords[0]
+            password: createdUsers[0].password
         }
         await request
           .post("/auth/login")
@@ -147,7 +125,7 @@ describe("User and auth routes", () => {
           .expect(302)
     });
 
-    it("incorrect password", async () => {
+    it("Login with incorrect password", async () => {
         const payload = {
             username: createdUsers[0].username,
             password: 'incorrect'
@@ -156,12 +134,12 @@ describe("User and auth routes", () => {
           .post("/auth/login")
           .send(payload)
           .expect(302)
-    }); */
+    });
 
-    it("Correct user login", async () => {
+    it("Login with correct username/password", async () => {
         const payload = {
             username: createdUsers[0].username,
-            password: passwords[0]
+            password: createdUsers[0].password
         }
         await request
           .post("/auth/login")
@@ -170,7 +148,36 @@ describe("User and auth routes", () => {
           .expect(200)
           .then((response) => {     
             const body = response.body;      
-            expect(checkPayloadWithResponse(createdUsers[0], body)).toBeTruthy();
+            expect(createdUsers[0].username).toBe(body.username);
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("GET users when only one is in database", async () => {
+        await request
+          .get("/users")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((response) => {                          
+            expect(response.body.length).toBe(1);
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("GET a user by ID", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
+        await request
+          .get("/users/" + userID)
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((response) => {        
+            const body = JSON.parse(response.body);    
+            expect(createdUsers[0].username).toBe(body.username);
           })
           .catch((err) => {
             expect(err).toBe(null);
@@ -186,7 +193,7 @@ describe("User and auth routes", () => {
             password:'securepassword',
             profile_description: 'goodbye'
         }
-        passwords.push(payload.password);
+        createdUsers.push(payload);
 
         await request
           .post("/auth/signup")
@@ -203,19 +210,85 @@ describe("User and auth routes", () => {
           });
     });
 
-    it("Check that two users are in the database", async () => {
+    it("GET when two users are in the database", async () => {
         await request
           .get("/users")
           .expect("Content-Type", /json/)
           .expect(200)
           .then((response) => {                          
             expect(response.body.length).toBe(2);
-            createdUsers.push(response.body[1]);
           })
           .catch((err) => {
             expect(err).toBe(null);
           });
     });
+
+    it("Attempt to update a user that we are not logged in as", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[1].user_id;
+
+        const payload = {
+            profile_description: 'entirely new'
+        }
+
+        await request
+          .post("/users/" + userID + '/update')
+          .send(payload)
+          .expect(401)
+    });
+
+    it("Update the profile description of a user we are logged in as", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
+
+        const payload = {
+            profile_description: 'entirely new'
+        }
+
+        await request
+          .post("/users/" + userID + '/update')
+          .send(payload)
+          .expect(200)
+          .then(() => {           
+            usersAPI.getUserByID(userID)
+                .then(user => expect(user.profile_description).toBe(payload.profile_description));
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("Update the password of a user we are logged in as with an incorrect old password", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
+
+        const payload = {
+            old_password: 'incorrect',
+            new_password: 'newvalidpassword'
+        }
+
+        await request
+          .post("/users/" + userID + '/update')
+          .send(payload)
+          .expect(400)
+    }, 8000);
+
+    it("Update the password of a user we are logged in as with a correct old password", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
+
+        const payload = {
+            old_password: createdUsers[0].password,
+            new_password: 'newvalidpassword'
+        }
+
+        createdUsers[0].password = payload.new_password;
+
+        await request
+          .post("/users/" + userID + '/update')
+          .send(payload)
+          .expect(200)
+    }, 8000);
 
     it("Log out", async () => {
         await request
@@ -224,5 +297,46 @@ describe("User and auth routes", () => {
           .catch((err) => {
             expect(err).toBe(null);
           });
+    });
+
+    it("Login using new password", async () => {
+        const payload = {
+            username: createdUsers[0].username,
+            password: createdUsers[0].password
+        }
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .then((response) => {     
+            const body = response.body;      
+            expect(createdUsers[0].username).toBe(body.username);
+          })
+          .catch((err) => {
+            expect(err).toBe(null);
+          });
+    });
+
+    it("Attempt to delete a user that we are not logged in as", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[1].user_id;
+
+        await request
+          .post("/users/" + userID + '/delete')
+          .expect(401)
+    });
+
+    it("Delete a user that we are logged in as", async () => {
+        const users = await usersAPI.getUsers();
+        const userID = users[0].user_id;
+
+        await request
+          .post("/users/" + userID + '/delete')
+          .expect(200)
+          .then(() => {
+            usersAPI.getUsers()
+                .then(users => expect(users.length).toBe(1));
+          })
     });
 });
