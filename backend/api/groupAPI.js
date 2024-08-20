@@ -94,14 +94,14 @@ class groupTableAPI extends groupAPI{
         });
 
         // Execute the query to get all the groups from the database
-        const [results] = await connection.execute('SELECT * FROM group ' + query);
+        const [results] = await connection.execute('SELECT * FROM `group` ' + query);
         
         // get group object from results
         const groupObj = results.map(result => new Group(
-            result.group_id,
             result.admin_id,
             result.name,
-            result.description
+            result.description,
+            result.group_id
         ));
         // Return the group object
         return groupObj;
@@ -123,14 +123,16 @@ class groupTableAPI extends groupAPI{
         });  
 
         // Execute the query to insert the new group into the database
-        const query = 'INSERT INTO group (admin_id, name, description) VALUES (?, ?, ?)';
+        const query = 'INSERT INTO `group` (admin_id, name, description) VALUES (?, ?, ?)';
         const params = [group.admin_id, 
             group.name, 
-            group.percentage];
-        const [results] = await connection.execute(query, params);
+            group.description];
+        await connection.execute(query, params);
 
+        const find_query = 'SELECT * FROM `group` WHERE group_id=(SELECT MAX(group_id) FROM `group`)';
+        const [results] = await connection.execute(find_query);
         //Insert members into group
-        for(let user_id in user_ids) await this.addGroup_member(group.group_id, user_id);
+        for(let user_id of user_ids) await this.addGroup_member(results[0].group_id, user_id);
     }
 
     // Override the getGroup_members method
@@ -175,10 +177,14 @@ class groupTableAPI extends groupAPI{
             database: process.env.DB_NAME
         });
 
-        // Execute the query to insert the new member into the group
-        const query = 'INSERT INTO user_group (user_id, group_id) VALUES (?, ?)';
-        const params = [user_id, group_id];
-        const [results] = await connection.execute(query, params);
+        //Only add member if they aren't already a part of the group
+        const members = await this.getGroup_members(group_id);
+        if(members.filter(m => m.user_id == user_id).length == 0) {
+            // Execute the query to insert the new member into the group
+            const query = 'INSERT INTO user_group (user_id, group_id) VALUES (?, ?)';
+            const params = [user_id, group_id];
+            const [results] = await connection.execute(query, params);
+        }
     }
 
     // Override the deleteGroup_member method
@@ -210,7 +216,7 @@ class groupTableAPI extends groupAPI{
         const group = await this.getGroupByID(group_id);
         if(!group) throw new Error("Group doesn't exists");
         // Execute the query to update tips amount in the database
-        const query = 'UPDATE group SET ' +  property_name + ' = ? WHERE group_id = ?';
+        const query = 'UPDATE `group` SET ' +  property_name + ' = ? WHERE group_id = ?';
         const params = [property_value, group_id];
         const [results] = await connection.execute(query, params);
     }
@@ -229,7 +235,7 @@ class groupTableAPI extends groupAPI{
         if(!groups) throw new Error("Group doesn't exists");
 
         // Execute the query to delete group from the database
-        const group_query = 'DELETE FROM group WHERE group_id = ?'
+        const group_query = 'DELETE FROM `group` WHERE group_id = ?'
         const group_params = [group_id];
         const [group_results] = await connection.execute(group_query, group_params);  
         
