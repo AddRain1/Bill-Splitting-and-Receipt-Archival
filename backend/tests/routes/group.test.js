@@ -4,7 +4,7 @@ const {clearTable, checkPayloadWithResponse} = require('../../helpers/database')
 const groupAPI = require('../../api/groupAPI');
 const userAPI = require('../../api/usersAPI');
 
-describe("User and auth routes", () => {
+describe("Group routes", () => {
     request = request.agent(app);  
 
     const user1_payload = {
