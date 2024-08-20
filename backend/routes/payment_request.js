@@ -9,8 +9,36 @@ const accessHelper = require('../helpers/access');
 //get a list of payment requests 
 //Authorization: Must be logged in. Can only see payment request if they are the payer, they are the receiver, or have access to the linked receipt.
 router.get('/', async (req, res) => {
-    const payment_request_list = await accessHelper.get_accessible_payment_requests();
-    res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    if(req.query.payer_id){
+        const query = `WHERE payer_id = ${req.query.payer_id}`;
+        const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    else if(req.query.receiver_id){
+        const query = `WHERE receiver_id = ${req.query.receiver_id}`;
+        const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    else if(req.query.pay_by){
+        const query = `WHERE pay_by = ${req.query.pay_by}`;
+        const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    else if(req.query.paid_on){
+        const query = `WHERE paid_on = ${req.query.paid_on}`;
+        const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    else if(req.query.amount){
+        const query = `WHERE amount = ${req.query.amount}`;
+        const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    else{
+        const payment_request_list = accessHelper.get_accessible_payment_requests();
+        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+    }
+    
 });
 
 //create a new payment request

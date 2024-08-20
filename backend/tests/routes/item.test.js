@@ -2,44 +2,52 @@ let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
-describe("tip route tests", () => {
+const payload = {
+    receipt_id: '20240715000000',
+    price: '23.46',
+    payee: 'john'
+};
+
+const updatedPayload = {
+    receipt_id: '20240715000000',
+    price: '7.24',
+    payee: 'john'
+};
+
+describe("item route tests", () => {
     const agent = request(app);  
     
     beforeAll(async () => {
-        await clearTable('tips');
+        await clearTable('items');
     })
 
     beforeEach(() => {
         jest.useRealTimers();
     })
 
-    it("GET /tips when no tips exist", async () => {
+    it("GET /items when no items exist", async () => {
         await agent
-        .get("/tips")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .then((response) => {                          
-            expect(response.body.length).toBe(0)
-        })
-        .catch((err) => {
-            expect(err).toBe(null);
-        });
+            .get("/items")
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.length).toBe(0)
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
     });
 
-    it("POST /tips/add - create a valid tip", async () => {
-        const payload = {
-            name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
-        }
+    it("POST /items/add - create a valid item", async () => {
+
         await agent
-            .post("/tips/add")
+            .post("/items/add")
             .query(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .expect(200)
+            .expect(201)
             .then(response => {
-                const body = JSON.parse(response.body);
+                const body = JSON.parse(response.text);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
             })
             .catch((err) => {
@@ -47,34 +55,28 @@ describe("tip route tests", () => {
             });
     });
 
-    it("GET /tips/:id - get a tip by ID", async () => {
-        const payload = {
-            name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
-        };
+    it("GET /items/:id - get a item by ID", async () => {
+        let item_id;
 
-        let tip_id;
-
-        // Create the tip
+        // Create item
         await agent
-            .post("/tips/add")
+            .post("/items/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                item_id = body.item_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
-        
-        // Retrive tip by id
+
+        // Attempt to retrieve item by id
         await agent
-            .get(`/tips/${tip_id}`)
-            .expect("Content-Type", /json/)
+            .get(`/items/${item_id}`)
+            .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
                 const body = JSON.parse(response.text);
@@ -85,39 +87,28 @@ describe("tip route tests", () => {
             });
     });
 
-    it("PUT /tips/:id/update - update a tip", async () => {
-        const payload = {
-            name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
-        };
+    it("PUT /items/:id/update - update a item", async () => {
 
-        const updatedPayload = {
-            name: 'updatedname',
-            amount: '10.36',
-            receipt_id: '20240715000000'
-        };
+        let item_id;
 
-        let tip_id;
-
-        //Create tip
+        // Create a item
         await agent
-            .post("/tips/add")
+            .post("/items/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                item_id = body.item_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
 
-        // Update the tip
+        // Update the item
         await agent
-            .put(`/tips/${tip_id}/update`)
+            .put(`/items/${item_id}/update`)
             .send(updatedPayload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
@@ -131,36 +122,31 @@ describe("tip route tests", () => {
             });
     });
 
-    it("DELETE /tips/:id/delete - delete a tip", async () => {
-        const payload = {
-            name: 'bobby',
-            amount: '7.36',
-            receipt_id: '20240715000000'
-        };
+    it("DELETE /items/:id/delete - delete a item", async () => {
 
-        let tip_id;
+        let item_id;
 
-        // Create a tip
+        // Create a item
         await agent
-            .post("/tips/add")
+            .post("/items/add")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                tip_id = body.tip_id;
+                item_id = body.item_id;
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
         
-        // Delete the tip
+        // Delete the item
         await agent
-            .delete(`tips/${tip_id}/delete`)
+            .delete(`items/${item_id}/delete`)
             .expect(200)
             .then(response => {
-                expect(response.body.msg).toBe('Tip deleted successfully.');
+                expect(response.body.msg).toBe('Item deleted successfully.');
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -168,10 +154,11 @@ describe("tip route tests", () => {
         
         // Verify the deletion
         await agent
-            .get(`/tips/${tip_id}`)
+            .get(`/items/${item_id}`)
             .expect(404)
             .catch((err) => {
                 expect(err).toBe(null);
             });
     });
+    
 });

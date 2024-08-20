@@ -66,7 +66,7 @@ class receipt_api{
 class receiptTable_api extends receipt_api{
     // Override the getReceipts method
     // Static async function to get all the receipts from the database
-    static async getReceipts(query=''){
+    static async getReceipts(query){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,

@@ -57,7 +57,7 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     //TODO: Allow for dynamic queries
     static async getPaymentRequests(query){
         // Execute the query to get all the payment requests from the database
-        const [results] = await connection.execute('SELECT * FROM payment_request WHERE ');
+        const [results] = await connection.execute('SELECT * FROM payment_request WHERE ' + query);
         
         // get group object from results
         const paymentRequestObj = results.map(result => new PaymentRequest(
@@ -79,7 +79,7 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     // Static async function to get a paymnet request based on ID from the database
     static async getPaymentRequestByID(payment_request_id){
        // Execute the query to get all the payment requests from the database
-       const [results] = await connection.execute('SELECT * FROM payment_request');
+       const [results] = await connection.execute('SELECT * FROM payment_request WHERE payment_request_id = ?', [payment_request_id]);
         
        // get group object from results
        const paymentRequestObj = results.map(result => new PaymentRequest(
