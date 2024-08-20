@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 
 //create a new item
 //Authorization: Must have access to the receipt that the item is assigned to. 
-router.get('/add', [
+router.post('/add', [
     async (req, res) => {
       //receipt must exist
       //user must have access to receipt
@@ -89,7 +89,7 @@ router.get('/:id', async (req, res) => {
 
 //update item with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/update', [
+router.put('/:id/update', [
   body("name")
       .trim()
       .isLength({max: 100})
@@ -124,7 +124,7 @@ router.get('/:id/update', [
 
 //delete item with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/delete', async (req, res) => {
+router.delete('/:id/delete', async (req, res) => {
     const item = itemAPI.getItemById(req.params.id);
     const receipt = receiptAPI.getReceiptByID(item.receipt_id)
     if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete an item from the receipt'});
