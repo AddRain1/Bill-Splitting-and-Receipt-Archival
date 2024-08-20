@@ -38,7 +38,7 @@ describe("tip route tests", () => {
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
-                const body = JSON.parase(response.body);
+                const body = JSON.parse(response.body);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
             })
             .catch((err) => {

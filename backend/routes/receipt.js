@@ -127,7 +127,7 @@ router.get('/:id/delete', async (req, res) => {
     if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete the receipt'});
     else {
         receiptAPI.deleteReceipt(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(receipt));
+        res.status(200).json({ msg: 'Receipt deleted successfully.' });
     }
 });
 
