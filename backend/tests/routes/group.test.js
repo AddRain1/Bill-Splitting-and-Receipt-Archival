@@ -71,11 +71,11 @@ describe("Group routes", () => {
         
     }, 20000)
 
-    /* afterAll(async () => {
+    afterAll(async () => {
         await clearTable('users');
         await clearTable('`group`');
         await clearTable('user_group');
-    }) */
+    })
 
     beforeEach(() => {
         jest.useRealTimers();
