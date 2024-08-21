@@ -65,3 +65,31 @@ delete from user_group
 
 -- @block
 DROP TABLE user_group
+
+-- @block   
+CREATE TABLE payment_request (
+  payment_request_id int(11) NOT NULL AUTO_INCREMENT,
+  payer_id INT NOT NULL,
+  receiver_id INT NOT NULL,
+  pay_by DATE,
+  paid_on DATE,
+  amount INT NOT NULL,
+  is_declined BOOLEAN NOT NULL, 
+  description varchar(124) NOT NULL,
+  receipt_id INT NOT NULL,
+  creation_date DATE DEFAULT (CURRENT_DATE),
+  PRIMARY KEY (`payment_request_id`)
+);
+
+-- @block   
+INSERT INTO payment_request(payer_id, receiver_id, pay_by, paid_on, amount, is_declined, description, receipt_id, payment_request_id)
+VALUES('','', '','', '','', '','', '');
+
+-- @block   
+SELECT * FROM payment_request WHERE payer_id = 143 OR receiver_id = 143
+
+-- @block   
+delete from payment_request
+
+-- @block
+DROP TABLE payment_request
