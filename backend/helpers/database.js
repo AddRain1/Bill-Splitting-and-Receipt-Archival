@@ -17,6 +17,13 @@ const clearTable = async(name) => {
         database: process.env.DB_NAME
     });
 
+
+    if(name === 'receipts'){
+        // delete expense_rate entries that reference the receipt
+        await connection.execute(`DELETE FROM expense_rate WHERE receipt_id IN (SELECT receipt_id FROM receipts)`); 
+    
+    }
+
     await connection.execute('DELETE FROM ' + name);
 }
 

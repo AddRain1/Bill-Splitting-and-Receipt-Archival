@@ -12,7 +12,7 @@ const receiptAPI = require('../api/receiptsAPI');
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
     const tips = accessHelper.get_accessible_tips(req.user);
-    res.sendStatus(200).json(JSON.stringify(tips));
+    if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(tips));
 });
 
 //create a new tip

@@ -19,11 +19,18 @@ class tip_api{
         }
     }
 
+    static async getTips(){
+        // Check if the subclass has defined this method
+        if(!this.getTips){
+            throw new Error("getTips method must be defined");
+        }   
+    }
+
     // Abstract method to be overridden by subclasses
     static async getTipById(id){
         // Check if the subclass has defined this method
-        if(!this.getTip){
-            throw new Error("getTip method must be defined");
+        if(!this.getTipById){
+            throw new Error("getTipById method must be defined");
         }
     }
 
@@ -55,7 +62,24 @@ class tip_api{
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
 class tipTable_api extends tip_api{
-   
+    
+    static async getTip(query){
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+
+        const [results] = await connection.execute(query);
+
+        await connection.end();
+
+        return results;
+    }
+
+
     static async getTipById(id){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
