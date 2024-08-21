@@ -10,7 +10,7 @@ const accessHelper = require('../helpers/access.js');
 //Authorization: Can only see receipts that are part of the user's groups.
 router.get('/', async (req, res) => {
     const receipts = accessHelper.get_accessible_receipts(req.user);
-    res.sendStatus(200).json(JSON.stringify(receipts));
+    if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(receipts));
 });
 
 //create a new receipt
@@ -38,7 +38,7 @@ router.get('/add', [
         .trim()
         .isLength({max: 250})
         .escape(),
-    (req, res, next) => {
+    async (req, res, next) => {
         const errors = validationResult(req);
 
         if(!accessHelper.check_group_accessible(req.user, req.body.group_id)) {
@@ -55,9 +55,9 @@ router.get('/add', [
         });
 
         if (errors.isEmpty()) {
-            receiptAPI.addReceipt(receipt);
+            await receiptAPI.addReceipt(receipt);
             
-            res.sendStatus(200).json(JSON.stringify(receipt));
+            if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(receipt));
         }
     }
 ]);
@@ -65,11 +65,11 @@ router.get('/add', [
 //get information of receipt with ID
 //Authorization: Must be a member of the group that the receipt is part of.
 router.get('/:id', async (req, res) => {
-    const receipt = receiptAPI.getReceiptByID(req.params.id);
+    const receipt = await receiptAPI.getReceiptByID(req.params.id);
     if(!accessHelper.check_group_accessible(req.user, req.body.group_id)) {
         res.sendStatus(401).json({msg: 'User must be a member of the group they link'});
     }
-    else res.sendStatus(200).json(JSON.stringify(receipt));
+    else if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(receipt));
 });
 
 //update receipt with ID
@@ -97,7 +97,7 @@ router.get('/:id/update', [
         .trim()
         .isLength({max: 250})
         .escape(),
-    (req, res, next) => {
+    async (req, res, next) => {
         const errors = validationResult(req);
 
         const receipt = new Receipt({
@@ -109,13 +109,13 @@ router.get('/:id/update', [
         });
 
         if (errors.isEmpty()) {
-            if(req.body.images) receiptAPI.changeReceipt(req.params.id, "images", req.body.images);
-            if(req.body.name) receiptAPI.changeReceipt(req.params.id, "name", req.body.name);
-            if(req.body.description) receiptAPI.changeReceipt(req.params.id, "description", req.body.description);
-            if(req.body.category) receiptAPI.changeReceipt(req.params.id, "category", req.body.category);
-            if(req.body.vendor) receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor);
+            if(req.body.images) await receiptAPI.changeReceipt(req.params.id, "images", req.body.images);
+            if(req.body.name) await receiptAPI.changeReceipt(req.params.id, "name", req.body.name);
+            if(req.body.description) await receiptAPI.changeReceipt(req.params.id, "description", req.body.description);
+            if(req.body.category) await receiptAPI.changeReceipt(req.params.id, "category", req.body.category);
+            if(req.body.vendor) await receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor);
             
-            res.sendStatus(200).json(JSON.stringify(receipt));
+            if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(receipt));
         }
     }
 ]);
@@ -126,8 +126,8 @@ router.get('/:id/delete', async (req, res) => {
     const receipt = receiptAPI.getReceiptByID(req.params.id);
     if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete the receipt'});
     else {
-        receiptAPI.deleteReceipt(req.params.id);
-        res.status(200).json({ msg: 'Receipt deleted successfully.' });
+        await receiptAPI.deleteReceipt(req.params.id);
+        if(!res.headersSent) res.status(200).json({ msg: 'Receipt deleted successfully.' });
     }
 });
 

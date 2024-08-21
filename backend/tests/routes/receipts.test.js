@@ -1,17 +1,45 @@
 let request = require('supertest');
 let app = require('../../app');
-const {clearnTable, checkPayloadWithResponse} = require('../../helpers/database');
+const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
 describe("receipts route tests", () => {
-    const agent = request(app);
+    const agent = request.agent(app);  
+
+    const user1_payload = {
+        username:'user1', 
+        first_name:'test', 
+        last_name: 'person', 
+        email:'testuser1@gmail.com', 
+        password:'password',
+        profile_description: 'certified tester'
+    };
     
     beforeAll(async () => {
         await clearTable('receipts');
-    })
+        /*Create users*/
+        await agent
+          .post("/auth/signup")
+          .send(user1_payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200);
+        
+        //Login as the first created user
+        const payload = {
+            username: user1_payload.username,
+            password: user1_payload.password
+        }
+        await agent
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200);
+        
+    }, 10000);
 
     beforeEach(() => {
         jest.useRealTimers();
-    })
+    });
 
     it("GET /receipts when no receipts exist", async () => {
         await agent
@@ -20,10 +48,10 @@ describe("receipts route tests", () => {
         .expect(200)
         .then((response) => {                          
             expect(response.body.length).toBe(0)
-        })
-        .catch((err) => {
-            expect(err).toBe(null);
         });
+        // .catch((err) => {
+        //     expect(err).toBe(null);
+        // });
     });
 
     it("POST /receipts/add - create a valid receipt", async () => {
@@ -49,10 +77,10 @@ describe("receipts route tests", () => {
             .then(response => {
                 const body = JSON.parse(response.body);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe('[Error: expected 200 "OK", got 401 "Unauthorized"]');
+            // });
     });
 
     it("GET /receipts/:id - get a receipt by ID", async () => {
@@ -82,10 +110,10 @@ describe("receipts route tests", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // Get receipt by id
         await agent
@@ -98,10 +126,10 @@ describe("receipts route tests", () => {
                 expect(body.description).toBe(payload.description);
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
     });
 
     it("PUT /receipts/:id/update - update a receipt", async () => {
@@ -145,10 +173,10 @@ describe("receipts route tests", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
 
         // Now update the receipt
         await agent
@@ -163,10 +191,10 @@ describe("receipts route tests", () => {
                 expect(body.description).toBe(payload.description);
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
     });
 
     it("DELETE /receipts/:id/delete - delete a existing receipt", async () => {
@@ -196,10 +224,10 @@ describe("receipts route tests", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // Delete the tip
         await agent
@@ -207,17 +235,17 @@ describe("receipts route tests", () => {
             .expect(200)
             .then(response => {
                 expect(response.body.msg).toBe('Receipt deleted successfully.');
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // After receipt is deleted, get by id should not return anything
         await agent
             .get(`/receipts/${receipt_id}`)
-            .expect(404)
-            .catch((err) => {
-                expect(err).toBe(null);
-            });
+            .expect(404);
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
     });
 });

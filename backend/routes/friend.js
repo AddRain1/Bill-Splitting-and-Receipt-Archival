@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const friends = accessHelper.get_accepted_friends(req.user);
     const friend_requests = accessHelper.get_not_accepted_friends(req.user);
     const all_friends = [...friends, ...friend_requests];
-    res.sendStatus(200).json(JSON.stringify(all_friends));
+    if(!res.headersSent) res.status(200).json(JSON.stringify(all_friends));
 });
 
 //create a new friend request
@@ -38,7 +38,7 @@ router.get('/add', async (req, res) => {
             });
             if(errors.isEmpty()){
                 friendsAPI.addFriend(req.body.requestor_id, req.body.receiver_id)
-                res.sendStatus(200).json(JSON.stringify(friend_request));
+                res.status(200).json(JSON.stringify(friend_request));
             }
         }
 });
@@ -48,7 +48,7 @@ router.get('/add', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const friend = friendsAPI.getFriendById(req.user, req.params.id);
     if(!accessHelper.check_friend_accesible_for_request(req.user, req.params.id)){
-        res.sendStatus(401).json({msg: 'User must accept the friend request and be the requester or the receiver'});
+        res.status(401).json({msg: 'User must accept the friend request and be the requester or the receiver'});
     }
     else res.sendStatus(200).json(JSON.stringify(friend));
 });
@@ -57,12 +57,12 @@ router.get('/:id', async (req, res) => {
 //Authorization: Must be the receiver, only can toggle is_confirmed to true.
 router.get('/:id/update', async (req, res) => {
     if(!accessHelper.check_user_is_receiver(req.user, req.params.id)){
-        res.sendStatus(401).json({msg: 'User must be the receiver'});
+        res.status(401).json({msg: 'User must be the receiver'});
     }
     else {
         await friendsAPI.acceptAddFriend(req.params.id, req.user);
         const friend = await friendsAPI.getFriendById(req.user, req.params.id);
-        res.sendStatus(200).json(JSON.stringify(friend));
+        res.status(200).json(JSON.stringify(friend));
     }
 });
 
@@ -70,11 +70,11 @@ router.get('/:id/update', async (req, res) => {
 //Authorization: Must be the receiver or the requester.
 router.get('/:id/delete', async (req, res) => {
     if(!accessHelper.check_friend_accesible_for_delete(req.user, req.params.id)){
-        res.sendStatus(401).json({msg: 'User must be the requester or the receiver'});
+        res.status(401).json({msg: 'User must be the requester or the receiver'});
     }
     else{
         await friendsAPI.deleteFriend(req.params.id, req.user);
-        res.sendStatus(200).json({msg: 'Friend deleted'});
+        res.status(200).json({msg: 'Friend deleted'});
     }
 });
 

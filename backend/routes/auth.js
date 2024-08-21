@@ -115,7 +115,7 @@ router.post('/signup', [
       if (errors.isEmpty()) {
         try {
             await userAPI.addUser(user);
-            res.status(200).json(JSON.stringify(user));
+            if(!res.headersSent) res.status(200).json(JSON.stringify(user));
         }
         catch (err){
             res.status(err.code).send(err);
