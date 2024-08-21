@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState,useRef } from "react";
 import {
 	Alert,
 	Image,
@@ -16,8 +16,20 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import NavigationBar from "../assets/NavigationBar";
 import colors from "../assets/colors.js";
 import Styles from "../styles.js";
+import { CameraView, useCameraPermissions } from 'expo-camera';
 function ScanPage(props) {
 	const [image, setImage] = useState("");
+	const [showCamera, setShowCamera] = useState(true); // State to control visibility
+	const cameraRef = useRef(null);
+	const [cameraReady, setCameraReady] = useState(false); // State to track if camera is ready to take picture
+	const [cameraProps,setCameraProps] = useState({
+		zoom: 0,
+		facing: 'back',
+		flash: 'off',
+		animateShutter: false,
+		enableTorch: false
+	  })
+	
 
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
@@ -33,35 +45,45 @@ function ScanPage(props) {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
-			aspect: [1, 1],
 			quality: 1,
 		});
 
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
+			setShowCamera(false); // Hide camera when image is selected
+			setCameraReady(false); // Reset camera readiness
+		}
+	};
+	const handleCameraButtonPress = () => {
+		if (cameraReady) {
+			// If camera is ready, take the picture
+			takePicture();
+		} else {
+			// If camera is not ready, clear the image and make camera ready
+			setImage(""); // Clear the current image
+			setCameraReady(true); // Set camera as ready to take picture
+			setShowCamera(true); // Show the camera
 		}
 	};
 
-	const handleLaunchCamera = async () => {
-		if (!hasCameraPermission) {
-			Alert.alert(
-				"Permission required",
-				"Camera permission is required to use this feature.",
-			);
-			return;
+	const takePicture = async () => {
+		if (cameraRef.current) {
+		  try {
+			
+			const result = await cameraRef.current.takePictureAsync();
+			setImage(result.uri); // Set the image URI to the state
+			console.log(image)
+			setShowCamera(false); // Hide the camera after taking the picture
+			setCameraReady(false); // Reset camera readiness
+		  } catch (error) {
+			console.error("Error taking picture:", error);
+		  }
+		} else {
+		  console.error("Camera reference is null");
 		}
+	  };
 
-		const result = await ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		});
-
-		if (!result.canceled) {
-			setImage(result.assets[0].uri);
-		}
-	};
+	  
 
 	return (
 		<SafeAreaView style={Styles.scanContainer}>
@@ -80,11 +102,16 @@ function ScanPage(props) {
 			</View>
 
 			<View style={Styles.preScan}>
-				{image ? (
-					<Image source={{ uri: image }} style={Styles.scanImage} />
+			{showCamera ? (
+					<CameraView
+						style={Styles.scanImage}               
+						facing={cameraProps.facing}
+						ref={cameraRef}
+					/>
 				) : (
-					<View style={Styles.imagePlaceholder} />
+					<Image source={{ uri: image }} style={Styles.scanImage} />
 				)}
+				
 			</View>
 			<TouchableOpacity
 				style={Styles.cameraButton}
@@ -97,7 +124,7 @@ function ScanPage(props) {
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={Styles.cameraButton1}
-				onPress={handleLaunchCamera}
+				onPress={handleCameraButtonPress}
 			>
 				<Image
 					source={require("../assets/Photo button.jpg")}

@@ -1,8 +1,7 @@
-import mysql from "mysql2/promise";
-import { Receipts } from "../class/receiptsClass.js";
-import receiptTable_api from "../api/receiptsAPI.js";
-import { Tax } from "./taxClass.js";
-import dotenv from 'dotenv';
+const mysql = require("mysql2/promise");
+const receiptTable_api = require("./receiptsAPI.js");
+const Tax = require("../class/taxClass.js");
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -12,7 +11,7 @@ const PASSWORD = process.env.DB_PASSWORD;
 const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class receipt_api
-export class tax_api{
+class tax_api{
     constructor(){
         // Prevent instantiation from this abstract class
         if(this.constructor === tax_api){
@@ -20,11 +19,9 @@ export class tax_api{
         }
     }
 
-    // Abstract method to be overridden by subclasses
-    static async getTax(receipt){
-        // Check if the subclass has defined this method
-        if(!this.getTax){
-            throw new Error("getTax method must be defined");
+    static async getTaxById(id) {
+        if(!this.getTaxById){
+            throw new Error("getTaxById method must be defined");
         }
     }
 
@@ -36,25 +33,16 @@ export class tax_api{
         }
     }
 
-
     // Abstract method to be overridden by subclasses
-    static async changeTaxPercentage(receipt, tax_percentage){
+    static async changeTax(id, property_id, property_value){
         // Check if the subclass has defined this method
-        if(!this.changeTaxPercentage){
-            throw new Error("changeTaxPercentage method must be defined");
+        if(!this.changeTax){
+            throw new Error("changeTax method must be defined");
         }
     }
 
     // Abstract method to be overridden by subclasses
-    static async changeTaxName(receipt, tax_name){
-        // Check if the subclass has defined this method
-        if(!this.changeTaxName){
-            throw new Error("changeTaxName method must be defined");
-        }
-    }
-
-    // Abstract method to be overridden by subclasses
-    static async deleteTax(receipt_id){
+    static async deleteTax(id){
         // Check if the subclass has defined this method
         if(!this.deleteTax){
             throw new Error("deleteTax method must be defined");
@@ -63,28 +51,52 @@ export class tax_api{
 }
 
 // Export the class taxTable_api which extends the abstract class tax_api
-export default class taxTable_api extends tax_api{
-    // Override the getTax method
-    // Static async function to get tax of a receipt from the database
-    static async getTax(receipt){
-        // Connect to the MySQL database
+class taxTable_api extends tax_api{
+
+    static async getTaxById(id){
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
             password: PASSWORD,
             database: DATABASE
         });
-        // Execute the query to get all the receipts from the database
-        const [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [receipt.receipt_id]);
+
+        const taxquery = 'SELECT * FROM taxes WHERE tax_id = ?';
+        const receiptquery = 'SELECT * FROM taxes WHERE receipt_id = ?';
+        let results;
+
+        try {
+            [results] = await connection.execute(taxquery, [id]);
+            if(!results) {
+                throw new Error (`Cannot find tax by tax_id = ${id}`);
+            }
+        } catch (error) {
+            try {
+            [results] = await connection.execute(receiptquery, [id]);
+            if(!results) {
+                throw new Error (`Cannot find tax by receipt_id = ${id}`);
+            }
+            } catch (error) {
+                await connection.end();
+                throw new Error("Cannot find tax");
+            }
+        }
+
+        if (results.length === 0) {
+            throw new Error("No tax found for the given ID");
+        }
         
-        // get tax object from results
-        const tax = results.map(result => new Tax(
+        // Result is an array, with only one instance of it
+        const result = results[0];
+        const tax = new Tax(
             result.tax_id,
             result.receipt_id,
             result.tax_name,
             result.tax_percentage
-        ));
-        // Return the tax object
+        );
+
+        await connection.end();
+
         return tax;
     }
 
@@ -113,23 +125,21 @@ export default class taxTable_api extends tax_api{
 
         // Execute the query to insert the new receipt into the database
         const query = 'INSERT INTO taxes (receipt_id, tax_name, tax_percentage) VALUES (?, ?, ?)';
-        const params = [tax.receipt_id, 
-            tax.name, 
-            tax.percentage];
-        const [results] = await connection.execute(query, params);
+        const params = [tax.receipt_id, tax.name, tax.percentage];
+        await connection.execute(query, params);
+        await connection.end();
     }
 
-    // Override the changeTaxPercentage method
-    // Static async function to change percentage of tax in the database
-    static async changeTaxPercentage(receipt, tax_percentage){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt already exists
-        const exist = receipts.find(r => r.receipt_id === receipt.receipt_id)
-        if(!exist){
-            // Throw an error if the receipt already exists
-            throw new Error("Receipt doesn't exists");
+    // Override the changeTaxmethod
+    // Static async function to change percentage/name of tax in the database
+    static async changeTax(id, property_id, property_value){
+
+        // Get tax by Id
+        const [tax] = await this.getTaxById(id);
+        if (!tax) {
+            throw new Error('Tax does not exist');
         }
+
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -137,46 +147,27 @@ export default class taxTable_api extends tax_api{
             password: PASSWORD,
             database: DATABASE
         });
-        // Execute the query to update the tax percentage in the database
-        const query = 'UPDATE taxes SET tax_percentage = ? WHERE receipt_id = ?';
-        const params = [tax_percentage, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
-    }
 
-    // Override the changeTaxName method
-    // Static async function to change name of tax in the database
-    static async changeTaxName(receipt, tax_name){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt already exists
-        const exist = receipts.find(r => r.receipt_id === receipt.receipt_id)
-        if(!exist){
-            // Throw an error if the receipt already exists
-            throw new Error("Receipt doesn't exists");
+        // Update tax bassed on property_id
+        if (property_id == "name") {
+            await connection.execute('UPDATE taxes SET tax_name = ? WHERE tax_id = ?', [property_value], [tax.tax_id]);
         }
-        // Connect to the MySQL database
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-        // Execute the query to update the name of tax in the database
-        const query = 'UPDATE taxes SET tax_name = ? WHERE receipt_id = ?';
-        const params = [tax_name, receipt.receipt_id];
-        const [results] = await connection.execute(query, params);
+        else if (property_id == "percentage") {
+            await connection.execute('UPDATE taxes SET tax_percentage = ? WHERE tax_id = ?', [property_value], [tax.tax_id]);
+        }
+
+        await connection.end();
     }
 
     // Override the deleteTax method
     // Static async function to delete a receipt from the database
     // Call when deleting receipt
-    static async deleteTax(receipt_id){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt is already deleted
-        const exist = receipts.find(r => r.receipt_id === receipt_id)
-        if(!exist){
-            throw new Error("Receipt doesn't exists");
+    static async deleteTax(id){
+        
+        // Get tax by id
+        const [tax] = await this.getTaxById(id);
+        if(!tax) {
+            throw new Error('No tax found.');
         }
         
         // Connect to the MySQL database
@@ -189,8 +180,12 @@ export default class taxTable_api extends tax_api{
 
         // Execute the query to delete the tax with receipt_id from the database
         const query = 'DELETE FROM taxes WHERE receipt_id = ?'
-        const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
+        const params = [tax.receipt_id];
+        await connection.execute(query, params);
+
+        await connection.end();
         
     }
 }
+
+module.exports = taxTable_api;

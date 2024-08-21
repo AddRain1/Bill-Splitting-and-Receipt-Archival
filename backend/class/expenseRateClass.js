@@ -1,4 +1,4 @@
-export class ExpenseRate {
+class ExpenseRate {
     expenseRate_id;
     receipt_id;
     name;
@@ -10,3 +10,5 @@ export class ExpenseRate {
         this.percentage = percentage;
     }
 } 
+
+module.exports = ExpenseRate;

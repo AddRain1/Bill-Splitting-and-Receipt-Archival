@@ -1,4 +1,4 @@
-export class Tax {
+class Tax {
     tax_id;
     receipt_id;
     name;
@@ -10,3 +10,5 @@ export class Tax {
         this.percentage = percentage;
     }
 }
+
+module.exports = Tax;

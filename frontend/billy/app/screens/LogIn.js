@@ -31,8 +31,9 @@ import {
 } from "react-native";
 import CustomInput from "../assets/CustomInput";
 import styles from "../styles";
+import HomeStackNavigator from "../assets/HomeStackNavigator";
 
-export default function HomePage() {
+ function LogIn(props) {
 	const [font] = useFonts({
 		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"), // Adjust the path accordingly
 	});
@@ -109,3 +110,4 @@ export default function HomePage() {
 		</SafeAreaView>
 	);
 }
+export default LogIn;

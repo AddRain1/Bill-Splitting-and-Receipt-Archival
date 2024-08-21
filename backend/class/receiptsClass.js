@@ -1,4 +1,4 @@
-export class Receipts{
+class Receipts{
     receipt_id;
     group_id;
     images;
@@ -34,3 +34,5 @@ export class Receipts{
         return this.name;
     }
 }
+
+module.exports = Receipts;

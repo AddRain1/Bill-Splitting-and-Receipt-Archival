@@ -1,4 +1,4 @@
-export class Tip {
+class Tip {
     tip_id;
     receipt_id;
     amount;
@@ -8,3 +8,5 @@ export class Tip {
         this.amount = amount;
     }
 }
+
+module.exports = Tip;

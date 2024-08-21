@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "Billy",
-		"slug": "Billy",
+		"name": "billy",
+		"slug": "billy",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -25,7 +25,19 @@
 		"web": {
 			"favicon": "./assets/favicon.png"
 		},
-		"plugins": ["expo-font", "react-native-document-scanner-plugin"],
+		"plugins": [
+			"expo-font",
+			"react-native-document-scanner-plugin",
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+					"microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+					"recordAudioAndroid": true
+				}
+			]
+		],
+		
 		"extra": {
 			"eas": {
 				"projectId": "c539100d-b002-4cbc-bc58-ca530461f7f8"
