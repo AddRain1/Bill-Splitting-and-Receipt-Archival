@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
 	FlatList,
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
-	ScrollView,
 } from "react-native";
 import Styles from "../styles";
 
@@ -30,16 +30,19 @@ function BillsPage(props) {
 
 	async function loadBills() {
 		try {
-			const response = await fetch('http://localhost:3000/routes/paymentrequests/', {
-				method: 'GET',
-				headers: {
-					// 'Authorization': '${authToken}' // Add auth token here
+			const response = await fetch(
+				"http://localhost:3000/routes/paymentrequests/",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
 				},
-			});
+			);
 			const data = await response.json();
 			return data;
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 		}
 	}
 
@@ -124,20 +127,15 @@ function BillsPage(props) {
 					</TouchableOpacity>
 				</View>
 			</View>
-			<ScrollView style={Styles.scrollContainer} >
+			<ScrollView style={Styles.scrollContainer}>
 				{bills.map((bill) => {
 					return (
 						<SafeAreaView key={bill.receipt_id}>
-							<Text key={bill.receipt_id}>
-								{bill.receipt_name}
-							</Text>
-							<Text key={bill.receipt_id}>
-								{bill.created_at}
-							</Text>
+							<Text key={bill.receipt_id}>{bill.receipt_name}</Text>
+							<Text key={bill.receipt_id}>{bill.created_at}</Text>
 						</SafeAreaView>
 					);
 				})}
-
 			</ScrollView>
 		</View>
 	);

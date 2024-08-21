@@ -89,31 +89,37 @@ function Settings(props) {
 				last_name: lastName,
 				email: email,
 				password: password,
-			}
-			const response = await fetch('http://localhost:3000/routes/user/${id}/update', {
-				method: 'PUT',
-				headers: {
-					// 'Authorization': '${authToken}' // Add auth token here
+			};
+			const response = await fetch(
+				"http://localhost:3000/routes/user/${id}/update",
+				{
+					method: "PUT",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+					body: JSON.stringify(updateData),
 				},
-				body: JSON.stringify(updateData),
-			});
+			);
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 		}
 	}
 
 	async function handleDelete() {
 		try {
-			const response = await fetch('http://localhost:3000/routes/user/${id}/delete', {
-				method: 'DELETE',
-				headers: {
-					// 'Authorization': '${authToken}' // Add auth token here
-				}
-			});
+			const response = await fetch(
+				"http://localhost:3000/routes/user/${id}/delete",
+				{
+					method: "DELETE",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
 
-			navigation.navigate("LogIn")
+			navigation.navigate("LogIn");
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 		}
 	}
 

@@ -36,20 +36,20 @@ function HomePage(props) {
 
 	const [outstandingBills, setOutstandingBills] = useState([]);
 	const [recentReceipts, setRecentReceipts] = useState([]);
-	
+
 	useEffect(() => {
 		async function fetchOutstandingBills() {
 			const bills = await getOutstandingBills();
-			setOutstandingBills(bills); 
+			setOutstandingBills(bills);
 		}
 		async function fetchRecentReceipts() {
 			const receipts = await getRecentReceipts();
-			setRecentReceipts(receipts); 
+			setRecentReceipts(receipts);
 		}
-		
+
 		fetchOutstandingBills();
-		fetchRecentReceipts(); 
-	}, []); 
+		fetchRecentReceipts();
+	}, []);
 
 	if (!font) {
 		return <AppLoading />;
@@ -59,23 +59,26 @@ function HomePage(props) {
 		try {
 			const params = {
 				limit: 3,
-				sortBy: 'created_at',
-				order: 'desc'
+				sortBy: "created_at",
+				order: "desc",
 			};
-	
+
 			const query = new URLSearchParams(params).toString();
 
-			const response = await fetch('http://localhost:3000/routes/paymentrequests/?${query}', {
-				method: 'GET',
-				headers: {
-					// 'Authorization': '${authToken}' // Add auth token here
-				}
-			});
+			const response = await fetch(
+				"http://localhost:3000/routes/paymentrequests/?${query}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
 
 			const data = await response.json();
 			return data;
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 			return [];
 		}
 	}
@@ -84,23 +87,26 @@ function HomePage(props) {
 		try {
 			const params = {
 				limit: 3,
-				sortBy: 'created_at',
-				order: 'desc'
+				sortBy: "created_at",
+				order: "desc",
 			};
-	
+
 			const query = new URLSearchParams(params).toString();
 
-			const response = await fetch('http://localhost:3000/routes/receipts/?${query}', {
-				method: 'GET',
-				headers: {
-					// 'Authorization': '${authToken}' // Add auth token here
-				}
-			});
+			const response = await fetch(
+				"http://localhost:3000/routes/receipts/?${query}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
 
 			const data = await response.json();
 			return data;
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 			return [];
 		}
 	}
@@ -147,10 +153,13 @@ function HomePage(props) {
 						</TouchableOpacity>
 					</View>
 
-					<View style={styles.Placeholder} > 
+					<View style={styles.Placeholder}>
 						{outstandingBills.map((prop) => {
 							return (
-								<SafeAreaView style={[styles.listRow, {}]} key={prop.receipt_id}>
+								<SafeAreaView
+									style={[styles.listRow, {}]}
+									key={prop.receipt_id}
+								>
 									<Text
 										style={[styles.caption, { fontSize: 14 }]}
 										key={prop.receipt_id}
@@ -186,10 +195,13 @@ function HomePage(props) {
 							/>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.Placeholder} >
+					<View style={styles.Placeholder}>
 						{recentReceipts.map((prop) => {
 							return (
-								<SafeAreaView style={[styles.listRow, {}]} key={prop.receipt_id}>
+								<SafeAreaView
+									style={[styles.listRow, {}]}
+									key={prop.receipt_id}
+								>
 									<Text
 										style={[styles.caption, { fontSize: 14 }]}
 										key={prop.receipt_id}
@@ -207,7 +219,6 @@ function HomePage(props) {
 								</SafeAreaView>
 							);
 						})}
-
 					</View>
 				</View>
 			</ScrollView>
