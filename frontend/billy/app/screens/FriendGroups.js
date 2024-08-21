@@ -48,10 +48,11 @@ function FriendGroups(props) {
            </View>
          </TouchableOpacity>
          </View>
+         <ScrollView contentContainerStyle={Styles.scrollViewContent}>
          <View style={Styles.newFriendContainer}>
           <Text style={Styles.newFriendGroupText}>New Friend Group</Text>
           <TouchableOpacity
-							style={Styles.goArrow}
+							style={Styles.goArrow2}
 							onPress={() => navigation.navigate("BillsPage")}
 						>
 							<Icon
@@ -84,6 +85,7 @@ function FriendGroups(props) {
         onManagePress={() => console.log('Manage Untitled group')}
       />
       </View>
+      </ScrollView>
        </SafeAreaView>
        
     );

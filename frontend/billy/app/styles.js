@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		right: 3,
 	},
+	
 	icon: {
 		size: 25,
 		color: COLORS.white,
@@ -316,15 +317,15 @@ const styles = StyleSheet.create({
 		
 	  },
 
-	goArrow: {
-		position:'absolute',
+	goArrow2: {
+		
 		width: 25,
 		height: 25,
 		backgroundColor: COLORS.teal,
-		alignItems: "center",
+		alignItems: 'center',
 		justifyContent: "center",
 		borderRadius: 4,
-		left:348,
+		left:180,
 		
 	},
 	icon: {
@@ -340,12 +341,18 @@ const styles = StyleSheet.create({
 		top: 10,
 		height:38,
 		marginBottom:40,
-		alignItems: 'center',
+		alignItems:'center'
 	},
 	newFriendGroupText:{
 		fontFamily:'SplineSansMono',
 		fontSize:14,
-	}
+	},
+	scrollViewContent: {
+		top:5,
+		flexGrow: 1,
+		alignItems: 'center', // Ensure this is applied to contentContainerStyle
+		justifyContent: 'flex-start',
+	  },
 	
 
 });
