@@ -12,7 +12,7 @@ const receiptAPI = require('../api/receiptsAPI');
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
     const tips = accessHelper.get_accessible_tips(req.user);
-    res.sendStatus(200).json(JSON.stringify(tips));
+    if (!res.headersSent) res.status(200).json(JSON.stringify(tips));
 });
 
 //create a new tip
@@ -21,7 +21,7 @@ router.post('/add', [
     async (req, res) => {
         //check if user has access to receipt
         if(!accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
-            res.sendStatus(401).json({msg: 'User must have access to the receipt they link.'});
+            res.status(401).json({msg: 'User must have access to the receipt they link.'});
         }
     },
     body("name")
@@ -44,7 +44,7 @@ router.post('/add', [
   
       if (errors.isEmpty()) {
         await tipAPI.addTip(tip);
-        res.sendStatus(200).json(JSON.stringify(tip));
+        if (!res.headersSent) res.status(200).json(JSON.stringify(tip));
       }
     }
 ]);
@@ -53,14 +53,14 @@ router.post('/add', [
 //Authorization: Must have access to the receipt that the tip is assigned to.
 router.get('/:id', async (req, res) => {
     if(!accessHelper.check_tip_accesible(req.user, req.params.id)) {
-        res.sendStatus(401).json({msg: 'User must have access to the receipt that the tip is assigned to'});
+        res.status(401).json({msg: 'User must have access to the receipt that the tip is assigned to'});
     }
     else {
-        const tip = tipAPI.getTipById(req.params.id);
+        const tip = await tipAPI.getTipById(req.params.id);
         if (!tip) {
             return res.status(404).json({ msg: 'Tip not found.' });
         }
-        res.sendStatus(200).json(JSON.stringify(tip));
+        if (!res.headersSent) res.status(200).json(JSON.stringify(tip));
     }
 });
 
@@ -70,33 +70,35 @@ router.put('/:id/update', [
     body("name", "name must be 100 characters max")
         .trim()
         .isLength({max: 100})
-        .escape(),
+        .escape()
+        .optional(),
     body("amount", "amount must be greater than 0")
         .trim()
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .matches(/^\d+.{0,1}\d{0,2}$/)
-        .escape(),
+        .escape()
+        .optional(),
     async (req, res) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
-      }
+        }
 
-      const tip = tipAPI.getTipById(req.params.id);
-      if (!tip) {
+        const tip = await tipAPI.getTipById(req.params.id);
+        if (!tip) {
         return res.status(404).json({ msg: 'Tip not found.' });
-      }
-
+        }
 
         const receipt = await receiptAPI.getReceiptByID(tip.receipt_id);
         if (receipt.admin_id !== req.user) {
             return res.status(401).json({ msg: 'User must be admin of the receipt.' });
         }
+        const promises = [];
 
-        if (req.body.name) await tipAPI.changeTip(req.params.id, "name", req.body.name);
-        if (req.body.amount) await tipAPI.changeTip(req.params.id, "amount", req.body.amount);
+        if (req.body.name) promises.push(tipAPI.changeTip(req.params.id, "name", req.body.name));
+        if (req.body.amount) promises.push(tipAPI.changeTip(req.params.id, "amount", req.body.amount));
 
-        res.status(200).json(tip);
+        Promise.all(promises).then(() => {if(!res.headersSent) res.status(200).json(JSON.stringify(tip));})
     }
 ]);
 
@@ -114,7 +116,7 @@ router.delete('/:id/delete', async (req, res) => {
     }
 
     await tipAPI.deleteTip(req.params.id);
-    res.status(200).json({ msg: 'Tip deleted successfully.' });
+    if (!res.headersSent) res.status(200).json({ msg: 'Tip deleted successfully.' });
 });
 
 module.exports = router;
