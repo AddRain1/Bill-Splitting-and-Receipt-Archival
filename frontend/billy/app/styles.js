@@ -314,7 +314,39 @@ const styles = StyleSheet.create({
 	  billContainer:{
 		flex:1,
 		
-	  }
+	  },
+
+	goArrow: {
+		position:'absolute',
+		width: 25,
+		height: 25,
+		backgroundColor: COLORS.teal,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 4,
+		left:348,
+		
+	},
+	icon: {
+		size: 25,
+		color: COLORS.white,
+	},
+	newFriendContainer: {
+		flexDirection: "row",
+		backgroundColor: COLORS.softWhite,
+		width:380,
+		borderRadius:4,
+		padding:4,
+		top: 10,
+		height:38,
+		marginBottom:40,
+		alignItems: 'center',
+	},
+	newFriendGroupText:{
+		fontFamily:'SplineSansMono',
+		fontSize:14,
+	}
+	
 
 });
 

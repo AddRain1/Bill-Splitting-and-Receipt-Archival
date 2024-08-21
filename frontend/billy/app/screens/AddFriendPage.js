@@ -29,9 +29,10 @@ function AddFriendPage(props) {
   
   const [isScanning, setIsScanning] = useState(false);
   const [displayImage, setDisplayImage] = useState(false);
-  
+  const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
   const navigation = useNavigation();
+  const [showCamera, setShowCamera] = useState(true); // State to control visibility
   const [cameraProps,setCameraProps] = useState({
     zoom: 0,
     facing: 'back',
@@ -42,7 +43,7 @@ function AddFriendPage(props) {
 
   const [image,setImage]= useState(null);
 
-  cam
+
   const [isCameraReady, setIsCameraReady] = useState(false); // Add camera readiness state
   const [barcodeData, setBarcodeData] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -57,9 +58,17 @@ function AddFriendPage(props) {
 
 
   const handlePress = () => {
-    if (!isTakingPicture) { 
-      setIsScanning((prevState) => !prevState);
-     
+    if (!isTakingPicture) {
+      if (isScanning) {
+        // If already scanning, switch to display mode
+        setIsScanning(false);
+        setShowCamera(false);
+      } else {
+        // If not scanning, reset image, show camera, and start scanning
+        setImage(null); // Clear the previously captured image
+        setShowCamera(true); // Show the camera
+        setIsScanning(true);
+      }
     }
   };
 
@@ -81,15 +90,19 @@ function AddFriendPage(props) {
 
   const takePicture = async () => {
     if (cameraRef.current && isCameraReady) {
+      setIsTakingPicture(true); // Disable the button during the process
       try {
         const result = await cameraRef.current.takePictureAsync();
-        setImage(result.uri); // Set the image URI to the state
-        console.log(image)
+        setImage(result.uri); // Update the image state
+        setShowCamera(false); // Hide the camera
       } catch (error) {
-        console.error("Error taking picture:", error);
+        Alert.alert("Error", "Failed to take picture. Please try again.");
+      } finally {
+        setIsTakingPicture(false); // Re-enable the button
+        
       }
     } else {
-      console.error("Camera reference is null");
+      Alert.alert("Error", "Camera is not ready.");
     }
   };
 
@@ -150,16 +163,20 @@ function AddFriendPage(props) {
  
          {isScanning ? (
           <View style={Styles.qrCodeContainer}>
-            <CameraView
-                  style={Styles. qrCodeScanner}               
-                  facing={cameraProps.facing}
-                  onCameraReady={handleCameraReady} // Set camera ready state
-                  ref = {cameraRef}
-                  onBarCodeScanned={isScanning ? handleBarCodeScanned : undefined}
-                  barcodeScannerSettings={{
-                    barcodeTypes: ["qr"]
-                  }}    
-            />
+           {showCamera ? (
+					 <CameraView
+           style={Styles. qrCodeScanner}               
+           facing={cameraProps.facing}
+           onCameraReady={handleCameraReady} // Set camera ready state
+           ref = {cameraRef}
+           onBarCodeScanned={isScanning ? handleBarCodeScanned : undefined}
+           barcodeScannerSettings={{
+             barcodeTypes: ["qr"]
+           }}    
+     />
+				) : (
+					<Image source={{ uri: image }} style={Styles.qrCodeScanner} />
+				)}
             <TouchableOpacity
               style={Styles.cameraButton2}
               onPress={takePicture}

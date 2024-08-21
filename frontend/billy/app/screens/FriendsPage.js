@@ -95,7 +95,7 @@ function FriendsPage(props) {
                 <View style={Styles.arrowContainer}>
 						<TouchableOpacity
 							style={Styles.goArrow}
-							onPress={() => navigation.navigate("BillsPage")}
+							onPress={() => navigation.navigate("FriendGroupsPage")}
 						>
 							<Icon
 								name="arrow-right"

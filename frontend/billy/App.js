@@ -27,6 +27,7 @@ import Settings from "./app/screens/Settings";
 import AddFriendPage from "./app/screens/AddFriendPage";
 import FriendsPage from "./app/screens/FriendsPage";
 import HomePage from "./app/screens/Home";
+import FriendGroups from "./app/screens/FriendGroups";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +42,7 @@ export default function App() {
 				<Stack.Screen name="Main" component={NavigationBar} />								
 				<Stack.Screen name="Settings" component={Settings} />
 				<Stack.Screen name="AddFriendsPage" component={AddFriendPage} />
-				<Stack.Screen name="FriendsPage" component={FriendsPage}/>
+				<Stack.Screen name="FriendGroupsPage" component={FriendGroups} />
 				
 			</Stack.Navigator>
 		</NavigationContainer>
