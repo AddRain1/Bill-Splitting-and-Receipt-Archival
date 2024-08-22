@@ -1,11 +1,17 @@
 let request = require('supertest');
 let app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
+<<<<<<< HEAD
 const userAPI = require('../../api/usersAPI');
 const groupAPI = require('../../api/groupAPI');
 
 describe("Receipt routes", () => {
     request = request.agent(app);  
+=======
+
+describe("receipts route tests", () => {
+    const agent = request.agent(app);  
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     const user1_payload = {
         username:'user1', 
@@ -14,6 +20,7 @@ describe("Receipt routes", () => {
         email:'testuser1@gmail.com', 
         password:'password',
         profile_description: 'certified tester'
+<<<<<<< HEAD
     }
 
     const user2_payload = {
@@ -41,10 +48,19 @@ describe("Receipt routes", () => {
 
         //Create users
         await request
+=======
+    };
+    
+    beforeAll(async () => {
+        await clearTable('receipts');
+        /*Create users*/
+        await agent
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
           .post("/auth/signup")
           .send(user1_payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
+<<<<<<< HEAD
           .expect(200)
         await request
           .post("/auth/signup")
@@ -58,11 +74,16 @@ describe("Receipt routes", () => {
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
           .expect(200)
+=======
+          .expect(200);
+        
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
         //Login as the first created user
         const payload = {
             username: user1_payload.username,
             password: user1_payload.password
         }
+<<<<<<< HEAD
         await request
           .post("/auth/login")
           .send(payload)
@@ -96,10 +117,19 @@ describe("Receipt routes", () => {
           .expect(200)
         
     }, 20000)
+=======
+        await agent
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200);
+        
+    }, 10000);
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     beforeEach(() => {
         jest.useRealTimers();
-    })
+    });
 
     afterAll(async () => {
         await clearTable('receipts');
@@ -114,10 +144,10 @@ describe("Receipt routes", () => {
         .expect(200)
         .then((response) => {                          
             expect(response.body.length).toBe(0)
-        })
-        .catch((err) => {
-            expect(err).toBe(null);
         });
+        // .catch((err) => {
+        //     expect(err).toBe(null);
+        // });
     });
 
     it("POST /receipts/add - create a valid receipt", async () => {
@@ -139,11 +169,15 @@ describe("Receipt routes", () => {
             .then(response => {
                 const body = JSON.parse(response.body);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+<<<<<<< HEAD
     }, 10000);
+=======
+            // .catch((err) => {
+            //     expect(err).toBe('[Error: expected 200 "OK", got 401 "Unauthorized"]');
+            // });
+    });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     /* it("GET /receipts/:id - get a receipt by ID", async () => {
         const payload = {
@@ -172,10 +206,10 @@ describe("Receipt routes", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // Get receipt by id
         await request
@@ -188,11 +222,15 @@ describe("Receipt routes", () => {
                 expect(body.description).toBe(payload.description);
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+<<<<<<< HEAD
     }); */
+=======
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
+    });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     /* it("PUT /receipts/:id/update - update a receipt", async () => {
         const payload = {
@@ -235,10 +273,10 @@ describe("Receipt routes", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
 
         // Now update the receipt
         await request
@@ -253,11 +291,15 @@ describe("Receipt routes", () => {
                 expect(body.description).toBe(payload.description);
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+<<<<<<< HEAD
     }); */
+=======
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
+    });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     /* it("DELETE /receipts/:id/delete - delete a existing receipt", async () => {
         const payload = {
@@ -286,10 +328,10 @@ describe("Receipt routes", () => {
             .then(response => {
                 const body = JSON.parse(response.text);
                 receipt_id = body.receipt_id;
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // Delete the tip
         await request
@@ -297,17 +339,26 @@ describe("Receipt routes", () => {
             .expect(200)
             .then(response => {
                 expect(response.body.msg).toBe('Receipt deleted successfully.');
-            })
-            .catch((err) => {
-                expect(err).toBe(null);
             });
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
         
         // After receipt is deleted, get by id should not return anything
         await request
             .get(`/receipts/${receipt_id}`)
+<<<<<<< HEAD
             .expect(404)
             .catch((err) => {
                 expect(err).toBe(null);
             });
     }); */
 }); 
+=======
+            .expect(404);
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
+    });
+});
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a

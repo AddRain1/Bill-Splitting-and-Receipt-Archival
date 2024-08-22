@@ -97,6 +97,62 @@ INSERT INTO items(receipt_id, item_name, item_price, item_payee)
 VALUES('20240715000000', 'Item 1', 10.0, 'John'),
     ('20240715000000', 'Item 2', 20.0, 'Jane'),
     ('20240716021644', 'Item 1', 10.0, 'Jason');
+
+-- @block
+CREATE TABLE users (
+  user_id int(11) NOT NULL AUTO_INCREMENT,
+  username varchar(20) NOT NULL,
+  first_name varchar(64) NOT NULL,
+  last_name varchar(64) NOT NULL,
+  email varchar(254) NOT NULL,
+  password varchar(124) NOT NULL,
+  profile_description varchar(124) NOT NULL,
+  creation_date DATE DEFAULT (CURRENT_DATE),
+  PRIMARY KEY (`user_id`)
+); 
+-- @block   
+INSERT INTO users(username, first_name, last_name, email, password, profile_description)
+VALUES('user1', 'bob', 'bobbyson', 'bob.bobbyson@gmail.com', 'password', 'wassup');
+
+
+-- @block
+CREATE TABLE `group` (
+  group_id INT AUTO_INCREMENT PRIMARY KEY,
+  admin_id INT NOT NULL,
+  name VARCHAR(64) NOT NULL,
+  description VARCHAR(124) NOT NULL,
+  creation_date DATE DEFAULT (CURRENT_DATE)
+);
+-- @block   
+INSERT INTO `group`(admin_id, name, description)
+VALUES('','','');
+-- @block
+CREATE TABLE user_group (
+  user_id INT NOT NULL,
+  group_id INT NOT NULL,
+  creation_date DATE DEFAULT (CURRENT_DATE)
+);
+-- @block
+INSERT INTO user_group(user_id, group_id)
+VALUES('','');
+
+-- @block
+CREATE TABLE payment_request (
+  payment_request_id int(11) NOT NULL AUTO_INCREMENT,
+  payer_id INT NOT NULL,
+  receiver_id INT NOT NULL,
+  pay_by DATE,
+  paid_on DATE,
+  amount INT NOT NULL,
+  is_declined BOOLEAN NOT NULL, 
+  description varchar(124) NOT NULL,
+  receipt_id INT NOT NULL,
+  creation_date DATE DEFAULT (CURRENT_DATE),
+  PRIMARY KEY (`payment_request_id`)
+);
+-- @block
+INSERT INTO payment_request(payer_id, receiver_id, pay_by, paid_on, amount, is_declined, description, receipt_id, payment_request_id)
+VALUES('','', '','', '','', '','', '');
 -- @block
 SELECT *
 FROM receipts;

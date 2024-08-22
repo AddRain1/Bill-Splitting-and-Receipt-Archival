@@ -14,22 +14,57 @@ import {
 	View,
 } from "react-native";
 import { SearchBar } from "react-native-elements";
-import { COLORS } from "../assets/colors.js";
+import COLORS from "../assets/colors.js";
 import Styles from "../styles.js";
+import Bill from "../assets/Bill.js";
 //import { getAllReceipts } from '../../../../backend/src/receiptsAPI';
 
 function ReceiptsArchivePage(props) {
-	const [receipts, setReceipts] = useState([]);
+
 	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
-	const Tab = createBottomTabNavigator();
-
+	
 	const updateSearch = (search) => {
 		setSearch(search);
 	};
 	const [font] = useFonts({
 		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"), // Adjust the path accordingly
 	});
+
+	const bills = [
+        {
+            storeName: "Ralph’s Fresh Fare",
+            amount: 35.16,
+            date: "2024-06-21",
+            items: 8,
+            splitBetween: 2,
+            icon: "clock-o"  // Icon name from FontAwesome
+        },
+        {
+            storeName: "Costco",
+            amount: 77.32,
+            date: "2024-06-17",
+            items: 11,
+            splitBetween: 4,
+            icon: "list-alt"
+        },
+        {
+            storeName: "Tacos El Gordos",
+            amount: 16.98,
+            date: "2024-06-17",
+            items: 2,
+            splitBetween: 1,
+            icon: "check"
+        },
+        {
+            storeName: "Legoland California",
+            amount: 89.80,
+            date: "2024-05-29",
+            items: 2,
+            splitBetween: 1,
+            icon: "check"
+        }
+    ];
 
 	return (
 		<SafeAreaView style={Styles.container}>
@@ -76,7 +111,23 @@ function ReceiptsArchivePage(props) {
 				/>
 			</View>
 
-			<ScrollView style={Styles.scrollContainer} />
+
+
+			<ScrollView  style={Styles.receiptContainer}>
+			{bills.map((bill, index) => (
+                <Bill
+				 key={index}
+				 storeName={bill.storeName}
+				 amount={bill.amount}
+				 date={bill.date}
+				 items={bill.items}
+				 splitBetween={bill.splitBetween}
+				 icon={bill.icon}
+                />
+            ))}
+
+
+		    </ScrollView>
 		</SafeAreaView>
 	);
 }

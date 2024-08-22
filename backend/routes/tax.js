@@ -12,7 +12,7 @@ const receiptAPI = require('../api/receiptsAPI');
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
     const taxes = accessHelper.get_accessible_taxes(req.user);
-    res.sendStatus(200).json(JSON.stringify(taxes));
+    if (!res.headersSent) res.status(200).json(JSON.stringify(taxes));
 });
 
 //create a new tax
@@ -21,7 +21,7 @@ router.post('/add', [
     async (req, res) => {
         //check if user has access to receipt
         if(!accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
-            res.sendStatus(401).json({msg: 'User must have access to the receipt they link.'});
+            res.status(401).json({msg: 'User must have access to the receipt they link.'});
         }
     },
     body("name")
@@ -32,7 +32,7 @@ router.post('/add', [
         .trim()
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
         .escape(),
-    (req, res) => {
+    async (req, res) => {
       const errors = validationResult(req);
       const tax = new Tax({
         receipt_id: req.body.receipt_id,
@@ -41,8 +41,8 @@ router.post('/add', [
       });
   
       if (errors.isEmpty()) {
-        taxAPI.addTax(tax);
-        res.sendStatus(200).json(JSON.stringify(tax));
+        await taxAPI.addTax(tax);
+        if (!res.headersSent) res.status(200).json(JSON.stringify(tax));
       }
     }
 ]);
@@ -50,10 +50,10 @@ router.post('/add', [
 //get information of tax with ID
 //Authorization: Must have access to the receipt that the tax is assigned to.
 router.get('/:id', async (req, res) => {
-    if(!accessHelper.check_tax_accesible(req.user, req.params.id)) res.sendStatus(401).json({msg: 'User must have access to the receipt that the tax is assigned to'});
+    if(!accessHelper.check_tax_accesible(req.user, req.params.id)) res.status(401).json({msg: 'User must have access to the receipt that the tax is assigned to'});
     else {
-        const tax = taxAPI.getTaxByID(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(tax));
+        const tax = await taxAPI.getTaxByID(req.params.id);
+        if (!res.headersSent) res.status(200).json(JSON.stringify(tax));
     }
 });
 
@@ -63,24 +63,27 @@ router.put('/:id/update', [
     body("name", "name must be 100 characters max")
         .trim()
         .isLength({max: 100})
-        .escape(),
+        .escape()
+        .optional(),
     body("percentage", "Percentage must be greater than 0")
         .trim()
         .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
-        .escape(),
-    (req, res) => {
+        .escape()
+        .optional(),
+    async (req, res) => {
       const errors = validationResult(req);
-      const tax = taxAPI.getTaxByID(req.params.id);
+      const tax = await taxAPI.getTaxByID(req.params.id);
 
       if (errors.isEmpty()) {
-        const receipt = receiptAPI.getReceiptByID(tax.receipt_id)
-        if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be admin of the receipt.'});
+        const promises = [];
+        const receipt = await receiptAPI.getReceiptByID(tax.receipt_id)
+        if(receipt.admin_id != req.user) res.status(401).json({msg: 'User must be admin of the receipt.'});
         else {
-            if(req.body.name) taxAPI.changeTax(req.params.id, "name", req.body.name);
-            if(req.body.percentage) taxAPI.changeTax(req.params.id, "percentage", req.body.percentage);
+            if(req.body.name) promises.push(taxAPI.changeTax(req.params.id, "name", req.body.name));
+            if(req.body.percentage) promises.push(taxAPI.changeTax(req.params.id, "percentage", req.body.percentage));
         }
         
-        res.sendStatus(200).json(JSON.stringify(tax));
+        Promise.all(promises).then(() => {if(!res.headersSent) res.status(200).json(JSON.stringify(tax));})
       }
     }
 ]);
@@ -88,12 +91,12 @@ router.put('/:id/update', [
 //delete tax with ID
 //Authorization: Must be an admin of the receipt
 router.delete('/:id/delete', async (req, res) => {
-    const tax = taxAPI.getTaxByID(req.params.id);
-    const receipt = receiptAPI.getReceiptByID(tax.receipt_id)
-    if(receipt.admin_id != req.user) res.sendStatus(401).json({msg: 'User must be an admin to delete a tax from the receipt'});
+    const tax = await taxAPI.getTaxByID(req.params.id);
+    const receipt = await receiptAPI.getReceiptByID(tax.receipt_id)
+    if(receipt.admin_id != req.user) res.status(401).json({msg: 'User must be an admin to delete a tax from the receipt'});
     else {
-      taxAPI.deleteTax(req.params.id);
-      res.sendStatus(200).json(JSON.stringify(tax));
+      await taxAPI.deleteTax(req.params.id);
+      if (!res.headersSent) res.status(200).json(JSON.stringify(tax));
     }
 });
 

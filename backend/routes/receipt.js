@@ -62,6 +62,7 @@ router.post('/add', [
 
         if (errors.isEmpty()) {
             await receiptAPI.addReceipt(receipt);
+            await receiptAPI.addReceipt(receipt);
             
             if(!res.headersSent) res.status(200).json(receipt);
         }
@@ -71,6 +72,7 @@ router.post('/add', [
 //get information of receipt with ID
 //Authorization: Must be a member of the group that the receipt is part of.
 router.get('/:id', async (req, res) => {
+    const receipt = await receiptAPI.getReceiptByID(req.params.id);
     const receipt = await receiptAPI.getReceiptByID(req.params.id);
     if(!accessHelper.check_group_accessible(req.user, req.body.group_id)) {
         res.status(401).json({msg: 'User must be a member of the group they link'});
@@ -120,11 +122,11 @@ router.post('/:id/update', [
         });
 
         if (errors.isEmpty()) {
-            if(req.body.images) receiptAPI.changeReceipt(req.params.id, "images", req.body.images);
-            if(req.body.name) receiptAPI.changeReceipt(req.params.id, "name", req.body.name);
-            if(req.body.description) receiptAPI.changeReceipt(req.params.id, "description", req.body.description);
-            if(req.body.category) receiptAPI.changeReceipt(req.params.id, "category", req.body.category);
-            if(req.body.vendor) receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor);
+            if(req.body.images) await receiptAPI.changeReceipt(req.params.id, "images", req.body.images);
+            if(req.body.name) await receiptAPI.changeReceipt(req.params.id, "name", req.body.name);
+            if(req.body.description) await receiptAPI.changeReceipt(req.params.id, "description", req.body.description);
+            if(req.body.category) await receiptAPI.changeReceipt(req.params.id, "category", req.body.category);
+            if(req.body.vendor) await receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor);
             
             if(!res.headersSent) res.status(200).json(receipt);
         }
@@ -137,6 +139,8 @@ router.post('/:id/delete', async (req, res) => {
     const receipt = await receiptAPI.getReceiptByID(req.params.id);
     if(receipt.admin_id != req.user) res.status(401).json({msg: 'User must be an admin to delete the receipt'});
     else {
+        await receiptAPI.deleteReceipt(req.params.id);
+        if(!res.headersSent) res.status(200).json({ msg: 'Receipt deleted successfully.' });
         await receiptAPI.deleteReceipt(req.params.id);
         if(!res.headersSent) res.status(200).json({ msg: 'Receipt deleted successfully.' });
     }
