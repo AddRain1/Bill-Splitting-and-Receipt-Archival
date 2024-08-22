@@ -72,11 +72,30 @@ class tipTable_api extends tip_api{
             database: DATABASE
         });
 
-        const [results] = await connection.execute(query);
+        let results;
+        try {
+            [results] = await connection.execute('SELECT * FROM tips ' + query);
+            if (!results) {
+                throw new Error (`No tip found with query: ${query}`);
+            }
+        } catch (error) {
+                throw new Error (`error with current query: ${query}`);
+        }
+        
+        if (results.length === 0) {
+            throw new Error("No tip found for the given ID");
+        }
+
+        const result = results[0];
+        const tip = new Tip(
+            result.tip_id,
+            result.receipt_id,
+            result.tip_amount
+        );
 
         await connection.end();
 
-        return results;
+        return result;
     }
 
 
