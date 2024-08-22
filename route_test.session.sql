@@ -9,21 +9,31 @@ CREATE TABLE users (
   profile_description varchar(124) NOT NULL,
   creation_date DATE DEFAULT (CURRENT_DATE),
   PRIMARY KEY (`user_id`)
-); 
-
+);
 -- @block   
-INSERT INTO users(username, first_name, last_name, email, password, profile_description)
-VALUES('user1', 'bob', 'bobbyson', 'bob.bobbyson@gmail.com', 'password', 'wassup');
-
+INSERT INTO users(
+    username,
+    first_name,
+    last_name,
+    email,
+    password,
+    profile_description
+  )
+VALUES(
+    'user1',
+    'bob',
+    'bobbyson',
+    'bob.bobbyson@gmail.com',
+    'password',
+    'wassup'
+  );
 -- @block   
-SELECT * from users 
-
+SELECT *
+from users;
 -- @block   
-delete from users
-
+delete from users;
 -- @block
-DROP TABLE users
-
+DROP TABLE users;
 -- @block   
 CREATE TABLE `group` (
   group_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,36 +42,47 @@ CREATE TABLE `group` (
   description VARCHAR(124) NOT NULL,
   creation_date DATE DEFAULT (CURRENT_DATE)
 );
-
 -- @block   
 INSERT INTO `group`(admin_id, name, description)
-VALUES('','','');
-
+VALUES('', '', '');
 -- @block   
-SELECT * from `group` 
-
+SELECT *
+from `group`;
 -- @block   
-delete from `group`
-
+delete from `group`;
 -- @block
-DROP TABLE `group`
-
+DROP TABLE `group`;
 -- @block   
 CREATE TABLE user_group (
   user_id INT NOT NULL,
   group_id INT NOT NULL,
   creation_date DATE DEFAULT (CURRENT_DATE)
 );
-
 -- @block   
 INSERT INTO user_group(user_id, group_id)
-VALUES('','');
-
+VALUES('', '');
 -- @block   
-SELECT * from user_group 
-
+SELECT *
+from user_group;
 -- @block   
-delete from user_group
-
+delete from user_group;
 -- @block
-DROP TABLE user_group
+DROP TABLE user_group;
+-- @block
+-- @block
+CREATE TABLE friends (
+  friend_id INT NOT NULL AUTO_INCREMENT,
+  requester_id CHAR(15) NOT NULL,
+  receiver_id CHAR(15) NOT NULL,
+  is_confirmed BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  -- FOREIGN KEY (requester_id) REFERENCES users(user_id),
+  -- FOREIGN KEY (recipient_id) REFERENCES users(user_id),
+  PRIMARY KEY (friend_id)
+);
+-- @block
+INSERT INTO friends (requester_id, receiver_id, is_confirmed)
+VALUES ('20240730000000', '20240729000000', FALSE);
+-- @block
+SELECT *
+FROM friends;

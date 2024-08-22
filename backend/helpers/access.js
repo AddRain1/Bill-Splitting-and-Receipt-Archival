@@ -113,7 +113,6 @@ const check_tip_accesible = async (user_id, tip_id) => {
 }
 
 const get_accepted_friends = async (user_id) => {
-    console.log(user_id)
     const accepted_friends_query = `
         (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = TRUE) 
         UNION 
@@ -123,7 +122,6 @@ const get_accepted_friends = async (user_id) => {
 }
 
 const get_not_accepted_friends = async (user_id) => {
-    console.log(user_id)
     const not_accepted_friends_query = `
         (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = FALSE) 
         UNION 
