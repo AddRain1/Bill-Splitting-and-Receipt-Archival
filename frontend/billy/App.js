@@ -31,6 +31,7 @@ import FriendGroups from "./app/screens/FriendGroups";
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App() {
 	return (
 		<NavigationContainer>

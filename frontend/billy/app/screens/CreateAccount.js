@@ -56,7 +56,7 @@ function CreateAccount(props) {
 	  
 
 		try {
-			const response = await fetch("http://132.249.238.159/users/add", {
+			const response = await fetch("http://132.249.238.159/routes/auth/signup", {
 			  method: "POST",
 			  headers: {
 				"Content-Type": "application/json",
@@ -86,6 +86,7 @@ function CreateAccount(props) {
 			  Alert.alert("Error", errorData.error || "Failed to create account.");
 			}
 		  } catch (error) {
+			console.error("Network error:", error); // Log the error to see the details in the console
 			Alert.alert("Error", "Something went wrong. Please try again later.");
 		  }
 	};
