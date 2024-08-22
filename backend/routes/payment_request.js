@@ -12,31 +12,31 @@ router.get('/', async (req, res) => {
     if(req.query.payer_id){
         const query = `WHERE payer_id = ${req.query.payer_id}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.receiver_id){
         const query = `WHERE receiver_id = ${req.query.receiver_id}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.pay_by){
         const query = `WHERE pay_by = ${req.query.pay_by}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.paid_on){
         const query = `WHERE paid_on = ${req.query.paid_on}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.amount){
         const query = `WHERE amount = ${req.query.amount}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else{
-        const payment_request_list = accessHelper.get_accessible_payment_requests();
-        res.sendStatus(200).json(JSON.stringify(payment_request_list));
+        const payment_request_list = await accessHelper.get_accessible_payment_requests(req.user.user_id);
+        if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     
 });
@@ -82,7 +82,7 @@ router.get('/add', [
       if (errors.isEmpty()) {
         paymentRequestAPI.addPaymentRequest(payment_request);
         
-        res.sendStatus(200).json(JSON.stringify(payment_request));
+        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
       }
     }
   ]);
@@ -93,7 +93,7 @@ router.get('/:id', async (req, res) => {
     if(!accessHelper.check_payment_request_accessible(req.user, req.params.id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
     else {
         const payment_request = paymentRequestAPI.getPaymentRequestByID(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(payment_request));
+        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
     }
 });
 
@@ -127,13 +127,13 @@ router.get('/:id/update', [
             //TODO: Throw an error if a req.body is defined that the user doesn't have access to or isn't a property
             if(req.user == payment_request.payer_id) {
                 if(req.body.is_declined) paymentRequestAPI.changePaymentRequest(req.params.id, "is_declined", req.body.is_declined);
-                res.sendStatus(200).json(JSON.stringify(payment_request));
+                if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
             }
             else if(req.user == payment_request.receiver_id) {
                 if(req.body.pay_by) paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by);
                 if(req.body.amount) paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount);
                 if(req.body.description) paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description);
-                res.sendStatus(200).json(JSON.stringify(payment_request));
+                if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
             }
             else res.sendStatus(401).json({msg: 'User must be the payer or receiver to modify request'});
         }
@@ -147,7 +147,7 @@ router.get('/:id/delete', async (req, res) => {
     if(req.user != payment_request.receiver_id) res.sendStatus(401).json({msg: 'User must be the receiver to delete request'});
     else {
         paymentRequestAPI.deletePaymentRequest(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(payment_request));
+        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
     }
 });
 
