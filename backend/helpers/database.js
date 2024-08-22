@@ -1,10 +1,10 @@
 const mysql = require("mysql2/promise");
 
-const checkPayloadWithResponse = (payload, response) => {
+const checkPayloadWithResponse = async (payload, response) => {
     const exempt_properties = ['password'];
     for (const property in payload) {
         if(exempt_properties.includes(property)) continue;
-        else if(payload[property] != response[property]) return false;
+        else if(payload[property] == response[property]) return false;
     }
     return true;
 }
@@ -18,11 +18,11 @@ const clearTable = async(name) => {
     });
 
 
-    if(name === 'receipts'){
+    /* if(name === 'receipts'){
         // delete expense_rate entries that reference the receipt
         await connection.execute(`DELETE FROM expense_rate WHERE receipt_id IN (SELECT receipt_id FROM receipts)`); 
     
-    }
+    } */
 
     await connection.execute('DELETE FROM ' + name);
 }

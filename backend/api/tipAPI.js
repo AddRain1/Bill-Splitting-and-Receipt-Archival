@@ -19,7 +19,7 @@ class tip_api{
         }
     }
 
-    static async getTips(){
+    static async getTips(query){
         // Check if the subclass has defined this method
         if(!this.getTips){
             throw new Error("getTips method must be defined");
@@ -63,7 +63,7 @@ class tip_api{
 // Export the class receiptTable_api which extends the abstract class receipt_api
 class tipTable_api extends tip_api{
     
-    static async getTip(query){
+    static async getTips(query=''){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -71,60 +71,22 @@ class tipTable_api extends tip_api{
             password: PASSWORD,
             database: DATABASE
         });
-
-        const [results] = await connection.execute(query);
-
-        await connection.end();
-
-        return results;
-    }
-
-
-    static async getTipById(id){
-        // Connect to the MySQL database
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-
-        const tipquery = 'SELECT * FROM tips WHERE tip_id = ?';
-        const receiptquery = 'SELECT * FROM tips WHERE receipt_id = ?';
-        let results;
-
-        try {
-            [results] = await connection.execute(tipquery, [id]);
-            if(!results) {
-                throw new Error (`Cannot find tip by tip_id = ${id}`);
-            }
-        } catch (error) {
-            try {
-            [results] = await connection.execute(receiptquery, [id]);
-            if(!results) {
-                throw new Error (`Cannot find tip by receipt_id = ${id}`);
-            }
-            } catch (error) {
-                await connection.end();
-                throw new Error("Cannot find tip");
-            }
-        }
-
-        if (results.length === 0) {
-            throw new Error("No tip found for the given ID");
-        }
+        // Execute the query to get the tips from the database
+        const [results] = await connection.execute('SELECT * FROM tips ' + query);
         
-        // Result is an array, with only one instance of it
-        const result = results[0];
-        const tip = new Tip(
+        // get tip object from results
+        const tips = results.map(result => new Tip(
             result.tip_id,
             result.receipt_id,
             result.amount
-        );
+        ));
+        // Return the tip object
+        return tips;
+    }
 
-        await connection.end();
-
-        return tip;
+    static async getTipById(id){
+        const tips = await this.getTips('WHERE tip_id = ' + id);
+        return tips[0];
     }
 
     // Override the addTip method

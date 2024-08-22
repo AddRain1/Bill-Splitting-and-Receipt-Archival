@@ -96,7 +96,7 @@ DROP TABLE payment_request
 
 -- @block   
 CREATE TABLE receipts (
-    receipt_id CHAR(15) NOT NULL AUTO_INCREMENT,
+    receipt_id INT NOT NULL AUTO_INCREMENT,
     group_id INT NOT NULL,
     images TEXT,
     name TEXT NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE receipts (
     category TEXT,
     creation_date DATE DEFAULT (CURRENT_DATE),
     vendor TEXT,
-    PRIMARY KEY ("receipts")
+    PRIMARY KEY (`receipt_id`)
 );
 
 -- @block   
@@ -115,3 +115,63 @@ delete from receipts
 
 -- @block
 DROP TABLE receipts
+
+-- @block
+CREATE TABLE expense_rate(
+    expenseRate_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id CHAR(15) NOT NULL,
+    expenseRate_name TEXT,
+    expenseRate_percentage DECIMAL(4, 2) DEFAULT 0
+);
+
+-- @block   
+SELECT * FROM expense_rate
+
+-- @block   
+delete from expense_rate
+
+-- @block
+DROP TABLE expense_rate
+
+-- @block
+CREATE TABLE taxes(
+    tax_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id CHAR(15) NOT NULL,
+    tax_name TEXT,
+    tax_percentage DECIMAL(4, 2) DEFAULT 0
+);
+
+-- @block   
+SELECT * FROM taxes
+
+-- @block   
+delete from taxes
+
+-- @block
+DROP TABLE taxes
+
+-- @block
+CREATE TABLE tips (
+    tip_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id CHAR(15) NOT NULL,
+    tip_amount DECIMAL(65, 2) DEFAULT 0
+);
+
+-- @block   
+SELECT * FROM tips
+
+-- @block   
+delete from tips
+
+-- @block
+DROP TABLE tips
+
+-- @block
+CREATE TABLE items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id CHAR(15) NOT NULL,
+    item_name TEXT,
+    item_price DECIMAL(65, 2) DEFAULT 0,
+    item_payee TEXT,
+    creation_date DATE DEFAULT (CURRENT_DATE)
+);

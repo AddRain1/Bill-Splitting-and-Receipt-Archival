@@ -36,7 +36,7 @@ const check_payment_request_accessible = async (user_id, paymentRequest_id) => {
 
 const get_accessible_receipts = async (user_id) => {
     //Retrieve all groups that the user is a member of
-    const groups = await get_accessible_groups(user_id)
+    const groups = await get_accessible_groups(user_id);
 
     //Get all receipts assigned to any of the groups
     const groupIds = groups.map(group => group.group_id).join(',');
@@ -68,13 +68,15 @@ const get_accessible_expense_rates = async (user_id) => {
 } 
 
 const get_accessible_groups = async user_id => {
-    return await groupAPI.getUser_groups(user_id);
+    const groups = await groupAPI.getUser_groups(user_id)
+    return groups;
 }
 
 const check_group_accessible = async (user_id, group_id) => {
     const members = await groupAPI.getGroup_members(group_id);
+    const member_ids = members.map(m => m.user_id)
     //Check if the user is a member of the group 
-    if(user_id in members) return true;
+    if(member_ids.includes(user_id)) return true;
     else return false;
 }
 
@@ -159,6 +161,17 @@ const check_user_is_receiver = async (user_id, friend_id) => {
     else return false;
 }
 
+const get_admin_of_group = async (receipt_id) => {
+    const receipt = await receiptAPI.getReceiptByID(receipt_id);
+    const group = await groupAPI.getGroupByID(receipt.group_id);
+    return group.admin_id;
+}
+
+const check_admin_of_group = async (receipt_id, user_id) => {
+    const admin_id = await get_admin_of_group(receipt_id);
+    return admin_id == user_id;
+}
+
 module.exports = {
     get_payment_requests_payer_or_receiver, 
     get_payment_requests_with_receipt_access, 
@@ -177,5 +190,7 @@ module.exports = {
     get_not_accepted_friends,
     check_friend_accesible_for_request,
     check_friend_accesible_for_delete,
-    check_user_is_receiver
+    check_user_is_receiver,
+    get_admin_of_group,
+    check_admin_of_group
 }
