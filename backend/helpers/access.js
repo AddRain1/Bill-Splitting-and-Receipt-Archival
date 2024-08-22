@@ -8,7 +8,7 @@ const friendsAPI = require('../api/friendsAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = async (user_id) => {
-    const payer_or_receiver_query = `SELECT * FROM payment_request WHERE payer_id = ${user_id} OR receiver_id = ${user_id}`;
+    const payer_or_receiver_query = `WHERE payer_id = ${user_id} OR receiver_id = ${user_id}`;
     return await paymentRequestAPI.getPaymentRequests(payer_or_receiver_query);
 }
 
@@ -18,7 +18,7 @@ const get_payment_requests_with_receipt_access = async user_id => {
 
     //Retrieve all receipts linked to a group that the user is a member of
     const groupIds = groups.map(group => group.group_id).join(',');
-    const receipt_group_query = `SELECT * FROM receipts WHERE group_id IN (${groupIds})`;
+    const receipt_group_query = `WHERE group_id IN (${groupIds})`;
     return await receiptAPI.getReceipts(receipt_group_query);
 }
 
@@ -40,8 +40,10 @@ const get_accessible_receipts = async (user_id) => {
 
     //Get all receipts assigned to any of the groups
     const groupIds = groups.map(group => group.group_id).join(',');
-    const receipt_group_query = `SELECT * FROM receipts WHERE group_id IN (${groupIds})`;
-    return await receiptAPI.getReceipts(receipt_group_query);
+    const receipt_group_query = `WHERE group_id IN (${groupIds})`;
+    let result = [];
+    if(groupIds.length != 0) result = await receiptAPI.getReceipts(receipt_group_query);
+    return result;
 }
 
 const check_receipt_accessible = async (user_id, receipt_id) => {
@@ -61,7 +63,7 @@ const get_accessible_expense_rates = async (user_id) => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get expense rates assigned to each receipt
-    const expense_rate_receipt_query = `SELECT * FROM expense_rate WHERE receipt_id IN (${receiptIds})`;
+    const expense_rate_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await expenseRateAPI.getExpRt(expense_rate_receipt_query);
 } 
 
@@ -81,7 +83,7 @@ const get_accessible_taxes = async user_id => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get taxes assigned to each receipt
-    const tax_receipt_query = `SELECT * FROM taxes WHERE receipt_id IN (${receiptIds})`;
+    const tax_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await taxAPI.getTax(tax_receipt_query);
 }
 
@@ -99,7 +101,7 @@ const get_accessible_tips = async user_id => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get tips assigned to each receipt
-    const tip_receipt_query = `SELECT * FROM tips WHERE receipt_id IN (${receiptIds})`;
+    const tip_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await tipAPI.getTip(tip_receipt_query);
 }
 

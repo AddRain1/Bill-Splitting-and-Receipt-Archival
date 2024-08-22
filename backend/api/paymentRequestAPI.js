@@ -1,5 +1,5 @@
 const PaymentRequest = require("../class/paymentRequestClass.js");
-const connection = require("../db/db.js");
+const mysql = require("mysql2/promise");
 
 // Export the abstract class paymentAPI
 class paymentRequestAPI{
@@ -55,13 +55,18 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     // Override the getPaymentRequests method
     // Static async function to get all payment requests from the database
     //TODO: Allow for dynamic queries
-    static async getPaymentRequests(query){
+    static async getPaymentRequests(query=''){
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
+        });
         // Execute the query to get all the payment requests from the database
-        const [results] = await connection.execute('SELECT * FROM payment_request WHERE ' + query);
+        const [results] = await connection.execute('SELECT * FROM payment_request ' + query);
         
         // get group object from results
-        const paymentRequestObj = results.map(result => new PaymentRequest(
-            result.payment_request_id,
+        const paymentRequests = results.map(result => new PaymentRequest(
             result.payer_id,
             result.receiver_id,
             result.pay_by,
@@ -69,37 +74,31 @@ class paymentRequestTableAPI extends paymentRequestAPI{
             result.amount,
             result.is_declined,
             result.description,
-            result.receipt_id
+            result.creation_date,
+            result.receipt_id,
+            result.payment_request_id
         ));
-        // Return the payment requests object
-        return paymentRequestObj;
+        // Return the array of Payment Request objects
+        console.log(paymentRequests)
+        return paymentRequests;
     }
 
     // Override the getPaymentRequestByID method
     // Static async function to get a paymnet request based on ID from the database
     static async getPaymentRequestByID(payment_request_id){
-       // Execute the query to get all the payment requests from the database
-       const [results] = await connection.execute('SELECT * FROM payment_request WHERE payment_request_id = ?', [payment_request_id]);
-        
-       // get group object from results
-       const paymentRequestObj = results.map(result => new PaymentRequest(
-           result.payment_request_id,
-           result.payer_id,
-           result.receiver_id,
-           result.pay_by,
-           result.paid_on,
-           result.amount,
-           result.is_declined,
-           result.description,
-           result.receipt_id
-       ));
-       // Return the payment requests object
-       return paymentRequestObj;
+        const paymentRequests = await this.getPaymentRequests('WHERE payment_request_id = ' + payment_request_id);
+        return paymentRequests[0];
     }
 
     // Override the addPaymentRequest method
     // Static async function to add a new payment requests to the database
-    static async addPaymentRequest(payment_request){        
+    static async addPaymentRequest(payment_request){      
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
+        });  
         // Execute the query to insert the new payment requests into the database
         const query = 'INSERT INTO payment_request (payer_id, receiver_id, pay_by, paid_on, amount, is_declined, description, receipt_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         const params = [payment_request.payer_id, 
@@ -117,6 +116,12 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     // Static async function to modify a property in the database.
     // TODO: For efficiency, looking into batching
     static async changePaymentRequest(payment_request_id, property_name, property_value){
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
+        });
         // Execute the query to update the description of the payment request in the database
         const query = 'UPDATE group SET ' + property_name +  ' = ? WHERE payment_request_id = ?';
         const params = [property_value, payment_request_id];
@@ -126,6 +131,12 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     // Override the deletePaymentRequest method
     // Static async function to delete a payment request from the database
     static async deletePaymentRequest(payment_request_id){
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
+        });
         // Get all the payment requests
         const payment_requests = await paymentRequestTableAPI.getPaymentRequests();
         // Check if the payment request is already deleted

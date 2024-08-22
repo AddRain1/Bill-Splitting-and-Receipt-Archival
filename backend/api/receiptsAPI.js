@@ -66,7 +66,7 @@ class receipt_api{
 class receiptTable_api extends receipt_api{
     // Override the getReceipts method
     // Static async function to get all the receipts from the database
-    static async getReceipts(query){
+    static async getReceipts(query=''){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -75,59 +75,34 @@ class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to get all the receipts from the database
-        const [results, fields] = await connection.execute('SELECT * FROM receipts ' + query);
+        const [results] = await connection.execute('SELECT * FROM receipts ' + query);
         
         // Map the results to an array of Receipts objects
         const receipts = results.map(result => new Receipts(
-            result.receipt_id,
             result.group_id,
+            result.name,
+            result.description,
             result.images,
-            result.receipt_name,
-            result.receipt_description,
-            result.receipt_category,
-            result.created_at,
-            result.vendor_name
+            result.category,
+            result.creation_date,
+            result.vendor,
+            result.receipt_id
         ));
-        // Return the array of Receipts objects
-        for(let i = 0; i < receipts.length; i++){
-            let receiptQuery = ' WHERE receipt_id = ' + receipts[i].receipt_id;
-            receipts[i].tax = await taxAPI.getTax(receiptQuery);
-            receipts[i].tip = await tipAPI.getTip(receiptQuery);
-            receipts[i].expense_rate = await expenseRateAPI.getExpenseRate(receiptQuery);
-            receipts[i].items = await itemAPI.getItems(receiptQuery);
-        }
         return receipts;
     }
 
     // Override the getReceiptByID method
     // Static async function to get a receipt by ID from the database
     static async getReceiptByID(receipt_id){
-        const allreceipts = await receiptTable_api.getAllReceipts();
-        const exist = allreceipts.find(r => r.receipt_id === receipt_id);
-        if(!exist){
-            throw new Error("Receipt with this ID doesn't exists in table");
+        const receipts = await this.getReceipts('WHERE receipt_id = ' + receipt_id);
+        if(receipts.length == 1) {
+            let receiptQuery = ' WHERE receipt_id = ' + receipts[0].receipt_id;
+            receipts[0].tax = await taxAPI.getTax(receiptQuery);
+            receipts[0].tip = await tipAPI.getTip(receiptQuery);
+            receipts[0].expense_rate = await expenseRateAPI.getExpenseRate(receiptQuery);
+            receipts[0].items = await itemAPI.getItems(receiptQuery);
         }
-
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-        
-        const query = 'SELECT * FROM receipts WHERE receipt_id = ?'
-        const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
-
-        const receipt = new Receipts(results[0].receipt_id,
-            results[0].group_id,
-            results[0].images,
-            results[0].receipt_name,
-            results[0].receipt_description,
-            results[0].receipt_category,
-            results[0].created_at,
-            results[0].vendor_name);
-        return receipt;
+        return receipts[0];
     }
 
     // Override the addReceipt method
@@ -149,24 +124,15 @@ class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO receipts (receipt_id, group_id, images, receipt_name, receipt_description, receipt_category, vendor_name) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const params = [receipt.receipt_id,
+        const query = 'INSERT INTO receipts (group_id, name, description, images, category, creation_date, vendor) VALUES (?, ?, ?, ?, ?, ?)';
+        const params = [
             receipt.group_id, 
-            receipt.images, 
             receipt.name, 
             receipt.description, 
+            receipt.images, 
             receipt.category, 
             receipt.vendor];
         const [results] = await connection.execute(query, params);
-        // add tax to taxes table
-        await taxAPI.addTax(receipt.tax);
-        // add tip to tips table
-        await tipAPI.addTip(receipt.tip);
-        // add expense_rate to expense_rate table
-        if(receipt.expense_rate){
-            await expenseRateAPI.addExpRt(receipt.expense_rate);
-        }
-        
     }
 
     // Override the changeReceipt method

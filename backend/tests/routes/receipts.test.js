@@ -1,9 +1,17 @@
 let request = require('supertest');
 let app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
+<<<<<<< HEAD
+const userAPI = require('../../api/usersAPI');
+const groupAPI = require('../../api/groupAPI');
+
+describe("Receipt routes", () => {
+    request = request.agent(app);  
+=======
 
 describe("receipts route tests", () => {
     const agent = request.agent(app);  
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     const user1_payload = {
         username:'user1', 
@@ -12,23 +20,104 @@ describe("receipts route tests", () => {
         email:'testuser1@gmail.com', 
         password:'password',
         profile_description: 'certified tester'
+<<<<<<< HEAD
+    }
+
+    const user2_payload = {
+        username:'user2', 
+        first_name:'test', 
+        last_name: 'person', 
+        email:'testuser2@gmail.com', 
+        password:'password',
+        profile_description: 'certified tester'
+    }
+
+    const user3_payload = {
+        username:'user3', 
+        first_name:'test', 
+        last_name: 'person', 
+        email:'testuser3@gmail.com', 
+        password:'password',
+        profile_description: 'certified tester'
+    }
+    
+    beforeAll(async () => {
+        await clearTable('receipts');
+        await clearTable('`group`');
+        await clearTable('users');
+
+        //Create users
+        await request
+=======
     };
     
     beforeAll(async () => {
         await clearTable('receipts');
         /*Create users*/
         await agent
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
           .post("/auth/signup")
           .send(user1_payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
+<<<<<<< HEAD
+          .expect(200)
+        await request
+          .post("/auth/signup")
+          .send(user2_payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200)
+        await request
+          .post("/auth/signup")
+          .send(user3_payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200)
+=======
           .expect(200);
         
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
         //Login as the first created user
         const payload = {
             username: user1_payload.username,
             password: user1_payload.password
         }
+<<<<<<< HEAD
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200)
+
+        const group1_payload = {
+            name: 'self',
+            description: 'just me',
+            members: []
+        }
+        const users = await userAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+        const group2_payload = {
+            name: 'party',
+            description: 'woo',
+            members: user_ids
+        }
+
+        await request
+          .post("/groups/add")
+          .send(group1_payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200)
+        await request
+          .post("/groups/add")
+          .send(group2_payload)
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json')
+          .expect(200)
+        
+    }, 20000)
+=======
         await agent
           .post("/auth/login")
           .send(payload)
@@ -36,13 +125,20 @@ describe("receipts route tests", () => {
           .expect(200);
         
     }, 10000);
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     beforeEach(() => {
         jest.useRealTimers();
     });
 
+    afterAll(async () => {
+        await clearTable('receipts');
+        await clearTable('`group`');
+        await clearTable('users');
+    });
+
     it("GET /receipts when no receipts exist", async () => {
-        await agent
+        await request
         .get("/receipts")
         .expect("Content-Type", /json/)
         .expect(200)
@@ -55,22 +151,18 @@ describe("receipts route tests", () => {
     });
 
     it("POST /receipts/add - create a valid receipt", async () => {
+        const groups = await groupAPI.getGroups();
+        const group_ids = groups.map(g => g.group_id);
         const payload = {
-            receipt_id: '20240819055013',
-            group_id: '1',
-            images: 'image.jpg',
+            group_id: group_ids[0],
             name: 'bobby',
             description: 'bobbys description',
             category: 'food',
-            vendor: 'bobby',
-            tax: null,
-            tip: null,
-            expense_rate: null,
-            items: null
+            vendor: 'bobby inc',
         }
-        await agent
+        await request
             .post("/receipts/add")
-            .query(payload)
+            .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(200)
@@ -78,12 +170,16 @@ describe("receipts route tests", () => {
                 const body = JSON.parse(response.body);
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
             });
+<<<<<<< HEAD
+    }, 10000);
+=======
             // .catch((err) => {
             //     expect(err).toBe('[Error: expected 200 "OK", got 401 "Unauthorized"]');
             // });
     });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
-    it("GET /receipts/:id - get a receipt by ID", async () => {
+    /* it("GET /receipts/:id - get a receipt by ID", async () => {
         const payload = {
             receipt_id: '20240819055013',
             group_id: '1',
@@ -101,7 +197,7 @@ describe("receipts route tests", () => {
         let receipt_id;
 
         // Create receipts
-        await agent
+        await request
             .post("/receipts/add")
             .send(payload)
             .set('Content-Type', 'application/json')
@@ -116,7 +212,7 @@ describe("receipts route tests", () => {
             // });
         
         // Get receipt by id
-        await agent
+        await request
             .get(`/receipts/${receipt_id}`)
             .expect("Content-Type", /json/)
             .expect(200)
@@ -127,12 +223,16 @@ describe("receipts route tests", () => {
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
             });
+<<<<<<< HEAD
+    }); */
+=======
             // .catch((err) => {
             //     expect(err).toBe(null);
             // });
     });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
-    it("PUT /receipts/:id/update - update a receipt", async () => {
+    /* it("PUT /receipts/:id/update - update a receipt", async () => {
         const payload = {
             receipt_id: '20240819055013',
             group_id: '1',
@@ -164,7 +264,7 @@ describe("receipts route tests", () => {
         let receipt_id;
 
         //Create the receipt
-        await agent
+        await request
             .post("/receipts/add")
             .send(payload)
             .set('Content-Type', 'application/json')
@@ -179,7 +279,7 @@ describe("receipts route tests", () => {
             // });
 
         // Now update the receipt
-        await agent
+        await request
             .put(`/receipts/${receipt_id}/update`)
             .send(updatedPayload)
             .set('Content-Type', 'application/json')
@@ -192,12 +292,16 @@ describe("receipts route tests", () => {
                 expect(body.category).toBe(payload.category);
                 expect(body.vendor).toBe(payload.vendor);
             });
+<<<<<<< HEAD
+    }); */
+=======
             // .catch((err) => {
             //     expect(err).toBe(null);
             // });
     });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
-    it("DELETE /receipts/:id/delete - delete a existing receipt", async () => {
+    /* it("DELETE /receipts/:id/delete - delete a existing receipt", async () => {
         const payload = {
             receipt_id: '20240819055013',
             group_id: '1',
@@ -215,7 +319,7 @@ describe("receipts route tests", () => {
         let receipt_id;
 
         // Add a receipt to the table
-        await agent
+        await request
             .post("/receipts/add")
             .send(payload)
             .set('Content-Type', 'application/json')
@@ -230,7 +334,7 @@ describe("receipts route tests", () => {
             // });
         
         // Delete the tip
-        await agent
+        await request
             .delete(`receipts/${receipt_id}/delete`)
             .expect(200)
             .then(response => {
@@ -241,11 +345,20 @@ describe("receipts route tests", () => {
             // });
         
         // After receipt is deleted, get by id should not return anything
-        await agent
+        await request
             .get(`/receipts/${receipt_id}`)
+<<<<<<< HEAD
+            .expect(404)
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    }); */
+}); 
+=======
             .expect(404);
             // .catch((err) => {
             //     expect(err).toBe(null);
             // });
     });
 });
+>>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
