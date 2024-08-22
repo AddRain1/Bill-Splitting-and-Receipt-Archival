@@ -53,45 +53,6 @@ class tax_api{
 // Export the class taxTable_api which extends the abstract class tax_api
 class taxTable_api extends tax_api{
 
-    static async getTax(query){
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-        
-        let results;
-        try {
-            [results] = await connection.execute('SELECT * FROM taxes ' + query);
-            if (!results) {
-                throw new Error (`No Tax found with query: ${query}`);
-            }
-        } catch (error) {
-                throw new Error (`error with current query: ${query}`);
-        }
-        
-        if (results.length === 0) {
-            throw new Error("No Tax found for the given ID");
-        }
-
-        // get Tax object from results
-        const result = results[0];
-        const tax = new Tax(
-            result.tax_id,
-            result.receipt_id,
-            result.tax_name,
-            result.tax_percentage
-        );
-
-
-        // Close connection
-        await connection.end();
-
-        // Return the Tax object
-        return tax;
-    }
-
     static async getTaxById(id){
         const connection = await mysql.createConnection({
             host: HOST,

@@ -98,11 +98,11 @@ class receiptTable_api extends receipt_api{
         }
         return receipts;
     }
- 
+
     // Override the getReceiptByID method
     // Static async function to get a receipt by ID from the database
     static async getReceiptByID(receipt_id){
-        const allreceipts = await receiptTable_api.getReceipts();
+        const allreceipts = await receiptTable_api.getAllReceipts();
         const exist = allreceipts.find(r => r.receipt_id === receipt_id);
         if(!exist){
             throw new Error("Receipt with this ID doesn't exists in table");
@@ -193,7 +193,7 @@ class receiptTable_api extends receipt_api{
     // Static async function to delete a receipt from the database
     static async deleteReceipt(receipt_id){
         // Get all the receipts
-        const receipts = await receiptTable_api.getReceipts();
+        const receipts = await receiptTable_api.getAllReceipts();
         // Check if the receipt is already deleted
         const exist = receipts.find(r => r.receipt_id === receipt_id)
         if(!exist){

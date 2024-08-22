@@ -71,29 +71,16 @@ class expRateTableAPI extends expenseRateAPI{
             password: PASSWORD,
             database: DATABASE
         });
+        // Execute the query to get all the expense rates of a receipt from the database
+        const [results] = await connection.execute('SELECT * FROM expense_rate ' + query);
         
-        let results;
-        try {
-            [results] = await connection.execute('SELECT * FROM expense_rate ' + query);
-            if (!results) {
-                throw new Error (`No exprate found with query: ${query}`);
-            }
-        } catch (error) {
-            throw new Error (`error with current query: ${query}`);
-        }
-
-        if (results.length === 0) {
-            throw new Error("No exprate found for the given ID");
-        }
-        
-        const result = results[0];
-        const expRt = new ExpenseRate(
+        // get expense rate object from results
+        const expRt = results.map(result => new ExpenseRate(
             result.expenseRate_id,
             result.receipt_id,
             result.expenseRate_name,
             result.expenseRate_percentage
-        );
-        await connection.end();
+        ));
         // Return the expense rate object
         return expRt;
     }
@@ -199,6 +186,6 @@ class expRateTableAPI extends expenseRateAPI{
         const [results] = await connection.execute(query, params);
     }
 
-}
+};
 
 module.exports = expRateTableAPI;

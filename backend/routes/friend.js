@@ -8,15 +8,9 @@ const accessHelper = require('../helpers/access.js');
 //get a list of friends and friend requests of the user 
 //Authorization: Must be logged in. 
 router.get('/', async (req, res) => {
-    console.log('i was here')
-    const friends = accessHelper.get_accepted_friends(req.user.user_id);
-    console.log('line1')
-    const friend_requests = accessHelper.get_not_accepted_friends(req.user.user_id);
-    console.log('line2')
-    console.log(friends)
-    console.log(friend_requests)
+    const friends = accessHelper.get_accepted_friends(req.user);
+    const friend_requests = accessHelper.get_not_accepted_friends(req.user);
     const all_friends = [...friends, ...friend_requests];
-    console.log('line3')
     if(!res.headersSent) res.status(200).json(JSON.stringify(all_friends));
 });
 
