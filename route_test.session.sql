@@ -93,3 +93,25 @@ delete from payment_request
 
 -- @block
 DROP TABLE payment_request
+
+-- @block   
+CREATE TABLE receipts (
+    receipt_id CHAR(15) NOT NULL AUTO_INCREMENT,
+    group_id INT NOT NULL,
+    images TEXT,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT,
+    creation_date DATE DEFAULT (CURRENT_DATE),
+    vendor TEXT,
+    PRIMARY KEY ("receipts")
+);
+
+-- @block   
+SELECT * FROM receipts
+
+-- @block   
+delete from receipts
+
+-- @block
+DROP TABLE receipts
