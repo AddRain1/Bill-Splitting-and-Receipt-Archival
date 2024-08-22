@@ -63,7 +63,7 @@ router.post('/add', [
 
         if (errors.isEmpty()) {
             await receiptAPI.addReceipt(receipt);
-            await receiptAPI.addReceipt(receipt);
+           
             
             if(!res.headersSent) res.status(200).json(receipt);
         }
