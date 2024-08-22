@@ -126,7 +126,6 @@ class friendsAPI extends friends_api{
             result.receiver_id, 
             result.is_confirmed,
             result.creation_date));
-        console.log('af is ' + allFriends[0].friend_id);
         // Return the array of all friends
         return allFriends;
     }

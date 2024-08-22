@@ -133,6 +133,7 @@ delete from payment_request -- @block
 SELECT *
 FROM receipts -- @block   
 delete from receipts -- @block
-  DROP TABLE receipts
+  DROP TABLE receipts;
+-- @block
 SELECT *
 FROM friends;

@@ -46,7 +46,7 @@ router.post('/add', [
       //By default, admin is the user creating the group
       const group = new Group(req.user.user_id, req.body.name, req.body.description);
       req.body.members.push(req.user.user_id);
-  
+      
       if (errors.isEmpty()) {
         await groupAPI.addGroup(group, req.body.members);
         if(!res.headersSent) res.status(200).json(group);
