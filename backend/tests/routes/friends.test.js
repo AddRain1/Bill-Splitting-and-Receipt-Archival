@@ -1,5 +1,5 @@
-let request = require('supertest');
-const app = require('../../app');
+let request = require("supertest");
+let app = require("../../app");
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
 const friendsAPI = require('../../api/friendsAPI');
