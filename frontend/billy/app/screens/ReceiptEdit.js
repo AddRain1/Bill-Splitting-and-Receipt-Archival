@@ -91,8 +91,6 @@ import styles from "../styles";
 // initialBoxStarts = [0, 0];
 // boxCounts = [4, 4];
 
-intialItemList = [];
-initialBoxStarts = [];
 boxCounts = [];
 
 function ReceiptEdit(props) {
@@ -106,8 +104,8 @@ function ReceiptEdit(props) {
 		setScrollEnabled(!isDragging);
 	};
 
-	const [itemList, setItemList] = useState(initialItemList);
-	const [boxStarts, setBoxStarts] = useState(initialBoxStarts);
+	const [itemList, setItemList] = useState([]);
+	const [boxStarts, setBoxStarts] = useState([]);
 
 	const [name, setName] = useState("");
 	const [title, setTitle] = useState("");
@@ -149,10 +147,10 @@ function ReceiptEdit(props) {
 			setTitle(data.title);
 			setDate(data.created_at);
 			setTip(data.tip);
-			intialItemList = data.items;
+			setItemList(data.items);
 			let subtot = 0;
-			for(i = 0; i < intialItemList.length; i++) {
-				subtot += initialItemList[i].price;
+			for(i = 0; i < itemList.length; i++) {
+				subtot += itemList[i].price;
 			}
 			setSubtotal(subtot);
 			setupInitialLists();
@@ -163,17 +161,18 @@ function ReceiptEdit(props) {
 	}
 
 	const setupInitialLists = () => {
-		for(i = 0; i < intialItemList.length; i++) {
-			let payeeIndex = people.indexOf(intialItemList[i].payee);
+		for(i = 0; i < itemList.length; i++) {
+			let payeeIndex = people.indexOf(itemList[i].payee);
 			if( payeeIndex === -1) {
-				people.push(initialItemList[i].payee);
+				people.push(itemList[i].payee);
 				boxCounts.push(1);
-				intialItemList[i].box = people.length-1;
+				itemList[i].box = people.length-1;
 			} else {
 				boxCounts[payeeIndex]++;
-				initialItemList[i].box = payeeIndex;
+				itemList[i].box = payeeIndex;
 			}
 		}
+		boxStarts = new Array(people.length).fill(0);
 	}
 
 	const calcBox = (index) => {
@@ -249,6 +248,35 @@ function ReceiptEdit(props) {
 		setItemList(updatedItemList);
 	};
 
+	async function handleSave() {
+		for(i = 0; i < itemList.length; i++) {
+			itemList[i].payee = people[itemList[i].box];
+			delete itemList[i].box;
+		}
+
+		try {
+			const updateData = {
+				name: title,
+				created_at: date,
+				tip: tip,
+				items: itemList,
+			};
+			const response = await fetch(
+				"http://localhost:3000/routes/receipts/${id}/update",
+				{
+					method: "PUT",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+					body: JSON.stringify(updateData),
+				},
+			);
+			navigation.navigate("ReceiptView")
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	}
+
 	loadReceipt();
 
 	return (
@@ -284,7 +312,7 @@ function ReceiptEdit(props) {
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={[styles.subBarButton, { left: 250 }]}
-					onPress={() => navigation.navigate("ReceiptView")}
+					onPress={() => handleSave()}
 				>
 					<Feather name="save" size={25} color={COLORS.gray} />
 					<Text style={[styles.caption, { color: COLORS.gray }]}> save </Text>
