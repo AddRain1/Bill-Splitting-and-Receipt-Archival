@@ -22,40 +22,107 @@ import NavigationBar from "../assets/NavigationBar";
 import COLORS from "../assets/colors";
 import styles from "../styles";
 
-itemList = [
-	{
-		item_id: 1,
-		item_name: "Driscoll’s Raspberries (12oz)",
-		item_price: 5.94,
-	},
-	{
-		item_id: 2,
-		item_name: "3x Fuji Apples",
-		item_price: 6.97,
-	},
-	{
-		item_id: 3,
-		item_name: "Chocolate Chip Cookies",
-		item_price: 4.55,
-	},
-	{
-		item_id: 4,
-		item_name: "Ralph’s Purified Drinking Water",
-		item_price: 5.24,
-	},
-];
+// itemList = [
+// 	{
+// 		item_id: 1,
+// 		item_name: "Driscoll’s Raspberries (12oz)",
+// 		item_price: 5.94,
+// 	},
+// 	{
+// 		item_id: 2,
+// 		item_name: "3x Fuji Apples",
+// 		item_price: 6.97,
+// 	},
+// 	{
+// 		item_id: 3,
+// 		item_name: "Chocolate Chip Cookies",
+// 		item_price: 4.55,
+// 	},
+// 	{
+// 		item_id: 4,
+// 		item_name: "Ralph’s Purified Drinking Water",
+// 		item_price: 5.24,
+// 	},
+// ];
+
+itemList = [];
 
 function ReceiptView(props) {
 	const [font] = useFonts({
 		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"),
 	});
 	const navigation = useNavigation();
+	const [name, setName] = useState("");
+	const [title, setTitle] = useState("");
+	const [date, setDate] = useState("");
+	const [subtotal, setSubtotal] = useState(0);
+	const [tax, setTax] = useState(0);
+	const [tip, setTip] = useState(0);
 
+	const people = [];
+	const subtotals = [];
+
+	async function loadReceipt() {
+		try {
+			const response = await fetch(
+				"http://localhost:3000/routes/users/${id}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
+			const data = await response.json();
+			setName(data.first_name);
+			people.push(data.first_name);
+		} catch (error) {
+			console.error("Error:", error);
+		}
+
+		try {
+			const response = await fetch(
+				"http://localhost:3000/routes/receipts/${id}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
+			const data = await response.json();
+			setTitle(data.title);
+			setDate(data.created_at);
+			setTip(data.tip);
+			setTax(data.tax);
+			intialItemList = data.items;
+			let subtot = 0;
+			for(i = 0; i < intialItemList.length; i++) {
+				subtot += initialItemList[i].price;
+			}
+			setSubtotal(subtot);
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	}
+
+	const setupInitialLists = () => {
+		for(i = 0; i < itemList.length; i++) {
+			let payeeIndex = people.indexOf(itemList[i].payee);
+			if( payeeIndex === -1) {
+				people.push(itemList[i].payee);
+				subtotals.push(itemList[i].price);
+			} else {
+				subtotals[payeeIndex] += itemList[i].price;
+			}
+		}
+	}
+	
 	return (
 		<SafeAreaView style={styles.container}>
 			<SafeAreaView style={styles.topBar}>
 				<SafeAreaView style={[styles.container2, { height: 50 }]} />
-				<Text style={[styles.caption2, { left: 25 }]}> 06/21/2024 </Text>
+				<Text style={[styles.caption2, { left: 25 }]}> {date} </Text>
 				<SafeAreaView
 					style={[
 						styles.container2,
@@ -69,8 +136,7 @@ function ReceiptView(props) {
 					]}
 				>
 					<Text style={[styles.heading1, { color: COLORS.softWhite }]}>
-						{" "}
-						Ralph's Fresh Fare{" "}
+						{title}
 					</Text>
 					<Octicons name="clock" size={32} color={COLORS.yellow} />
 				</SafeAreaView>
@@ -99,7 +165,7 @@ function ReceiptView(props) {
 				<SafeAreaView style={[styles.container2, { width: 380 }]}>
 					<Text style={[styles.heading2, { left: -20, marginBottom: 20 }]}>
 						{" "}
-						$35.16{" "}
+						${subtotal+tax+tip}{" "}
 					</Text>
 
 					<Text style={[styles.caption, { fontSize: 14, marginBottom: 5 }]}>
@@ -121,8 +187,7 @@ function ReceiptView(props) {
 								},
 							]}
 						>
-							{" "}
-							Taylor{" "}
+							{name}
 						</Text>
 					</SafeAreaView>
 					<SafeAreaView style={styles.container3}>
@@ -155,18 +220,18 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Subtotal </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $22.70 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[0]} </Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}>
 								{" "}
 								Sales Tax{" "}
 							</Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $1.76 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${tax*(subtotal[0]/subtotal)} </Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Tip </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $2.00 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${tip*(subtotal[0]/subtotal)} </Text>
 						</SafeAreaView>
 
 						<SafeAreaView style={{ width: 380, alignItems: "center" }}>
@@ -174,7 +239,7 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, { marginBottom: 15 }]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Total </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $26.46 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[0] + (tax+tip)*(subtotal[0]/subtotal)} </Text>
 						</SafeAreaView>
 					</SafeAreaView>
 
@@ -191,7 +256,7 @@ function ReceiptView(props) {
 						]}
 					>
 						<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
-						<Text style={[styles.editInput, {}]}> 1 </Text>
+						<Text style={[styles.editInput, {}]}> {people.length-1} </Text>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[
@@ -216,8 +281,7 @@ function ReceiptView(props) {
 								},
 							]}
 						>
-							{" "}
-							Jordan{" "}
+							{people[1]}
 						</Text>
 						<Octicons
 							name="clock"
@@ -256,18 +320,18 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Subtotal </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $22.70 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotals[1]} </Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}>
 								{" "}
 								Sales Tax{" "}
 							</Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $1.76 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${tax*(subtotal[1]/subtotal)}</Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Tip </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $2.00 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${tip*(subtotal[1]/subtotal)} </Text>
 						</SafeAreaView>
 
 						<SafeAreaView style={{ width: 380, alignItems: "center" }}>
@@ -275,7 +339,7 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, { marginBottom: 15 }]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Total </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> $26.46 </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[1] + (tax+tip)*(subtotal[1]/subtotal)} </Text>
 						</SafeAreaView>
 					</SafeAreaView>
 				</SafeAreaView>
