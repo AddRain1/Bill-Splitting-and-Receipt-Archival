@@ -105,7 +105,7 @@ function ReceiptEdit(props) {
 	};
 
 	const [itemList, setItemList] = useState([]);
-	const [boxStarts, setBoxStarts] = useState([]);
+	let [boxStarts, setBoxStarts] = useState([]);
 
 	const [name, setName] = useState("");
 	const [title, setTitle] = useState("");
@@ -247,8 +247,11 @@ function ReceiptEdit(props) {
 	async function handleSave() {
 		for (i = 0; i < itemList.length; i++) {
 			itemList[i].payee = people[itemList[i].box];
-			delete itemList[i].box;
 		}
+		setItemList(itemList.map(item => {
+			const { box , ...rest } = item;
+			return rest;
+		}));
 
 		try {
 			const updateData = {
