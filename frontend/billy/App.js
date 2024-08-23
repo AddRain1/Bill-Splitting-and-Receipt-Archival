@@ -19,7 +19,10 @@ import NavigationBar from "./app/assets/NavigationBar";
 import BillsPage from "./app/screens/BillsPage";
 import CreateAccount from "./app/screens/CreateAccount";
 import ForgotPassword from "./app/screens/ForgotPassword";
+import HomePage from "./app/screens/HomePage";
 import LogIn from "./app/screens/LogIn";
+import ReceiptEdit from "./app/screens/ReceiptEdit";
+import ReceiptView from "./app/screens/ReceiptView";
 import ReceiptsArchivePage from "./app/screens/ReceiptsArchivePage";
 import ResetPassword from "./app/screens/ResetPassword";
 import ScanPage from "./app/screens/ScanPage";
@@ -35,8 +38,10 @@ export default function App() {
 				<Stack.Screen name="CreateAccount" component={CreateAccount} />
 				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 				<Stack.Screen name="ResetPassword" component={ResetPassword} />
-				<Stack.Screen name="HomePage" component={NavigationBar} />
+				<Stack.Screen name="HomePage" component={HomePage} />
 				<Stack.Screen name="Settings" component={Settings} />
+				<Stack.Screen name="ReceiptView" component={ReceiptView} />
+				<Stack.Screen name="ReceiptEdit" component={ReceiptEdit} />
 				<Stack.Screen name="ScanPage" component={ScanPage} />
 				<Stack.Screen
 					name="ReceiptsArchivePage"

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import COLORS from "./assets/colors";
 
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: COLORS.white,
@@ -10,8 +10,23 @@ const styles = StyleSheet.create({
 	container2: {
 		justifyContent: "left",
 		backgroundColor: "transparent",
-		width: 330,
 		marginBottom: 15,
+	},
+	container3: {
+		backgroundColor: COLORS.softWhite,
+		width: 380,
+	},
+	topBar: {
+		backgroundColor: COLORS.teal,
+		height: 150,
+		justifyContent: "left",
+		width: 430,
+	},
+	subBar: {
+		backgroundColor: COLORS.softWhite,
+		height: 45,
+		width: 430,
+		flexDirection: "row",
 	},
 	title: {
 		fontFamily: "PlayfairDisplay_700Bold_Italic",
@@ -22,6 +37,11 @@ const styles = StyleSheet.create({
 	heading1: {
 		fontFamily: "PlayfairDisplay_700Bold",
 		fontSize: 32,
+	},
+	heading2: {
+		fontFamily: "SplineSansMono",
+		fontSize: 40,
+		color: COLORS.teal,
 	},
 	backButton: {
 		flexDirection: "row",
@@ -85,6 +105,11 @@ const styles = StyleSheet.create({
 		fontFamily: "SplineSansMono",
 		color: COLORS.gray,
 	},
+	caption2: {
+		fontFamily: "SplineSansMono",
+		color: COLORS.softWhite,
+		fontSize: 16,
+	},
 	errorText: {
 		fontFamily: "SplineSansMono",
 		color: COLORS.red,
@@ -104,6 +129,36 @@ const styles = StyleSheet.create({
 	scroll: {
 		alignItems: "center",
 		paddingVertical: 20,
+	},
+	subBarButton: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	grayDivider: {
+		flex: 1,
+		height: 1,
+		backgroundColor: COLORS.softGray,
+		marginBottom: 15,
+		width: 345,
+	},
+	listRow: {
+		backgroundColor: "transparent",
+		left: 10,
+		width: 360,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	editInput: {
+		color: COLORS.gray,
+		backgroundColor: COLORS.softWhite,
+		fontFamily: "SplineSansMono",
+		padding: 5,
+		borderRadius: 4,
+		overflow: "hidden",
+		fontSize: 14,
+		alignItems: "left",
 	},
 	scanPageMain: {
 		flex: 1, // This will make the view take up the available space
@@ -188,7 +243,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#D3DCE6",
 		borderColor: "#007B83",
 	},
-
 	tabText: {
 		fontSize: 16,
 		fontFamily: "SplineSansMono",
