@@ -159,7 +159,6 @@ class receiptTable_api extends receipt_api{
 
         const receipt_query = 'WHERE receipt_id = ' + receipt_id;
         const taxes = await taxAPI.getTaxes(receipt_query);
-        console.log(taxes);
         for(let tax of taxes) {
             await taxAPI.deleteTax(tax);
         }
