@@ -117,15 +117,12 @@ function ReceiptEdit(props) {
 
 	async function loadReceipt() {
 		try {
-			const response = await fetch(
-				"http://localhost:3000/routes/users/${id}",
-				{
-					method: "GET",
-					headers: {
-						// 'Authorization': '${authToken}' // Add auth token here
-					},
+			const response = await fetch("http://localhost:3000/routes/users/${id}", {
+				method: "GET",
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
 				},
-			);
+			});
 			const data = await response.json();
 			setName(data.first_name);
 			people.push(data.first_name);
@@ -149,7 +146,7 @@ function ReceiptEdit(props) {
 			setTip(data.tip);
 			setItemList(data.items);
 			let subtot = 0;
-			for(i = 0; i < itemList.length; i++) {
+			for (i = 0; i < itemList.length; i++) {
 				subtot += itemList[i].price;
 			}
 			setSubtotal(subtot);
@@ -157,23 +154,22 @@ function ReceiptEdit(props) {
 		} catch (error) {
 			console.error("Error:", error);
 		}
-
 	}
 
 	const setupInitialLists = () => {
-		for(i = 0; i < itemList.length; i++) {
-			let payeeIndex = people.indexOf(itemList[i].payee);
-			if( payeeIndex === -1) {
+		for (i = 0; i < itemList.length; i++) {
+			const payeeIndex = people.indexOf(itemList[i].payee);
+			if (payeeIndex === -1) {
 				people.push(itemList[i].payee);
 				boxCounts.push(1);
-				itemList[i].box = people.length-1;
+				itemList[i].box = people.length - 1;
 			} else {
 				boxCounts[payeeIndex]++;
 				itemList[i].box = payeeIndex;
 			}
 		}
 		boxStarts = new Array(people.length).fill(0);
-	}
+	};
 
 	const calcBox = (index) => {
 		box = 0;
@@ -249,7 +245,7 @@ function ReceiptEdit(props) {
 	};
 
 	async function handleSave() {
-		for(i = 0; i < itemList.length; i++) {
+		for (i = 0; i < itemList.length; i++) {
 			itemList[i].payee = people[itemList[i].box];
 			delete itemList[i].box;
 		}
@@ -271,7 +267,7 @@ function ReceiptEdit(props) {
 					body: JSON.stringify(updateData),
 				},
 			);
-			navigation.navigate("ReceiptView")
+			navigation.navigate("ReceiptView");
 		} catch (error) {
 			console.error("Error:", error);
 		}
@@ -338,7 +334,7 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Title: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-							value = {title}
+							value={title}
 							onChangeText={setTitle}
 						/>
 					</SafeAreaView>
@@ -356,7 +352,7 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Date: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-							value = {date}
+							value={date}
 							onChangeText={setDate}
 						/>
 					</SafeAreaView>
@@ -377,7 +373,7 @@ function ReceiptEdit(props) {
 						</Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-							value = {subtotal}
+							value={subtotal}
 							onChangeText={setSubtotal}
 						/>
 					</SafeAreaView>
@@ -395,7 +391,7 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Tip: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-							value = {tip}
+							value={tip}
 							onChangeText={setTip}
 						/>
 					</SafeAreaView>
@@ -458,7 +454,7 @@ function ReceiptEdit(props) {
 							]}
 						>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
-							<Text style={[styles.editInput, {}]}> {people.length-1} </Text>
+							<Text style={[styles.editInput, {}]}> {people.length - 1} </Text>
 						</SafeAreaView>
 						<TouchableOpacity>
 							<Octicons

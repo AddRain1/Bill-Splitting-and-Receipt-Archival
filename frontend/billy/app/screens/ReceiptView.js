@@ -64,15 +64,12 @@ function ReceiptView(props) {
 
 	async function loadReceipt() {
 		try {
-			const response = await fetch(
-				"http://localhost:3000/routes/users/${id}",
-				{
-					method: "GET",
-					headers: {
-						// 'Authorization': '${authToken}' // Add auth token here
-					},
+			const response = await fetch("http://localhost:3000/routes/users/${id}", {
+				method: "GET",
+				headers: {
+					// 'Authorization': '${authToken}' // Add auth token here
 				},
-			);
+			});
 			const data = await response.json();
 			setName(data.first_name);
 			people.push(data.first_name);
@@ -97,7 +94,7 @@ function ReceiptView(props) {
 			setTax(data.tax);
 			intialItemList = data.items;
 			let subtot = 0;
-			for(i = 0; i < intialItemList.length; i++) {
+			for (i = 0; i < intialItemList.length; i++) {
 				subtot += initialItemList[i].price;
 			}
 			setSubtotal(subtot);
@@ -107,17 +104,17 @@ function ReceiptView(props) {
 	}
 
 	const setupInitialLists = () => {
-		for(i = 0; i < itemList.length; i++) {
-			let payeeIndex = people.indexOf(itemList[i].payee);
-			if( payeeIndex === -1) {
+		for (i = 0; i < itemList.length; i++) {
+			const payeeIndex = people.indexOf(itemList[i].payee);
+			if (payeeIndex === -1) {
 				people.push(itemList[i].payee);
 				subtotals.push(itemList[i].price);
 			} else {
 				subtotals[payeeIndex] += itemList[i].price;
 			}
 		}
-	}
-	
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<SafeAreaView style={styles.topBar}>
@@ -165,7 +162,7 @@ function ReceiptView(props) {
 				<SafeAreaView style={[styles.container2, { width: 380 }]}>
 					<Text style={[styles.heading2, { left: -20, marginBottom: 20 }]}>
 						{" "}
-						${subtotal+tax+tip}{" "}
+						${subtotal + tax + tip}{" "}
 					</Text>
 
 					<Text style={[styles.caption, { fontSize: 14, marginBottom: 5 }]}>
@@ -220,18 +217,27 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Subtotal </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[0]} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${subtotal[0]}{" "}
+							</Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}>
 								{" "}
 								Sales Tax{" "}
 							</Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${tax*(subtotal[0]/subtotal)} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${tax * (subtotal[0] / subtotal)}{" "}
+							</Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Tip </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${tip*(subtotal[0]/subtotal)} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${tip * (subtotal[0] / subtotal)}{" "}
+							</Text>
 						</SafeAreaView>
 
 						<SafeAreaView style={{ width: 380, alignItems: "center" }}>
@@ -239,7 +245,10 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, { marginBottom: 15 }]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Total </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[0] + (tax+tip)*(subtotal[0]/subtotal)} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${subtotal[0] + (tax + tip) * (subtotal[0] / subtotal)}{" "}
+							</Text>
 						</SafeAreaView>
 					</SafeAreaView>
 
@@ -256,7 +265,7 @@ function ReceiptView(props) {
 						]}
 					>
 						<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
-						<Text style={[styles.editInput, {}]}> {people.length-1} </Text>
+						<Text style={[styles.editInput, {}]}> {people.length - 1} </Text>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[
@@ -320,18 +329,27 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Subtotal </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotals[1]} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${subtotals[1]}{" "}
+							</Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}>
 								{" "}
 								Sales Tax{" "}
 							</Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${tax*(subtotal[1]/subtotal)}</Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${tax * (subtotal[1] / subtotal)}
+							</Text>
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, {}]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Tip </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${tip*(subtotal[1]/subtotal)} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${tip * (subtotal[1] / subtotal)}{" "}
+							</Text>
 						</SafeAreaView>
 
 						<SafeAreaView style={{ width: 380, alignItems: "center" }}>
@@ -339,7 +357,10 @@ function ReceiptView(props) {
 						</SafeAreaView>
 						<SafeAreaView style={[styles.listRow, { marginBottom: 15 }]}>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Total </Text>
-							<Text style={[styles.caption, { fontSize: 14 }]}> ${subtotal[1] + (tax+tip)*(subtotal[1]/subtotal)} </Text>
+							<Text style={[styles.caption, { fontSize: 14 }]}>
+								{" "}
+								${subtotal[1] + (tax + tip) * (subtotal[1] / subtotal)}{" "}
+							</Text>
 						</SafeAreaView>
 					</SafeAreaView>
 				</SafeAreaView>
