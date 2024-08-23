@@ -80,8 +80,8 @@ INSERT INTO expense_rate(
         expenseRate_name,
         expenseRate_percentage
     )
-VALUES('20230816000000', 'ER 1', 6.0)
-
+VALUES('20240715000000', 'ER 1', 6.0),
+    ('20240716021723', 'ER 2', 5.0);
 -- @block
 CREATE TABLE items (
     item_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -94,7 +94,9 @@ CREATE TABLE items (
 );
 -- @block
 INSERT INTO items(receipt_id, item_name, item_price, item_payee)
-VALUES('20230816000000', 'Item 1', 10.0, 'Jason');
+VALUES('20240715000000', 'Item 1', 10.0, 'John'),
+    ('20240715000000', 'Item 2', 20.0, 'Jane'),
+    ('20240716021644', 'Item 1', 10.0, 'Jason');
 
 -- @block
 CREATE TABLE users (

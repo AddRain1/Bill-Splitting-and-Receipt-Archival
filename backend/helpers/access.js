@@ -8,7 +8,7 @@ const friendsAPI = require('../api/friendsAPI');
 
 //Retrieve all payment requests where user is the payer or receiver
 const get_payment_requests_payer_or_receiver = async (user_id) => {
-    const payer_or_receiver_query = `SELECT * FROM payment_request WHERE payer_id = ${user_id} OR receiver_id = ${user_id}`;
+    const payer_or_receiver_query = `WHERE payer_id = ${user_id} OR receiver_id = ${user_id}`;
     return await paymentRequestAPI.getPaymentRequests(payer_or_receiver_query);
 }
 
@@ -18,7 +18,7 @@ const get_payment_requests_with_receipt_access = async user_id => {
 
     //Retrieve all receipts linked to a group that the user is a member of
     const groupIds = groups.map(group => group.group_id).join(',');
-    const receipt_group_query = `SELECT * FROM receipts WHERE group_id IN (${groupIds})`;
+    const receipt_group_query = `WHERE group_id IN (${groupIds})`;
     return await receiptAPI.getReceipts(receipt_group_query);
 }
 
@@ -36,12 +36,14 @@ const check_payment_request_accessible = async (user_id, paymentRequest_id) => {
 
 const get_accessible_receipts = async (user_id) => {
     //Retrieve all groups that the user is a member of
-    const groups = await get_accessible_groups(user_id)
+    const groups = await get_accessible_groups(user_id);
 
     //Get all receipts assigned to any of the groups
     const groupIds = groups.map(group => group.group_id).join(',');
-    const receipt_group_query = `SELECT * FROM receipts WHERE group_id IN (${groupIds})`;
-    return await receiptAPI.getReceipts(receipt_group_query);
+    const receipt_group_query = `WHERE group_id IN (${groupIds})`;
+    let result = [];
+    if(groupIds.length != 0) result = await receiptAPI.getReceipts(receipt_group_query);
+    return result;
 }
 
 const check_receipt_accessible = async (user_id, receipt_id) => {
@@ -61,18 +63,20 @@ const get_accessible_expense_rates = async (user_id) => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get expense rates assigned to each receipt
-    const expense_rate_receipt_query = `SELECT * FROM expense_rate WHERE receipt_id IN (${receiptIds})`;
+    const expense_rate_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await expenseRateAPI.getExpRt(expense_rate_receipt_query);
 } 
 
 const get_accessible_groups = async user_id => {
-    return await groupAPI.getUser_groups(user_id);
+    const groups = await groupAPI.getUser_groups(user_id)
+    return groups;
 }
 
 const check_group_accessible = async (user_id, group_id) => {
     const members = await groupAPI.getGroup_members(group_id);
+    const member_ids = members.map(m => m.user_id)
     //Check if the user is a member of the group 
-    if(user_id in members) return true;
+    if(member_ids.includes(user_id)) return true;
     else return false;
 }
 
@@ -81,7 +85,7 @@ const get_accessible_taxes = async user_id => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get taxes assigned to each receipt
-    const tax_receipt_query = `SELECT * FROM taxes WHERE receipt_id IN (${receiptIds})`;
+    const tax_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await taxAPI.getTax(tax_receipt_query);
 }
 
@@ -99,7 +103,7 @@ const get_accessible_tips = async user_id => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get tips assigned to each receipt
-    const tip_receipt_query = `SELECT * FROM tips WHERE receipt_id IN (${receiptIds})`;
+    const tip_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
     return await tipAPI.getTip(tip_receipt_query);
 }
 
@@ -113,7 +117,6 @@ const check_tip_accesible = async (user_id, tip_id) => {
 }
 
 const get_accepted_friends = async (user_id) => {
-    console.log(user_id)
     const accepted_friends_query = `
         (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = TRUE) 
         UNION 
@@ -123,7 +126,6 @@ const get_accepted_friends = async (user_id) => {
 }
 
 const get_not_accepted_friends = async (user_id) => {
-    console.log(user_id)
     const not_accepted_friends_query = `
         (SELECT receiver_id AS friend FROM friends WHERE requester_id = ${user_id} AND is_confirmed = FALSE) 
         UNION 
@@ -153,10 +155,21 @@ const check_friend_accesible_for_delete = async (user_id, friend_id) => {
 }
 
 const check_user_is_receiver = async (user_id, friend_id) => {
-    const friendQuery = `SELECT * FROM friends WHERE requestor_id = ${friend_id} AND receiver_id = ${user_id}`;
+    const friendQuery = `SELECT * FROM friends WHERE requester_id = ${friend_id} AND receiver_id = ${user_id}`;
     const friend = await friendsAPI.getFriendByQuery(friendQuery);
     if(friend.length > 0) return true;
     else return false;
+}
+
+const get_admin_of_group = async (receipt_id) => {
+    const receipt = await receiptAPI.getReceiptByID(receipt_id);
+    const group = await groupAPI.getGroupByID(receipt.group_id);
+    return group.admin_id;
+}
+
+const check_admin_of_group = async (receipt_id, user_id) => {
+    const admin_id = await get_admin_of_group(receipt_id);
+    return admin_id == user_id;
 }
 
 module.exports = {
@@ -177,5 +190,7 @@ module.exports = {
     get_not_accepted_friends,
     check_friend_accesible_for_request,
     check_friend_accesible_for_delete,
-    check_user_is_receiver
+    check_user_is_receiver,
+    get_admin_of_group,
+    check_admin_of_group
 }

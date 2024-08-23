@@ -1,6 +1,5 @@
 const ExpenseRate = require("../class/expenseRateClass.js");
 const mysql = require("mysql2/promise");
-const receiptTable_api = require("./receiptsAPI.js");
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -63,7 +62,7 @@ class expenseRateAPI{
 class expRateTableAPI extends expenseRateAPI{
     // Override the getExpenseRate method
     // Static async function to get expense rate from the database
-    static async getExpenseRate(query){
+    static async getExpenseRate(query=''){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -71,29 +70,16 @@ class expRateTableAPI extends expenseRateAPI{
             password: PASSWORD,
             database: DATABASE
         });
+        // Execute the query to get all the expense rates of a receipt from the database
+        const [results] = await connection.execute('SELECT * FROM expense_rate ' + query);
         
-        let results;
-        try {
-            [results] = await connection.execute('SELECT * FROM expense_rate ' + query);
-            if (!results) {
-                throw new Error (`No exprate found with query: ${query}`);
-            }
-        } catch (error) {
-            throw new Error (`error with current query: ${query}`);
-        }
-
-        if (results.length === 0) {
-            throw new Error("No exprate found for the given ID");
-        }
-        
-        const result = results[0];
-        const expRt = new ExpenseRate(
+        // get expense rate object from results
+        const expRt = results.map(result => new ExpenseRate(
             result.expenseRate_id,
             result.receipt_id,
             result.expenseRate_name,
             result.expenseRate_percentage
-        );
-        await connection.end();
+        ));
         // Return the expense rate object
         return expRt;
     }
@@ -156,7 +142,7 @@ class expRateTableAPI extends expenseRateAPI{
 
     // Override the changeExpRt method
     // Static async function to change a property of expense rate in the database
-    static async changeExpRt(expense_rate_id, property_name, property_value){
+    static async changeExpenseRate(expense_rate_id, property_name, property_value){
         // Get the expense rate
         const expense_rate = this.getExpRtByID(expense_rate_id);
         if(!expense_rate) throw new Error("expense rate doesn't exist");
@@ -177,15 +163,7 @@ class expRateTableAPI extends expenseRateAPI{
     // Override the deleteExpRt method
     // Static async function to delete a expense rate from the database
     // Call when deleting receipt
-    static async deleteExpRt(receipt_id){
-        // Get all the receipts
-        const receipts = await receiptTable_api.getAllReceipts();
-        // Check if the receipt is already deleted
-        const exist = receipts.find(r => r.receipt_id === receipt_id)
-        if(!exist){
-            throw new Error("Receipt doesn't exists");
-        }
-
+    static async deleteExpenseRate(receipt_id){
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
@@ -199,6 +177,6 @@ class expRateTableAPI extends expenseRateAPI{
         const [results] = await connection.execute(query, params);
     }
 
-}
+};
 
 module.exports = expRateTableAPI;

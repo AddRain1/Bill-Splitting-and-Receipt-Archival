@@ -64,33 +64,38 @@ class receipt_api{
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
 class receiptTable_api extends receipt_api{
-    // Override the getReceiptByID method
-    // Static async function to get a receipt by ID from the database
-    static async getReceiptByID(receipt_id){
-
+    // Override the getReceipts method
+    // Static async function to get all the receipts from the database
+    static async getReceipts(query=''){
+        // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
             password: PASSWORD,
             database: DATABASE
         });
+        // Execute the query to get all the receipts from the database
+        const [results] = await connection.execute('SELECT * FROM receipts ' + query);
+        
+        // Map the results to an array of Receipts objects
+        const receipts = results.map(result => new Receipts(
+            result.group_id,
+            result.name,
+            result.description,
+            result.images,
+            result.category,
+            result.creation_date,
+            result.vendor,
+            result.receipt_id
+        ));
+        return receipts;
+    }
 
-        const results = connection.query('SELECT * FROM receipts WHERE receipt_id = ?', [receipt_id]);
-       
-        if (results.length === 0) {
-            throw new Error("No receipt found for the given ID");
-        }
-
-        const receipt = new Receipts(
-            results[0].receipt_id,
-            results[0].group_id,
-            results[0].images,
-            results[0].receipt_name,
-            results[0].receipt_description,
-            results[0].receipt_category,
-            results[0].created_at,
-            results[0].vendor_name);
-        return receipt;
+    // Override the getReceiptByID method
+    // Static async function to get a receipt by ID from the database
+    static async getReceiptByID(receipt_id){
+        const receipts = await this.getReceipts('WHERE receipt_id = ' + receipt_id);
+        return receipts[0];
     }
 
     // Override the addReceipt method
@@ -112,24 +117,15 @@ class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO receipts (receipt_id, group_id, images, receipt_name, receipt_description, receipt_category, vendor_name) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const params = [receipt.receipt_id,
+        const query = 'INSERT INTO receipts (group_id, name, description, images, category, vendor) VALUES (?, ?, ?, ?, ?, ?)';
+        const params = [
             receipt.group_id, 
-            receipt.images, 
             receipt.name, 
             receipt.description, 
+            receipt.images, 
             receipt.category, 
             receipt.vendor];
         const [results] = await connection.execute(query, params);
-        // add tax to taxes table
-        await taxAPI.addTax(receipt.tax);
-        // add tip to tips table
-        await tipAPI.addTip(receipt.tip);
-        // add expense_rate to expense_rate table
-        if(receipt.expense_rate){
-            await expenseRateAPI.addExpRt(receipt.expense_rate);
-        }
-        
     }
 
     // Override the changeReceipt method
@@ -147,7 +143,7 @@ class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to update the receipt in the database
-        const query = 'UPDATE receipt SET ' + property_name + ' = ?';
+        const query = 'UPDATE receipts SET ' + property_name + ' = ?';
         const params = [property_value];
         const [results] = await connection.execute(query, params);
     }
@@ -156,17 +152,28 @@ class receiptTable_api extends receipt_api{
     // Static async function to delete a receipt from the database
     static async deleteReceipt(receipt_id){
         // Get all the receipts
-        const receipts = await receiptTable_api.getReceipts();
+        const receipts = await this.getReceipts();
         // Check if the receipt is already deleted
-        const exist = receipts.find(r => r.receipt_id === receipt_id)
-        if(!exist){
-            throw new Error("Receipt doesn't exists");
-        }
+        const receipt_ids = receipts.filter(r => r.receipt_id == receipt_id)
+        if(receipt_ids.length == 0) throw new Error("Receipt doesn't exist");
 
-        await taxAPI.deleteTax(receipt_id);
-        await tipAPI.deleteTip(receipt_id);
-        await expenseRateAPI.deleteExpRt(receipt_id);
-        await itemAPI.deleteItem(receipt_id);
+        const receipt_query = 'WHERE receipt_id = ' + receipt_id;
+        const taxes = await taxAPI.getTaxes(receipt_query);
+        for(let tax of taxes) {
+            await taxAPI.deleteTax(tax);
+        }
+        const tips = await tipAPI.getTips(receipt_query);
+        for(let tip of tips) {
+            await tipAPI.deleteTip(tip);
+        }
+        const expense_rates = await expenseRateAPI.getExpenseRate(receipt_query);
+        for(let expense_rate of expense_rates) {
+            await expenseRateAPI.deleteExpenseRate(expense_rate);
+        }
+        const items = await itemAPI.getItems(receipt_query);
+        for(let item of items) {
+            await itemAPI.deleteItem(item);
+        }
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,

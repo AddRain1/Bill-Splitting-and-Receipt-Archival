@@ -19,6 +19,13 @@ class tax_api{
         }
     }
 
+    static async getTaxes(query){
+        // Check if the subclass has defined this method
+        if(!this.getTaxes){
+            throw new Error("getTaxes method must be defined");
+        }   
+    }
+
     static async getTaxById(id) {
         if(!this.getTaxById){
             throw new Error("getTaxById method must be defined");
@@ -53,90 +60,31 @@ class tax_api{
 // Export the class taxTable_api which extends the abstract class tax_api
 class taxTable_api extends tax_api{
 
-    static async getTax(query){
+    static async getTaxes(query=''){
+        // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
             user: USER,
             password: PASSWORD,
             database: DATABASE
         });
+        // Execute the query to get taxes from the database
+        const [results] = await connection.execute('SELECT * FROM taxes ' + query);
         
-        let results;
-        try {
-            [results] = await connection.execute('SELECT * FROM taxes ' + query);
-            if (!results) {
-                throw new Error (`No Tax found with query: ${query}`);
-            }
-        } catch (error) {
-                throw new Error (`error with current query: ${query}`);
-        }
-        
-        if (results.length === 0) {
-            throw new Error("No Tax found for the given ID");
-        }
-
-        // get Tax object from results
-        const result = results[0];
-        const tax = new Tax(
+        // get tax object from results
+        const taxes = results.map(result => new Tax(
             result.tax_id,
             result.receipt_id,
             result.tax_name,
             result.tax_percentage
-        );
-
-
-        // Close connection
-        await connection.end();
-
-        // Return the Tax object
-        return tax;
+        ));
+        // Return the tax object
+        return taxes;
     }
 
     static async getTaxById(id){
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-
-        const taxquery = 'SELECT * FROM taxes WHERE tax_id = ?';
-        const receiptquery = 'SELECT * FROM taxes WHERE receipt_id = ?';
-        let results;
-
-        try {
-            [results] = await connection.execute(taxquery, [id]);
-            if(!results) {
-                throw new Error (`Cannot find tax by tax_id = ${id}`);
-            }
-        } catch (error) {
-            try {
-            [results] = await connection.execute(receiptquery, [id]);
-            if(!results) {
-                throw new Error (`Cannot find tax by receipt_id = ${id}`);
-            }
-            } catch (error) {
-                await connection.end();
-                throw new Error("Cannot find tax");
-            }
-        }
-
-        if (results.length === 0) {
-            throw new Error("No tax found for the given ID");
-        }
-        
-        // Result is an array, with only one instance of it
-        const result = results[0];
-        const tax = new Tax(
-            result.tax_id,
-            result.receipt_id,
-            result.tax_name,
-            result.tax_percentage
-        );
-
-        await connection.end();
-
-        return tax;
+        const taxes = await this.getTaxes('WHERE tax_id = ' + id);
+        return taxes[0];
     }
 
     // Override the addTax method

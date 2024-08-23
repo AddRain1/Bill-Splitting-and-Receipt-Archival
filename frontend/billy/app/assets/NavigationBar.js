@@ -1,18 +1,26 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import colors from "/Users/arpitapandey/bill-splitting-and-receipt-archival-1/bill-splitting-and-receipt-archival/app/assets/colors.js";
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import colors from "../assets/colors";
 import BillsPage from "../screens/BillsPage";
-import HomePage from "../screens/LogIn";
-import ReceiptsPage from "../screens/ReceiptsPage";
+import HomePage from "../screens/Home";
+import ReceiptsPage from "../screens/ReceiptsArchivePage";
 import ScanPage from "../screens/ScanPage";
+import FriendsPage from "../screens/FriendsPage";
+import HomeStackNavigator from "./HomeStackNavigator";
+import BillsStackNavigator from "./BillsStackNavigator";
+import FriendsStackNavigator from "./FriendsStackNavigator";
+import ReceiptsStackNavigator from "./ReceiptsStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
 function NavigationBar() {
 	return (
+		
 		<Tab.Navigator
 			screenOptions={{
+				headerShown: false,
 				tabBarStyle: {
 					backgroundColor: "#008080",
 					height: 100, // Adjust height as needed
@@ -29,14 +37,68 @@ function NavigationBar() {
 				tabBarActiveTintColor: "#F0F4F8", // Color of the active tab text/icon
 				tabBarInactiveTintColor: "#F0F4F8", // Color of the inactive tab text/icon
 				tabBarIcon: ({ color, size }) => (
-					<Icon name="f0c8" size={16} color="#F0F4F8" style={styles.icon} />
+					<Icon
+						name="square"
+						size={25}
+						color="#F0F4F8"
+						backgroundColor="#F0F4F8"
+					/>
 				),
+				//style={styles.icon}
 			}}
 		>
-			<Tab.Screen name="home" component={HomePage} style={styles.tabButton} />
-			<Tab.Screen name="receipts" component={ReceiptsPage} />
-			<Tab.Screen name="scan" component={ScanPage} />
-			<Tab.Screen name="bills" component={BillsPage} />
+			<Tab.Screen
+				name="home"
+				component={HomeStackNavigator}
+				style={styles.tabButton}
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="house" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'home', // Optional: Customize the title
+                }}
+            />
+			<Tab.Screen 
+			    name="receipts" 
+				component={ReceiptsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="receipt" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'receipts', 
+                }}
+				
+			/>
+			<Tab.Screen 
+				name="scan" 
+				component={ScanPage} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="camera" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'scan', 
+                }}
+			/>
+			<Tab.Screen name="bills" 
+				component={BillsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="money-bill" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'bills', // Optional: Customize the title
+                }}
+				
+			/>
+			<Tab.Screen name="friends" 
+				component={FriendsStackNavigator} 
+				options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="people-group" size={25} color={"#F0F4F8"} />
+                    ),
+                    title: 'friends', 
+                }}
+				
+			/>
 		</Tab.Navigator>
 	);
 }

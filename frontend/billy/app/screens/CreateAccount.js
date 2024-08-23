@@ -14,7 +14,6 @@ import {
 	useFonts,
 } from "@expo-google-fonts/playfair-display";
 import { NavigationContainer } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -27,8 +26,6 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
-import CustomInput from "../assets/CustomInput";
 import styles from "../styles";
 
 function CreateAccount(props) {

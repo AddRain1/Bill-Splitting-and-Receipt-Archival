@@ -1,10 +1,11 @@
-let request = require('supertest');
-const app = require('../../app');
+let request = require("supertest");
+let app = require("../../app");
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
 const friendsAPI = require('../../api/friendsAPI');
+const usersAPI = require('../../api/usersAPI');
 
-describe("User and auth routes", () => {
+describe("friends route", () => {
     request = request.agent(app);  
 
     const user1_payload = {
@@ -36,8 +37,7 @@ describe("User and auth routes", () => {
     
     beforeAll(async () => {
         await clearTable('users');
-        await clearTable('`group`');
-        await clearTable('user_group');
+        await clearTable('friends');
         //Create users
         await request
           .post("/auth/signup")
@@ -69,7 +69,7 @@ describe("User and auth routes", () => {
           .expect(200)
 
         
-    }, 10000);
+    }, 20000);
 
     beforeEach(() => {
         jest.useRealTimers();
@@ -77,13 +77,54 @@ describe("User and auth routes", () => {
 
     it("Get /friends when there is no friend", async () => {
         await request
-        .get("/friends")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .then((response) => {                          
-            expect(response.body.length).toBe(0)
-        });
+            .get("/friends")
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((response) => {       
+                const empty = JSON.stringify([]);                  
+                expect(response.body).toBe(empty);
+            });
 
-    }, 20000);
+    }, 10000);
+
+    it("Add friends /friends/add", async () => {
+        const users = await usersAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+        const payload = {
+            requester_id: user_ids[0],
+            receiver_id: user_ids[1],
+            is_confirmed: false
+        };
+        await request
+            .post("/friends/add")
+            .send(payload)
+            .expect(200)
+            .then((response) => {
+                const body = response.body;
+                expect(Number(body.requester_id)).toBe(payload.requester_id);
+                expect(Number(body.receiver_id)).toBe(payload.receiver_id);
+                expect(Boolean(body.is_confirmed)).toEqual(payload.is_confirmed);
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+
+    }, 10000);
+
+    it("Update friend request's status by id to true /friends/:id/update", async () => {
+        const users = await usersAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+        
+        await request
+            .post('/friends/' + user_ids[1] + '/update')
+            .expect(200)
+            .then((response) => {
+                const body = response.body;
+                expect(Boolean(body.is_confirmed)).toBe(true);
+            })
+            // .catch((err) => {
+            //     expect(err).toBe(null);
+            // });
+    }, 10000);
     
 });

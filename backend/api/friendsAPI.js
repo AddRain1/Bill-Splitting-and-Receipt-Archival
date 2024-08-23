@@ -11,7 +11,7 @@ dotenv.config();
 const HOST = process.env.DB_HOST;
 const USER = process.env.DB_USER;
 const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_DATABASE;
+const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class friends_api
 class friends_api{
@@ -87,10 +87,10 @@ class friendsAPI extends friends_api{
     static async getAllFriends(){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Query to select all friends from the friends table
         const query = 'SELECT * FROM friends';
@@ -112,10 +112,10 @@ class friendsAPI extends friends_api{
     static async getFriendByQuery(query){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Execute the query and store the results
         const [results] = await connection.execute(query);
@@ -134,10 +134,10 @@ class friendsAPI extends friends_api{
     static async getFriendById(user_id, friend_id){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Query to select a friend from the friends table by their friend_id
         const friendQuery = 'SELECT * FROM friends WHERE (requestor_id = ? AND receiver_id = ?) OR (requestor_id = ? AND receiver_id = ?)';
@@ -162,10 +162,10 @@ class friendsAPI extends friends_api{
     static async getFriendOfUser(user_id){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
         });
         // Query to select all friends of a user from the friends table
         const friendQuery = '(SELECT receiver_id AS friend FROM friends WHERE requester_id = ? AND is_confirmed = ?) UNION (SELECT requester_id AS friend FROM friends WHERE receiver_id = ? AND is_confirmed = ?);';
@@ -187,10 +187,10 @@ class friendsAPI extends friends_api{
     static async addFriend(requester_id, receiver_id){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
         });
         // Query to insert a new friend into the friends table
         const query = 'INSERT INTO friends (requester_id, receiver_id, is_confirmed) VALUES (?, ?, ?)';

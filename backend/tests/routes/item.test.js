@@ -17,9 +17,9 @@ const updatedPricePayload = {
 };
 
 describe("item route tests", () => {
-    const agent = request.agent(app);  
+    const agent = request(app);  
     
-    const user1_payload = {
+    /* const user1_payload = {
         username:'user1', 
         first_name:'test', 
         last_name: 'person', 
@@ -40,7 +40,7 @@ describe("item route tests", () => {
     const user3_payload = {
         username:'user3', 
         first_name:'test', 
-        last_name: 'person',
+        last_name: 'person', 
         email:'testuser3@gmail.com', 
         password:'password',
         profile_description: 'certified tester'
@@ -81,7 +81,7 @@ describe("item route tests", () => {
           .expect("Content-Type", /json/)
           .expect(200)
 
-    }, 20000)
+    }, 20000) */
 
     beforeEach(() => {
         jest.useRealTimers();
@@ -96,7 +96,7 @@ describe("item route tests", () => {
                 expect(response.body.length).toBe(0)
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
     });
 
@@ -110,7 +110,7 @@ describe("item route tests", () => {
 
         await agent
             .post("/items/add")
-            .send(payload)
+            .query(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
@@ -141,7 +141,7 @@ describe("item route tests", () => {
                 item_id = body.item_id;
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
 
         // Attempt to retrieve item by id
@@ -157,7 +157,7 @@ describe("item route tests", () => {
                 expect(payload.payee).toBe(body.payee);
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
     });
 
@@ -177,7 +177,7 @@ describe("item route tests", () => {
                 item_id = body.item_id;
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
         
         // Update the item
@@ -195,7 +195,7 @@ describe("item route tests", () => {
                 expect(updatedPricePayload.payee).toBe(body.payee);
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
     });
 
@@ -215,7 +215,7 @@ describe("item route tests", () => {
                 item_id = body.item_id;
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
 
         // Delete the item
@@ -226,7 +226,7 @@ describe("item route tests", () => {
                 expect(response.body.msg).toBe('Item deleted successfully.');
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
 
         // Verify the deletion
@@ -234,7 +234,7 @@ describe("item route tests", () => {
             .get(`/items/${item_id}`)
             .expect(404)
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
     });
     
