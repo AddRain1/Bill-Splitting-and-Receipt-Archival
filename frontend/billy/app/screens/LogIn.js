@@ -58,7 +58,7 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 		return <AppLoading />;
 	}
 	const handleLogin = () => {
-		const googleAuthUrl = 'http://10.0.0.8:3000/auth/google';
+		const googleAuthUrl = 'http://localhost:3000/auth/google';
 		Linking.openURL(googleAuthUrl);
 	  };
 

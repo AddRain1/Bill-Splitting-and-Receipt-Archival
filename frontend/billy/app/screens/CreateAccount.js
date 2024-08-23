@@ -18,6 +18,7 @@ import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import CustomInput from '../assets/CustomInput';
+import axios from 'axios';
 import {
 	Alert,
 	SafeAreaView,
@@ -56,35 +57,28 @@ function CreateAccount(props) {
 	  
 
 		try {
-			const response = await fetch("http://132.249.238.159/routes/auth/signup", {
-			  method: "POST",
-			  headers: {
-				"Content-Type": "application/json",
-			  },
-			  body: JSON.stringify({
-				email,
-				username,
-				firstName,
-				lastName,
-				password,
-			  }),
-			});
-	  
-			if (response.ok) {
-			  Alert.alert(
+			const response = await axios.post("http://localhost:3000/signup", {
+			email,
+			username,
+			firstName,
+			lastName,
+			password,
+		});
+		if (response.status === 200) {
+			Alert.alert(
 				"Account Created",
 				"Your account has been created. You can now log in.",
 				[
-				  {
-					text: "OK",
-					onPress: () => navigation.navigate("LogIn"),
-				  },
+					{
+						text: "OK",
+						onPress: () => navigation.navigate("LogIn"),
+					},
 				]
-			  );
-			} else {
-			  const errorData = await response.json();
-			  Alert.alert("Error", errorData.error || "Failed to create account.");
-			}
+			);
+		} else {
+			Alert.alert("Error", response.data.error || "Failed to create account.");
+		}
+
 		  } catch (error) {
 			console.error("Network error:", error); // Log the error to see the details in the console
 			Alert.alert("Error", "Something went wrong. Please try again later.");
