@@ -248,10 +248,12 @@ function ReceiptEdit(props) {
 		for (i = 0; i < itemList.length; i++) {
 			itemList[i].payee = people[itemList[i].box];
 		}
-		setItemList(itemList.map(item => {
-			const { box , ...rest } = item;
-			return rest;
-		}));
+		setItemList(
+			itemList.map((item) => {
+				const { box, ...rest } = item;
+				return rest;
+			}),
+		);
 
 		try {
 			const updateData = {
