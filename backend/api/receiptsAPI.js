@@ -64,49 +64,9 @@ class receipt_api{
 
 // Export the class receiptTable_api which extends the abstract class receipt_api
 class receiptTable_api extends receipt_api{
-    // Override the getReceipts method
-    // Static async function to get all the receipts from the database
-    static async getReceipts(query){
-        // Connect to the MySQL database
-        const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
-        });
-        // Execute the query to get all the receipts from the database
-        const [results, fields] = await connection.execute('SELECT * FROM receipts ' + query);
-        
-        // Map the results to an array of Receipts objects
-        const receipts = results.map(result => new Receipts(
-            result.receipt_id,
-            result.group_id,
-            result.images,
-            result.receipt_name,
-            result.receipt_description,
-            result.receipt_category,
-            result.created_at,
-            result.vendor_name
-        ));
-        // Return the array of Receipts objects
-        for(let i = 0; i < receipts.length; i++){
-            let receiptQuery = ' WHERE receipt_id = ' + receipts[i].receipt_id;
-            receipts[i].tax = await taxAPI.getTax(receiptQuery);
-            receipts[i].tip = await tipAPI.getTip(receiptQuery);
-            receipts[i].expense_rate = await expenseRateAPI.getExpenseRate(receiptQuery);
-            receipts[i].items = await itemAPI.getItems(receiptQuery);
-        }
-        return receipts;
-    }
- 
     // Override the getReceiptByID method
     // Static async function to get a receipt by ID from the database
     static async getReceiptByID(receipt_id){
-        const allreceipts = await receiptTable_api.getReceipts();
-        const exist = allreceipts.find(r => r.receipt_id === receipt_id);
-        if(!exist){
-            throw new Error("Receipt with this ID doesn't exists in table");
-        }
 
         const connection = await mysql.createConnection({
             host: HOST,
@@ -114,12 +74,15 @@ class receiptTable_api extends receipt_api{
             password: PASSWORD,
             database: DATABASE
         });
-        
-        const query = 'SELECT * FROM receipts WHERE receipt_id = ?'
-        const params = [receipt_id];
-        const [results] = await connection.execute(query, params);
 
-        const receipt = new Receipts(results[0].receipt_id,
+        const results = connection.query('SELECT * FROM receipts WHERE receipt_id = ?', [receipt_id]);
+       
+        if (results.length === 0) {
+            throw new Error("No receipt found for the given ID");
+        }
+
+        const receipt = new Receipts(
+            results[0].receipt_id,
             results[0].group_id,
             results[0].images,
             results[0].receipt_name,

@@ -124,7 +124,7 @@ class expRateTableAPI extends expenseRateAPI{
 
     // Override the addExpRt method
     // Static async function to add a new expense rate to the database
-    static async addExpRt(expense_rate){
+    static async addExpenseRate(expense_rate){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
