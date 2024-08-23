@@ -136,7 +136,7 @@ const get_not_accepted_friends = async (user_id) => {
 
 const check_friend_accesible_for_request = async (user_id, friend_id) => {
     const friendsById = await friendsAPI.getFriendById(user_id, friend_id);
-    const req_id = friendsById.requestor_id;
+    const req_id = friendsById.requester_id;
     const rec_id = friendsById.receiver_id;
     if(user_id === req_id || user_id === rec_id){
         if(friendsById.is_confirmed === true) return true;
@@ -146,7 +146,7 @@ const check_friend_accesible_for_request = async (user_id, friend_id) => {
 
 const check_friend_accesible_for_delete = async (user_id, friend_id) => {
     const friendsById = await friendsAPI.getFriendById(user_id, friend_id);
-    const req_id = friendsById.requestor_id;
+    const req_id = friendsById.requester_id;
     const rec_id = friendsById.receiver_id;
     if(user_id === req_id || user_id === rec_id){
         return true;

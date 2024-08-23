@@ -108,6 +108,7 @@ describe("friends route", () => {
             .catch((err) => {
                 expect(err).toBe(null);
             });
+            
 
     }, 10000);
 
@@ -121,10 +122,48 @@ describe("friends route", () => {
             .then((response) => {
                 const body = response.body;
                 expect(Boolean(body.is_confirmed)).toBe(true);
+                expect(Number(body.requester_id)).toBe(user_ids[0]);
+                expect(Number(body.receiver_id)).toBe(user_ids[1]);
             })
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+
     }, 10000);
     
+    it("Get friend by id when after accepting friend request /friends/:id", async () => {
+        const users = await usersAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+
+        await request
+            .get('/friends/' + user_ids[1])
+            .expect(200)
+            .then((response) => {
+                const body = response.body;
+                expect(Boolean(body.is_confirmed)).toBe(true);
+                expect(Number(body.requester_id)).toBe(user_ids[0]);
+                expect(Number(body.receiver_id)).toBe(user_ids[1]);
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    }, 10000);
+
+    it("Delete friend by id /friends/:id/delete", async () => {
+        const users = await usersAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+
+        await request
+            .get('/friends/' + user_ids[1] + '/delete')
+            .expect(200)
+            .expect("Content-Type", /json/)
+            .then((response) => {
+                expect(response.body).toBe("Friend deleted");
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+
+        
+    }, 10000);
 });
