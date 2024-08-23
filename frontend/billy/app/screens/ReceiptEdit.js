@@ -29,67 +29,71 @@ import NavigationBar from "../assets/NavigationBar";
 import COLORS from "../assets/colors";
 import styles from "../styles";
 
-initialItemList = [
-	{
-		item_id: 1,
-		item_name: "Driscoll’s Raspberries (12oz)",
-		item_price: 5.94,
-		index: 1,
-		box: 0,
-	},
-	{
-		item_id: 2,
-		item_name: "3x Fuji Apples",
-		item_price: 6.97,
-		index: 2,
-		box: 0,
-	},
-	{
-		item_id: 3,
-		item_name: "Chocolate Chip Cookies",
-		item_price: 4.55,
-		index: 3,
-		box: 0,
-	},
-	{
-		item_id: 4,
-		item_name: "Ralph’s Purified Drinking Water",
-		item_price: 5.24,
-		index: 4,
-		box: 0,
-	},
-	{
-		item_id: 5,
-		item_name: "Driscoll’s Raspberries (12oz)",
-		item_price: 5.94,
-		index: 5,
-		box: 1,
-	},
-	{
-		item_id: 6,
-		item_name: "3x Fuji Apples",
-		item_price: 6.97,
-		index: 6,
-		box: 1,
-	},
-	{
-		item_id: 7,
-		item_name: "Chocolate Chip Cookies",
-		item_price: 4.55,
-		index: 7,
-		box: 1,
-	},
-	{
-		item_id: 8,
-		item_name: "Ralph’s Purified Drinking Water",
-		item_price: 5.24,
-		index: 8,
-		box: 1,
-	},
-];
+// initialItemList = [
+// 	{
+// 		item_id: 1,
+// 		item_name: "Driscoll’s Raspberries (12oz)",
+// 		item_price: 5.94,
+// 		index: 1,
+// 		box: 0,
+// 	},
+// 	{
+// 		item_id: 2,
+// 		item_name: "3x Fuji Apples",
+// 		item_price: 6.97,
+// 		index: 2,
+// 		box: 0,
+// 	},
+// 	{
+// 		item_id: 3,
+// 		item_name: "Chocolate Chip Cookies",
+// 		item_price: 4.55,
+// 		index: 3,
+// 		box: 0,
+// 	},
+// 	{
+// 		item_id: 4,
+// 		item_name: "Ralph’s Purified Drinking Water",
+// 		item_price: 5.24,
+// 		index: 4,
+// 		box: 0,
+// 	},
+// 	{
+// 		item_id: 5,
+// 		item_name: "Driscoll’s Raspberries (12oz)",
+// 		item_price: 5.94,
+// 		index: 5,
+// 		box: 1,
+// 	},
+// 	{
+// 		item_id: 6,
+// 		item_name: "3x Fuji Apples",
+// 		item_price: 6.97,
+// 		index: 6,
+// 		box: 1,
+// 	},
+// 	{
+// 		item_id: 7,
+// 		item_name: "Chocolate Chip Cookies",
+// 		item_price: 4.55,
+// 		index: 7,
+// 		box: 1,
+// 	},
+// 	{
+// 		item_id: 8,
+// 		item_name: "Ralph’s Purified Drinking Water",
+// 		item_price: 5.24,
+// 		index: 8,
+// 		box: 1,
+// 	},
+// ];
 
-initialBoxStarts = [0, 0];
-boxCounts = [4, 4];
+// initialBoxStarts = [0, 0];
+// boxCounts = [4, 4];
+
+intialItemList = [];
+initialBoxStarts = [];
+boxCounts = [];
 
 function ReceiptEdit(props) {
 	const [font] = useFonts({
@@ -104,6 +108,73 @@ function ReceiptEdit(props) {
 
 	const [itemList, setItemList] = useState(initialItemList);
 	const [boxStarts, setBoxStarts] = useState(initialBoxStarts);
+
+	const [name, setName] = useState("");
+	const [title, setTitle] = useState("");
+	const [date, setDate] = useState("");
+	const [subtotal, setSubtotal] = useState(0);
+	const [tip, setTip] = useState(0);
+
+	const people = [];
+
+	async function loadReceipt() {
+		try {
+			const response = await fetch(
+				"http://localhost:3000/routes/users/${id}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
+			const data = await response.json();
+			setName(data.first_name);
+			people.push(data.first_name);
+		} catch (error) {
+			console.error("Error:", error);
+		}
+
+		try {
+			const response = await fetch(
+				"http://localhost:3000/routes/receipts/${id}",
+				{
+					method: "GET",
+					headers: {
+						// 'Authorization': '${authToken}' // Add auth token here
+					},
+				},
+			);
+			const data = await response.json();
+			setTitle(data.title);
+			setDate(data.created_at);
+			setTip(data.tip);
+			intialItemList = data.items;
+			let subtot = 0;
+			for(i = 0; i < intialItemList.length; i++) {
+				subtot += initialItemList[i].price;
+			}
+			setSubtotal(subtot);
+			setupInitialLists();
+		} catch (error) {
+			console.error("Error:", error);
+		}
+
+	}
+
+	const setupInitialLists = () => {
+		for(i = 0; i < intialItemList.length; i++) {
+			let payeeIndex = people.indexOf(intialItemList[i].payee);
+			if( payeeIndex === -1) {
+				people.push(initialItemList[i].payee);
+				boxCounts.push(1);
+				intialItemList[i].box = people.length-1;
+			} else {
+				boxCounts[payeeIndex]++;
+				initialItemList[i].box = payeeIndex;
+			}
+		}
+	}
 
 	const calcBox = (index) => {
 		box = 0;
@@ -178,11 +249,13 @@ function ReceiptEdit(props) {
 		setItemList(updatedItemList);
 	};
 
+	loadReceipt();
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<SafeAreaView style={styles.topBar}>
 				<SafeAreaView style={[styles.container2, { height: 50 }]} />
-				<Text style={[styles.caption2, { left: 25 }]}> 06/21/2024 </Text>
+				<Text style={[styles.caption2, { left: 25 }]}> {date} </Text>
 				<SafeAreaView
 					style={[
 						styles.container2,
@@ -196,8 +269,7 @@ function ReceiptEdit(props) {
 					]}
 				>
 					<Text style={[styles.heading1, { color: COLORS.softWhite }]}>
-						{" "}
-						Ralph's Fresh Fare{" "}
+						{title}
 					</Text>
 					<Octicons name="clock" size={32} color={COLORS.yellow} />
 				</SafeAreaView>
@@ -238,9 +310,9 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Title: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-						>
-							Ralph’s Fresh Fare
-						</TextInput>
+							value = {title}
+							onChangeText={setTitle}
+						/>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[
@@ -256,9 +328,9 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Date: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-						>
-							06/21/2024
-						</TextInput>
+							value = {date}
+							onChangeText={setDate}
+						/>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[
@@ -277,9 +349,9 @@ function ReceiptEdit(props) {
 						</Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-						>
-							40.66
-						</TextInput>
+							value = {subtotal}
+							onChangeText={setSubtotal}
+						/>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[
@@ -295,9 +367,9 @@ function ReceiptEdit(props) {
 						<Text style={[styles.caption, { fontSize: 14 }]}> Tip: </Text>
 						<TextInput
 							style={[styles.editInput, { paddingLeft: 10, paddingRight: 10 }]}
-						>
-							2.00
-						</TextInput>
+							value = {tip}
+							onChangeText={setTip}
+						/>
 					</SafeAreaView>
 					<SafeAreaView
 						style={[styles.grayDivider, { width: 430, marginTop: 10 }]}
@@ -322,8 +394,7 @@ function ReceiptEdit(props) {
 								},
 							]}
 						>
-							{" "}
-							Taylor{" "}
+							{name}
 						</Text>
 					</SafeAreaView>
 					<SafeAreaView
@@ -359,7 +430,7 @@ function ReceiptEdit(props) {
 							]}
 						>
 							<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
-							<Text style={[styles.editInput, {}]}> 1 </Text>
+							<Text style={[styles.editInput, {}]}> {people.length-1} </Text>
 						</SafeAreaView>
 						<TouchableOpacity>
 							<Octicons
@@ -393,8 +464,7 @@ function ReceiptEdit(props) {
 								},
 							]}
 						>
-							{" "}
-							Jordan{" "}
+							{people[1]}
 						</Text>
 						<SafeAreaView
 							style={[
