@@ -74,9 +74,8 @@ router.post('/add', [
 //Authorization: Must be a member of the group that the receipt is part of.
 router.get('/:id', async (req, res) => {
     const receipt = await receiptAPI.getReceiptByID(req.params.id);
-    if(!accessHelper.check_group_accessible(req.user.user_id, receipt.group_id)) {
-        res.status(401).json({msg: 'User must be a member of the group they link'});
-    }
+    const has_access = await accessHelper.check_group_accessible(req.user.user_id, receipt.group_id);
+    if(!has_access) res.status(401).json({msg: 'User must be a member of the group to view receipt'});
     else if(!res.headersSent) res.status(200).json(receipt);
 });
 
