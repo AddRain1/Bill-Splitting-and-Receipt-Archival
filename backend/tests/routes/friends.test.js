@@ -90,29 +90,41 @@ describe("friends route", () => {
     it("Add friends /friends/add", async () => {
         const users = await usersAPI.getUsers();
         const user_ids = users.map(u => u.user_id);
-        console.log(user_ids);
         const payload = {
-            requestor_id: user_ids[0],
+            requester_id: user_ids[0],
             receiver_id: user_ids[1],
             is_confirmed: false
         };
-        console.log(payload);
         await request
             .post("/friends/add")
             .send(payload)
             .expect(200)
             .then((response) => {
                 const body = response.body;
-                console.log(payload.requestor_id);
-                console.log(body.requestor_id);
-                expect(payload.requestor_id).toBe(body.requestor_id);
-                expect(payload.receiver_id).toBe(body.receiver_id);
-                expect(payload.is_confirmed).toBe(body.is_confirmed);
+                expect(Number(body.requester_id)).toBe(payload.requester_id);
+                expect(Number(body.receiver_id)).toBe(payload.receiver_id);
+                expect(Boolean(body.is_confirmed)).toEqual(payload.is_confirmed);
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+
+    }, 10000);
+
+    it("Update friend request's status by id to true /friends/:id/update", async () => {
+        const users = await usersAPI.getUsers();
+        const user_ids = users.map(u => u.user_id);
+        
+        await request
+            .post('/friends/' + user_ids[1] + '/update')
+            .expect(200)
+            .then((response) => {
+                const body = response.body;
+                expect(Boolean(body.is_confirmed)).toBe(true);
             })
             // .catch((err) => {
             //     expect(err).toBe(null);
             // });
-
     }, 10000);
     
 });

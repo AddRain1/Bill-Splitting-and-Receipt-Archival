@@ -155,7 +155,7 @@ const check_friend_accesible_for_delete = async (user_id, friend_id) => {
 }
 
 const check_user_is_receiver = async (user_id, friend_id) => {
-    const friendQuery = `SELECT * FROM friends WHERE requestor_id = ${friend_id} AND receiver_id = ${user_id}`;
+    const friendQuery = `SELECT * FROM friends WHERE requester_id = ${friend_id} AND receiver_id = ${user_id}`;
     const friend = await friendsAPI.getFriendByQuery(friendQuery);
     if(friend.length > 0) return true;
     else return false;
