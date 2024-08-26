@@ -1,5 +1,6 @@
 class Receipts{
     receipt_id;
+    admin_id;
     group_id;
     images;
     name;
@@ -7,7 +8,8 @@ class Receipts{
     category;
     creation_date;
     vendor;
-    constructor(group_id, name, description, images=null, category=null, creation_date=new Date(), vendor=null, receipt_id=null){
+    constructor(admin_id, group_id, name, description, images=null, category=null, creation_date=new Date(), vendor=null, receipt_id=null){
+        this.admin_id = admin_id;
         this.group_id = group_id;
         this.name = name;
         this.description = description;

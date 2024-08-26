@@ -52,6 +52,7 @@ router.post('/add', [
         }
 
         const receipt = new Receipt(
+            req.user.user_id,
             req.body.group_id,
             req.body.name,
             req.body.description,
@@ -63,7 +64,6 @@ router.post('/add', [
 
         if (errors.isEmpty()) {
             await receiptAPI.addReceipt(receipt);
-           
             
             if(!res.headersSent) res.status(200).json(receipt);
         }
@@ -111,8 +111,8 @@ router.post('/:id/update', [
         .optional(),
     async (req, res, next) => {
         const errors = validationResult(req);
-        const is_admin = await accessHelper.check_admin_of_group(req.params.id, req.user.user_id);
-        if(!is_admin) res.status(401).json({msg: 'User must be an admin to update the receipt'});
+        const receipt = await receiptAPI.getReceiptByID(req.params.id);
+        if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be the admin of the receipt to update the receipt'});
         else if (errors.isEmpty()) {
             const promises = [];
             if(req.body.images) promises.push(receiptAPI.changeReceipt(req.params.id, "images", req.body.images));
@@ -129,8 +129,8 @@ router.post('/:id/update', [
 //delete receipt with ID
 //Authorization: Must be the admin of the receipt
 router.post('/:id/delete', async (req, res) => {
-    const is_admin = await accessHelper.check_admin_of_group(req.params.id, req.user.user_id);
-    if(!is_admin) res.status(401).json({msg: 'User must be an admin to update the receipt'});
+    const receipt = await receiptAPI.getReceiptByID(req.params.id);
+    if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be an admin of the receipt to delete the receipt'});
     else {
         const receipt = await receiptAPI.getReceiptByID(req.params.id);
         await receiptAPI.deleteReceipt(req.params.id);
