@@ -26,6 +26,8 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
+	Linking,
+	Button
 } from "react-native";
 import CustomInput from "../assets/CustomInput";
 import styles from "../styles";
@@ -55,6 +57,10 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 	if (!font) {
 		return <AppLoading />;
 	}
+	const handleLogin = () => {
+		const googleAuthUrl = 'http://localhost:3000/auth/google';
+		Linking.openURL(googleAuthUrl);
+	  };
 
 	return (
 		<SafeAreaView style={[styles.container, { justifyContent: "center" }]}>
@@ -86,7 +92,7 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 
 			<TouchableOpacity
 				style={[styles.submitButton, { marginTop: 40 }]}
-				onPress={() => navigation.navigate("Main")}
+				onPress={() => handleLogin()}
 			>
 				<Text style={styles.submitText}>Log In</Text>
 			</TouchableOpacity>

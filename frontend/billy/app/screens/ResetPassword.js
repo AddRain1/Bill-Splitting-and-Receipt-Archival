@@ -55,7 +55,7 @@ function ResetPassword(props) {
 					styles.backButton,
 					{ width: 154, height: 22, top: 260, left: 55 },
 				]}
-				onPress={() => console.log("Button pressed")}
+				onPress={() => navigation.navigate("LogIn")}
 			>
 				<Icon name="arrow-left" size={16} color="#00C896" style={styles.icon} />
 				<Text style={styles.buttonText}> back to login</Text>

@@ -32,6 +32,7 @@ import { UserProvider } from './UserContext';
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App() {
 	return (
 		<UserProvider>

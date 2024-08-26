@@ -11,7 +11,7 @@ dotenv.config();
 const HOST = process.env.DB_HOST;
 const USER = process.env.DB_USER;
 const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_DATABASE;
+const DATABASE = process.env.DB_NAME;
 
 // Export the abstract class friends_api
 class friends_api{
@@ -126,6 +126,7 @@ class friendsAPI extends friends_api{
             result.receiver_id, 
             result.is_confirmed,
             result.creation_date));
+        console.log('af is ' + allFriends[0].friend_id);
         // Return the array of all friends
         return allFriends;
     }
@@ -187,10 +188,10 @@ class friendsAPI extends friends_api{
     static async addFriend(requester_id, receiver_id){
         // Create a connection to the database
         const connection = await mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME
         });
         // Query to insert a new friend into the friends table
         const query = 'INSERT INTO friends (requester_id, receiver_id, is_confirmed) VALUES (?, ?, ?)';
