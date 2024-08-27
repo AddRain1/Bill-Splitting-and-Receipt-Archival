@@ -14,12 +14,15 @@ const get_payment_requests_payer_or_receiver = async (user_id) => {
 
 //Retrieve all payment requests where user has access to the receipt
 const get_payment_requests_with_receipt_access = async user_id => {
-    const groups = await get_accessible_groups(user_id)
+    const receipts = await get_accessible_receipts(user_id);
+    const receiptIds =  receipts.map(receipt => receipt.receipt_id).join(',');
 
-    //Retrieve all receipts linked to a group that the user is a member of
-    const groupIds = groups.map(group => group.group_id).join(',');
-    const receipt_group_query = `WHERE group_id IN (${groupIds})`;
-    return await receiptAPI.getReceipts(receipt_group_query);
+    let results = [];
+    if(receipts.length > 0) {
+        const payment_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
+        results = await paymentRequestAPI.getPaymentRequests(payment_receipt_query);
+    }
+    return results;
 }
 
 //TODO: Cache results
@@ -27,7 +30,7 @@ const get_accessible_payment_requests = async (user_id) => {
     const payer_receiver = await get_payment_requests_payer_or_receiver(user_id);
     const receipts = await get_payment_requests_with_receipt_access(user_id);
 
-    return new Set(...payer_receiver, ...receipts);
+    return Array.from(new Set([...payer_receiver, ...receipts]));
 }
 
 const check_payment_request_accessible = async (user_id, paymentRequest_id) => {
@@ -50,10 +53,11 @@ const check_receipt_accessible = async (user_id, receipt_id) => {
     const receipt = await receiptAPI.getReceiptByID(receipt_id);
 
     //Retrieve all groups that the user is a member of
-    const groups = await get_accessible_groups(user_id)
+    const groups = await get_accessible_groups(user_id);
+    const groupIds = groups.map(group => group.group_id);
 
     //Check if the user is a member of the group that the receipt is assigned to
-    if(receipt.receipt_id in groups) return true;
+    if(groupIds.includes(receipt.group_id)) return true;
     else return false;
 }
 

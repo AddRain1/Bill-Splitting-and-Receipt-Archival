@@ -69,17 +69,16 @@ class paymentRequestTableAPI extends paymentRequestAPI{
         const paymentRequests = results.map(result => new PaymentRequest(
             result.payer_id,
             result.receiver_id,
-            result.pay_by,
-            result.paid_on,
             result.amount,
-            result.is_declined,
             result.description,
-            result.creation_date,
+            result.pay_by,
             result.receipt_id,
+            result.is_declined,
+            result.paid_on,
+            result.creation_date,
             result.payment_request_id
         ));
         // Return the array of Payment Request objects
-        console.log(paymentRequests)
         return paymentRequests;
     }
 
@@ -87,6 +86,7 @@ class paymentRequestTableAPI extends paymentRequestAPI{
     // Static async function to get a paymnet request based on ID from the database
     static async getPaymentRequestByID(payment_request_id){
         const paymentRequests = await this.getPaymentRequests('WHERE payment_request_id = ' + payment_request_id);
+
         return paymentRequests[0];
     }
 
@@ -100,19 +100,22 @@ class paymentRequestTableAPI extends paymentRequestAPI{
             database: process.env.DB_NAME
         });  
         // Execute the query to insert the new payment requests into the database
-        const query = 'INSERT INTO payment_request (payer_id, receiver_id, pay_by, paid_on, amount, is_declined, description, receipt_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const params = [payment_request.payer_id, 
-            payment_request.receiver_id, 
-            payment_request.pay_by,
-            payment_request.paid_on,
+        const query = 'INSERT INTO payment_request (payer_id, receiver_id, amount, description, pay_by, receipt_id, is_declined, paid_on, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const params = [
+            payment_request.payer_id,
+            payment_request.receiver_id,
             payment_request.amount,
-            payment_request.is_declined,
             payment_request.description,
-            payment_request.receipt_id];
+            payment_request.pay_by,
+            payment_request.receipt_id,
+            payment_request.is_declined,
+            payment_request.paid_on,
+            payment_request.creation_date
+        ];
         const [results] = await connection.execute(query, params);
     }
 
-    // Override the changePaymentRequest_pay_by method
+    // Override the changePaymentRequest method
     // Static async function to modify a property in the database.
     // TODO: For efficiency, looking into batching
     static async changePaymentRequest(payment_request_id, property_name, property_value){
@@ -122,8 +125,14 @@ class paymentRequestTableAPI extends paymentRequestAPI{
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         });
+
+        // Get the payment request
+        const payment_request = await this.getPaymentRequestByID(payment_request_id);
+        if(!payment_request) throw new Error("Payment request doesn't exist");
+
+        if(property_name == 'is_declined') property_value = +property_value;
         // Execute the query to update the description of the payment request in the database
-        const query = 'UPDATE group SET ' + property_name +  ' = ? WHERE payment_request_id = ?';
+        const query = 'UPDATE payment_request SET ' + property_name +  ' = ? WHERE payment_request_id = ?';
         const params = [property_value, payment_request_id];
         const [results] = await connection.execute(query, params);
     }
@@ -138,10 +147,9 @@ class paymentRequestTableAPI extends paymentRequestAPI{
             database: process.env.DB_NAME
         });
         // Get all the payment requests
-        const payment_requests = await paymentRequestTableAPI.getPaymentRequests();
+        const payment_request = await paymentRequestTableAPI.getPaymentRequestByID(payment_request_id);
         // Check if the payment request is already deleted
-        const exist = payment_requests.find(p => p.payment_request_id === payment_request_id)
-        if(!exist) throw new Error("Payment request doesn't exist");
+        if(!payment_request) throw new Error("Payment request doesn't exist");
 
         // Execute the query to delete payment request from the database
         const query = 'DELETE FROM payment_request WHERE payment_request_id = ?'

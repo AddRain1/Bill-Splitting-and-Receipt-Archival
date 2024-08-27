@@ -12,6 +12,19 @@
             "name": "route_test",
             "database": "mysql",
             "username": "newperson"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "route_test",
+            "database": "mysql",
+            "username": "root"
         }
     ]
 }

@@ -43,17 +43,7 @@ router.get('/', async (req, res) => {
 
 //create a new payment request
 //Authorization: Must be logged in. Must have access to the receipt they optionally link. 
-router.get('/add', [
-    async (req, res) => {
-        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
-            res.sendStatus(401).json({msg: 'User must have access to the receipt they link.'});
-        }
-    },
-    body("pay_by", "Pay by must be a valid date")
-      .trim()
-      .isDate()
-      .escape()
-      .optional({ nullable: true }),
+router.post('/add', [
     body("amount", "Amount must be greater than 0 and is limited to two decimals")
       .trim()
       .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
@@ -67,30 +57,38 @@ router.get('/add', [
         .trim()
         .escape()
         .optional({ nullable: true }),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      const payment_request = new PaymentRequest({
-        name: req.body.name,
-        price: req.body.price,
-        number_in_stock: 0,
-        image: req.body.image,
-        types: req.body.types,
-        weight: req.body.weight,
-        height: req.body.height,
-      });
-  
-      if (errors.isEmpty()) {
-        paymentRequestAPI.addPaymentRequest(payment_request);
-        
-        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
-      }
+    body("pay_by", "Pay by must be a valid date")
+        .trim()
+        .isDate()
+        .escape()
+        .optional({ nullable: true }),
+    async (req, res, next) => {
+        const errors = validationResult(req);
+        const payment_request = new PaymentRequest(
+            req.body.payer_id, 
+            req.body.receiver_id, 
+            req.body.amount, 
+            req.body.description,
+            req.body.pay_by, 
+            req.body.receipt_id
+        );
+
+        if(req.user.user_id != req.body.payer_id && req.user.user_id != req.body.receiver_id) res.status(400).json({msg: 'User must be the payer or receiver of the payment request'});
+        if(req.body.receipt_id) {
+            const has_access = await accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id);
+            if(!has_access) res.status(401).json({msg: 'User must have access to the receipt they link.'});
+        }
+        if (errors.isEmpty()) {
+            await paymentRequestAPI.addPaymentRequest(payment_request);
+            if(!res.headersSent) res.status(200).json(JSON.stringify(payment_request));
+        }
     }
-  ]);
+]);
 
 //get information of payment with ID
 //Authorization: Must be logged in. Can only see payment request if they are the payer, they are the receiver, or have access to the linked receipt.
 router.get('/:id', async (req, res) => {
-    if(!accessHelper.check_payment_request_accessible(req.user, req.params.id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
+    if(!accessHelper.check_payment_request_accessible(req.user.user_id, req.params.id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
     else {
         const payment_request = paymentRequestAPI.getPaymentRequestByID(req.params.id);
         if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
@@ -99,55 +97,67 @@ router.get('/:id', async (req, res) => {
 
 //update payment request with ID
 //Authorization: If the payer, can toggle is_declined. If the receiver, can edit amount, deadline, and mark as paid. Paid on date automatically set when payment is verified.
-router.get('/:id/update', [
+router.post('/:id/update', [
     body("pay_by", "Pay by must be a valid date")
-      .trim()
-      .isDate()
-      .escape()
-      .optional({ nullable: true }),
+        .trim()
+        .isDate()
+        .escape()
+        .optional({ nullable: true }),
     body("amount", "Amount must be greater than 0 and is limited to two decimals")
-      .trim()
-      .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
-      .matches(/^\d+.{0,1}\d{0,2}$/)
-      .escape(),
+        .trim()
+        .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
+        .matches(/^\d+.{0,1}\d{0,2}$/)
+        .escape()
+        .optional({ nullable: true }),
     body("description", "description must be 250 characters max")
         .trim()
         .isLength({max: 250})
-        .escape(),
+        .escape()
+        .optional({ nullable: true }),
     body("is_declined", "is_declined must have a boolean value")
         .trim()
         .isBoolean()
-        .escape(),
+        .escape()
+        .optional({ nullable: true }),
     async (req, res) => {
         const errors = validationResult(req);
 
-        const payment_request = paymentRequestAPI.getPaymentRequestByID(req.params.id);
+        const payment_request = await paymentRequestAPI.getPaymentRequestByID(req.params.id);
 
+        console.log(payment_request)
+        console.log(errors)
         if(errors.isEmpty()) {
-            //TODO: Throw an error if a req.body is defined that the user doesn't have access to or isn't a property
-            if(req.user == payment_request.payer_id) {
-                if(req.body.is_declined) paymentRequestAPI.changePaymentRequest(req.params.id, "is_declined", req.body.is_declined);
-                if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
+            const promises = [];
+            console.log(req.user.user_id)
+            console.log(payment_request.payer_id)
+            console.log(payment_request.receiver_id)
+            if(req.user.user_id == payment_request.payer_id) {
+                if(req.body.is_declined) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "is_declined", req.body.is_declined));
+                console.log('1')
             }
-            else if(req.user == payment_request.receiver_id) {
-                if(req.body.pay_by) paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by);
-                if(req.body.amount) paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount);
-                if(req.body.description) paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description);
-                if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
+            else if(req.user.user_id == payment_request.receiver_id) {
+                if(req.body.pay_by) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by));
+                if(req.body.amount) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount));
+                if(req.body.description) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description));
+                console.log('2')
             }
-            else res.sendStatus(401).json({msg: 'User must be the payer or receiver to modify request'});
+            else res.status(401).json({msg: 'User must be the payer or receiver to modify request'});
+
+            console.log(promises);
+            Promise.all(promises).then(() => {if(!res.headersSent) res.sendStatus(200);})
         }
     }
 ]);
 
 //delete payment request with ID
 //Authorization: Must be the receiver.
-router.get('/:id/delete', async (req, res) => {
-    const payment_request = paymentRequestAPI.getPaymentRequestByID(req.params.id);
-    if(req.user != payment_request.receiver_id) res.sendStatus(401).json({msg: 'User must be the receiver to delete request'});
+router.post('/:id/delete', async (req, res) => {
+    const payment_request = await paymentRequestAPI.getPaymentRequestByID(req.params.id);
+    if(payment_request.paid_on != null) res.status(400).json({msg: 'Already paid payment requests cannot be deleted'});
+    else if(req.user.user_id != payment_request.receiver_id) res.status(401).json({msg: 'User must be the receiver to delete request'});
     else {
-        paymentRequestAPI.deletePaymentRequest(req.params.id);
-        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
+        await paymentRequestAPI.deletePaymentRequest(req.params.id);
+        if(!res.headersSent) res.status(200).json(payment_request);
     }
 });
 
