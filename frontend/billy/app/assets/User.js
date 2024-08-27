@@ -1,12 +1,16 @@
-import React from 'react';
+import React , {useContext} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {COLORS} from './colors';
+import { UserContext } from './UserContext';
 
-const User = ({ name, amount, bills }) => {
+
+
+const User = ({ amount, bills }) => {
+    const { user } = useContext(UserContext);
     return (
         <View style={styles.userContainer}>
             
-                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.name}>{user.firstName}</Text>
                 <Text style={styles.amount}>{`$${amount}`}</Text>
        
             <Text style={styles.bills}>{bills} bills</Text>

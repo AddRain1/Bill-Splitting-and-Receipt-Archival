@@ -353,6 +353,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center', // Ensure this is applied to contentContainerStyle
 		justifyContent: 'flex-start',
 	  },
+	  googleButton: {
+		alignItems: "center",
+		justifyContent: "center",
+		width:270,
+		backgroundColor: COLORS.mint,
+		height: 43,
+		borderRadius: 12,
+		marginBottom: 10,
+	},  
 	
 
 });

@@ -54,6 +54,8 @@ function CreateAccount(props) {
 		    Alert.alert("Error", "Passwords do not match.");
 			return;
 	    }
+		
+		
 	  
 
 		try {

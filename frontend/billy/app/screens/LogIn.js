@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import axios from 'axios';
 import {
 	Image,
 	SafeAreaView,
@@ -57,10 +58,27 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 	if (!font) {
 		return <AppLoading />;
 	}
-	const handleLogin = () => {
+	const handleGoogleLogin = () => {
 		const googleAuthUrl = 'http://localhost:3000/auth/google';
 		Linking.openURL(googleAuthUrl);
 	  };
+
+	  const handleLogin = async () => {
+		try {
+			const response = await axios.post('http://localhost:3000/login', {
+				username,
+				password,
+			}, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			// Handle the response here (e.g., navigate to another screen or show a message)
+			console.log('Login successful:', response.data);
+		} catch (error) {
+			console.error('Error:', error.response ? error.response.data : error.message);
+		}
+	}
 
 	return (
 		<SafeAreaView style={[styles.container, { justifyContent: "center" }]}>
@@ -105,6 +123,15 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 			>
 				<Text style={styles.buttonText}>Create Account</Text>
 			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={[styles.googleButton, { marginTop: 40 }]}
+				onPress={() => handleLogin()}
+			>
+				<Text style={styles.submitText}>Log In With Google</Text>
+			</TouchableOpacity>
+
+
 
 			<StatusBar style="auto" />
 		</SafeAreaView>
