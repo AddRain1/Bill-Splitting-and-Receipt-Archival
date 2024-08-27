@@ -110,6 +110,7 @@ class receiptTable_api extends receipt_api{
         const [results] = await connection.query('SELECT * FROM receipts WHERE receipt_id = ?', [receipt_id]);
         const result = results[0];
         const receipt = new Receipts(
+            result.admin_id,
             result.group_id,
             result.receipt_name,
             result.receipt_description,

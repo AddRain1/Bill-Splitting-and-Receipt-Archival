@@ -33,7 +33,8 @@ router.get('/', async (req, res) => {
     }
     else{
       const items = await itemAPI.getItems();
-      if (!res.headersSent) res.status(200).json(JSON.stringify(items));
+      console.log('Fetched items:', items);
+      if (!res.headersSent) res.status(200).json(items);
     }
     
 });
@@ -101,9 +102,8 @@ router.get('/:id', async (req, res) => {
   console.log('Getting item by id:', req.params.id);
   const item = await itemAPI.getItemById(req.params.id);
   console.log('Successfully got item:', item);
-  // if(!accessHelper.check_receipt_accessible(req.user, item.receipt_id)) res.status(401).json({msg: 'User must have access to the linked receipt.'});
-  //else 
-  if (!res.headersSent) res.status(200).json(JSON.stringify(item));
+  if(!accessHelper.check_receipt_accessible(req.user.user_id, item.receipt_id)) res.status(401).json({msg: 'User must have access to the linked receipt.'});
+  else if (!res.headersSent) res.status(200).json(JSON.stringify(item));
 });
 
 //update item with ID
@@ -129,20 +129,15 @@ router.put('/:id/update', [
       const promises = [];
       const item = await itemAPI.getItemById(req.params.id);
       const receipt = await receiptAPI.getReceiptByID(item.receipt_id)
-      console.log('Update, user is: ', req.body.user + ' receipt_id is: ', req.body.receipt_id);
-      /* if(receipt.admin_id == req.body.user) {
-        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.body.user, req.body.receipt_id)) res.status(401).json({msg: 'User must have access to the receipt they link.'});
+      console.log('Update, user_id is: ', req.user.user_id + ' receipt_id is: ', req.body.receipt_id);
+      if(receipt.admin_id == req.user.user_id) {
+        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) res.status(401).json({msg: 'User must have access to the receipt they link.'});
         else if (req.body.receipt_id) promises.push(itemAPI.changeItem(req.params.id, "receipt_id", req.body.receipt_id));
         if(req.body.name) promises.push(itemAPI.changeItem(req.params.id, "name", req.body.name));
         if(req.body.price) promises.push(itemAPI.changeItem(req.params.id, "price", req.body.price));
         if(req.body.payee) promises.push(itemAPI.changeItem(req.params.id, "payee", req.body.payee));
       }
-      else res.status(401).json({msg: 'User be an admin to the receipt linked to this item'}); */
-      if (req.body.receipt_id) promises.push(itemAPI.changeItem(req.params.id, "receipt_id", req.body.receipt_id));
-      if(req.body.name) promises.push(itemAPI.changeItem(req.params.id, "name", req.body.name));
-      if(req.body.price) promises.push(itemAPI.changeItem(req.params.id, "price", req.body.price));
-      if(req.body.payee) promises.push(itemAPI.changeItem(req.params.id, "payee", req.body.payee));
-      
+      else res.status(401).json({msg: 'User be an admin to the receipt linked to this item'}); 
       console.log('Updated item: ', item);
       Promise.all(promises).then(() => {
         if(!res.headersSent) res.status(200).json(JSON.stringify(item));
@@ -156,13 +151,13 @@ router.put('/:id/update', [
 router.delete('/:id/delete', async (req, res) => {
     const item = await itemAPI.getItemById(req.params.id);
     const receipt = await receiptAPI.getReceiptByID(item.receipt_id)
-    /* if(receipt.admin_id != req.user) res.status(401).json({msg: 'User must be an admin to delete an item from the receipt'});
+    if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be an admin to delete an item from the receipt'});
     else {
       await itemAPI.deleteItem(req.params.id);
-      if (!res.headersSent) res.status(200).json(JSON.stringify(item));
-    } */
+      if (!res.headersSent) res.status(200).json(JSON.stringify('Item successfully deleted.'));
+    }
     await itemAPI.deleteItem(req.params.id);
-    if (!res.headersSent) res.status(200).json(JSON.stringify(item));
+    if (!res.headersSent) res.status(200).json(JSON.stringify('Item successfully deleted.'));
 });
 
 module.exports = router;

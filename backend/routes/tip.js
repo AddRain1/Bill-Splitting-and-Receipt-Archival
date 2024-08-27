@@ -11,7 +11,7 @@ const receiptAPI = require('../api/receiptsAPI');
 //get a list of tips for the receipts that the user has access to.
 //Authorization: Must be logged in.
 router.get('/', async (req, res) => {
-    const tips = accessHelper.get_accessible_tips(req.user);
+    const tips = accessHelper.get_accessible_tips(req.user.user_id);
     if (!res.headersSent) res.status(200).json(JSON.stringify(tips));
 });
 
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.post('/add', [
     async (req, res) => {
         //check if user has access to receipt
-        if(!accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
+        if(!accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) {
             res.status(401).json({msg: 'User must have access to the receipt they link.'});
         }
     },
@@ -52,7 +52,7 @@ router.post('/add', [
 //get information of tip with ID    
 //Authorization: Must have access to the receipt that the tip is assigned to.
 router.get('/:id', async (req, res) => {
-    if(!accessHelper.check_tip_accesible(req.user, req.params.id)) {
+    if(!accessHelper.check_tip_accesible(req.user.user_id, req.params.id)) {
         res.status(401).json({msg: 'User must have access to the receipt that the tip is assigned to'});
     }
     else {
@@ -90,7 +90,7 @@ router.put('/:id/update', [
         }
 
         const receipt = await receiptAPI.getReceiptByID(tip.receipt_id);
-        if (receipt.admin_id !== req.user) {
+        if (receipt.admin_id !== req.user.user_id) {
             return res.status(401).json({ msg: 'User must be admin of the receipt.' });
         }
         const promises = [];
@@ -111,7 +111,7 @@ router.delete('/:id/delete', async (req, res) => {
     }
 
     const receipt = await receiptAPI.getReceiptByID(tip.receipt_id);
-    if (receipt.admin_id !== req.user) {
+    if (receipt.admin_id !== req.user.user_id) {
         return res.status(401).json({ msg: 'User must be an admin to delete a tip from the receipt.' });
     }
 

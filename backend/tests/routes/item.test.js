@@ -1,8 +1,6 @@
 let request = require('supertest');
 let app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
-const itemAPI = require('../../api/itemAPI.js');
-const Item = require('../../class/itemClass.js')
 
 describe("item route tests", () => {
     const agent = request.agent(app);  
@@ -81,10 +79,10 @@ describe("item route tests", () => {
         price: '23.46',
         payee: 'john',
         created_at: null,
-        user: 'user1'
+        user: 'user2'
     };
     
-    const updatedPricePayload = {
+    const updatedPayload = {
         item_id: null,
         receipt_id: '20230816000000',
         name: 'apple', 
@@ -100,7 +98,8 @@ describe("item route tests", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((response) => {
-                expect(response.body.length).toBe(0);
+                console.log(response.body);
+                expect(response.body).toEqual([]);
             })
             .catch((err) => {
                 console.error(err);
@@ -131,18 +130,6 @@ describe("item route tests", () => {
 
     it("GET /items/:id - get a item by ID", async () => {
 
-        // same as payload but without user
-        /* const item = new Item(
-            null,
-            '20230816000000',
-            'orange',
-            '23.46',
-            'john',
-            null
-        );
-
-        await itemAPI.addItem(item); */
-
         // Attempt to retrieve item by id
         await agent
             .get('/items/' + payload.receipt_id)
@@ -166,7 +153,7 @@ describe("item route tests", () => {
         // Update the item
         await agent
             .put(`/items/${payload.receipt_id}/update`)
-            .send(updatedPricePayload)
+            .send(updatedPayload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(200)
@@ -188,6 +175,9 @@ describe("item route tests", () => {
         await agent
             .delete(`/items/${payload.receipt_id}/delete`)
             .expect(200)
+            .then(response => {
+                expect(response.body.msg).toBe('Item deleted successfully.');
+            })
             .catch((err) => {
                 console.error(err);
             });
