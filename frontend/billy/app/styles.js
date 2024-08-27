@@ -353,6 +353,25 @@ const styles = StyleSheet.create({
 		alignItems: 'center', // Ensure this is applied to contentContainerStyle
 		justifyContent: 'flex-start',
 	  },
+	addUsername: {
+		flexDirection: 'row', 
+		alignItems: 'center',
+		top: -20
+		
+	},
+	addWithID: {
+		width:380,
+		height:102,
+		borderRadius:4,
+		top:40
+	},
+	friendGroups:{
+		left:20,
+		
+		top:20
+		
+		
+	}
 	
 
 });

@@ -8,6 +8,7 @@ COLORS = {
 	white: "#FDFDFD",
 	softWhite: "#F0F4F8",
 	hoverWhite: "#D3DCE6",
+	lightGray: '#E2E9EF',
 	warmGray: "#818181",
 	red: "#FF6F61",
 };

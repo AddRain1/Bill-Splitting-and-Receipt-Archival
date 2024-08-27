@@ -24,9 +24,10 @@ import Styles from "../styles.js";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
+import CustomInput from "../assets/CustomInput";
 
 function AddFriendPage(props) {
-  
+  const [username, setUsername] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [displayImage, setDisplayImage] = useState(false);
   const cameraRef = useRef(null);
@@ -62,12 +63,12 @@ function AddFriendPage(props) {
       if (isScanning) {
         // If already scanning, switch to display mode
         setIsScanning(false);
-        setShowCamera(false);
+        
       } else {
         // If not scanning, reset image, show camera, and start scanning
         setImage(null); // Clear the previously captured image
         setShowCamera(true); // Show the camera
-        setIsScanning(true);
+     
       }
     }
   };
@@ -115,7 +116,38 @@ function AddFriendPage(props) {
     setBarcodeData(data);
     setIsScanning(false);  
   };
-  
+  const handleAddFriend = async () => {
+    if (!username) {
+      Alert.alert("Error", "Please enter a friend's ID.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/friends/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestor_id: 'your_user_id',  // Replace with actual user ID
+          receiver_id: username,
+          is_confirmed: false,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Friend request sent successfully!");
+      } else {
+        Alert.alert("Error", "Failed to send friend request. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+    }
+  };
+
 
 
   
@@ -152,10 +184,25 @@ function AddFriendPage(props) {
          </TouchableOpacity>
        </View>
  
-       <View style={Styles.addFriend}>
+       <View style={Styles.addWithID}>
          <Text style={[Styles.heading1, { fontSize: 24, marginBottom: 10 }]}>Add via user id</Text>
          <Text style={[Styles.caption, { color: COLORS.black, marginBottom: 10 }]}>Your user id:</Text>
+         
+         <View style={Styles.addUsername}>
          <Text style={[Styles.caption, { color: COLORS.black }]}>Enter friend's id:</Text>
+         
+         <CustomInput
+				placeholder=""
+				value={username}
+				setValue={setUsername}
+        style={[{ width: 200, marginLeft: 10 }]} // Smaller width and added margin for spacing
+        onSubmitEditing={handleAddFriend} // Trigger the function when return is pressed
+        
+			/>
+     
+     
+       
+         </View>
        </View>
  
        <View style={[Styles.addFriend, { marginTop: 15 }]}>

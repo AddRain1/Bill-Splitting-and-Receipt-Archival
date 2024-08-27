@@ -28,7 +28,7 @@ import AddFriendPage from "./app/screens/AddFriendPage";
 import FriendsPage from "./app/screens/FriendsPage";
 import HomePage from "./app/screens/Home";
 import FriendGroups from "./app/screens/FriendGroups";
-import { UserProvider } from './UserContext';
+import { UserProvider } from './app/assets/UserContext';
 
 const Stack = createNativeStackNavigator();
 
