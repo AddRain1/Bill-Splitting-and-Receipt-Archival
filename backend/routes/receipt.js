@@ -9,9 +9,7 @@ const accessHelper = require('../helpers/access.js');
 //get a list of receipts from all of the user's groups
 //Authorization: Can only see receipts that are part of the user's groups.
 router.get('/', async (req, res) => {
-    console.log('made it')
     const receipts = await accessHelper.get_accessible_receipts(req.user.user_id);
-    console.log(receipts);
     if(!res.headersSent) res.status(200).json(receipts);
 });
 
@@ -20,6 +18,9 @@ router.get('/', async (req, res) => {
 router.post('/add', [
     //TODO: Tax, tip, expense_rate, item handling
     //TODO: Custom validation for images
+    body("group_id", "group_id must be defined")
+        .trim()
+        .escape(),
     body("images")
         .trim()
         .escape()
@@ -46,11 +47,12 @@ router.post('/add', [
     async (req, res, next) => {
         const errors = validationResult(req);
 
-        if(!accessHelper.check_group_accessible(req.user, req.body.group_id)) {
+        if(!accessHelper.check_group_accessible(req.user.user_id, req.body.group_id)) {
             res.status(401).json({msg: 'User must be a member of the group they link'});
         }
 
         const receipt = new Receipt(
+            req.user.user_id,
             req.body.group_id,
             req.body.name,
             req.body.description,
@@ -62,7 +64,6 @@ router.post('/add', [
 
         if (errors.isEmpty()) {
             await receiptAPI.addReceipt(receipt);
-           
             
             if(!res.headersSent) res.status(200).json(receipt);
         }
@@ -73,10 +74,8 @@ router.post('/add', [
 //Authorization: Must be a member of the group that the receipt is part of.
 router.get('/:id', async (req, res) => {
     const receipt = await receiptAPI.getReceiptByID(req.params.id);
-    
-    if(!accessHelper.check_group_accessible(req.user, req.body.group_id)) {
-        res.status(401).json({msg: 'User must be a member of the group they link'});
-    }
+    const has_access = await accessHelper.check_group_accessible(req.user.user_id, receipt.group_id);
+    if(!has_access) res.status(401).json({msg: 'User must be a member of the group to view receipt'});
     else if(!res.headersSent) res.status(200).json(receipt);
 });
 
@@ -112,23 +111,17 @@ router.post('/:id/update', [
         .optional(),
     async (req, res, next) => {
         const errors = validationResult(req);
-
-        const receipt = new Receipt({
-            images: req.body.images,
-            name: req.body.name,
-            description: req.body.description,
-            category: req.body.category,
-            vendor: req.body.vendor
-        });
-
-        if (errors.isEmpty()) {
-            if(req.body.images) await receiptAPI.changeReceipt(req.params.id, "images", req.body.images);
-            if(req.body.name) await receiptAPI.changeReceipt(req.params.id, "name", req.body.name);
-            if(req.body.description) await receiptAPI.changeReceipt(req.params.id, "description", req.body.description);
-            if(req.body.category) await receiptAPI.changeReceipt(req.params.id, "category", req.body.category);
-            if(req.body.vendor) await receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor);
+        const receipt = await receiptAPI.getReceiptByID(req.params.id);
+        if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be the admin of the receipt to update the receipt'});
+        else if (errors.isEmpty()) {
+            const promises = [];
+            if(req.body.images) promises.push(receiptAPI.changeReceipt(req.params.id, "images", req.body.images));
+            if(req.body.name) promises.push(receiptAPI.changeReceipt(req.params.id, "name", req.body.name));
+            if(req.body.description) promises.push(receiptAPI.changeReceipt(req.params.id, "description", req.body.description));
+            if(req.body.category) promises.push(receiptAPI.changeReceipt(req.params.id, "category", req.body.category));
+            if(req.body.vendor) promises.push(receiptAPI.changeReceipt(req.params.id, "name", req.body.vendor));
             
-            if(!res.headersSent) res.status(200).json(receipt);
+            Promise.all(promises).then(() => {if(!res.headersSent) res.sendStatus(200);})
         }
     }
 ]);
@@ -137,12 +130,11 @@ router.post('/:id/update', [
 //Authorization: Must be the admin of the receipt
 router.post('/:id/delete', async (req, res) => {
     const receipt = await receiptAPI.getReceiptByID(req.params.id);
-    if(receipt.admin_id != req.user) res.status(401).json({msg: 'User must be an admin to delete the receipt'});
+    if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be an admin of the receipt to delete the receipt'});
     else {
+        const receipt = await receiptAPI.getReceiptByID(req.params.id);
         await receiptAPI.deleteReceipt(req.params.id);
-        if(!res.headersSent) res.status(200).json({ msg: 'Receipt deleted successfully.' });
-        await receiptAPI.deleteReceipt(req.params.id);
-        if(!res.headersSent) res.status(200).json({ msg: 'Receipt deleted successfully.' });
+        if(!res.headersSent) res.status(200).json(receipt);
     }
 });
 

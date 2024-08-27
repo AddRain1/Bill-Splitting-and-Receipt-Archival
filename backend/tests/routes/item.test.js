@@ -3,14 +3,14 @@ const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
 
 const payload = {
-    receipt_id: '20240715000000',
+    receipt_id: '20230816000000',
     price: '23.46',
     payee: 'john',
     name: 'orange'
 };
 
 const updatedPricePayload = {
-    receipt_id: '20240715000000',
+    receipt_id: '20230816000000',
     price: '7.24',
     payee: 'john',
     name: 'orange'
@@ -101,6 +101,12 @@ describe("item route tests", () => {
     });
 
     it("POST /items/add - create a valid item", async () => {
+        const payload = {
+            receipt_id: '20230816000000',
+            price: '23.46',
+            payee: 'john',
+            name: 'orange'
+        };
 
         await agent
             .post("/items/add")

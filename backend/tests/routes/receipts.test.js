@@ -1,17 +1,12 @@
 let request = require('supertest');
 let app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
-<<<<<<< HEAD
 const userAPI = require('../../api/usersAPI');
 const groupAPI = require('../../api/groupAPI');
+const receiptAPI = require('../../api/receiptsAPI');
 
 describe("Receipt routes", () => {
     request = request.agent(app);  
-=======
-
-describe("receipts route tests", () => {
-    const agent = request.agent(app);  
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     const user1_payload = {
         username:'user1', 
@@ -20,7 +15,6 @@ describe("receipts route tests", () => {
         email:'testuser1@gmail.com', 
         password:'password',
         profile_description: 'certified tester'
-<<<<<<< HEAD
     }
 
     const user2_payload = {
@@ -48,19 +42,10 @@ describe("receipts route tests", () => {
 
         //Create users
         await request
-=======
-    };
-    
-    beforeAll(async () => {
-        await clearTable('receipts');
-        /*Create users*/
-        await agent
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
           .post("/auth/signup")
           .send(user1_payload)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
-<<<<<<< HEAD
           .expect(200)
         await request
           .post("/auth/signup")
@@ -74,16 +59,11 @@ describe("receipts route tests", () => {
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
           .expect(200)
-=======
-          .expect(200);
-        
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
         //Login as the first created user
         const payload = {
             username: user1_payload.username,
             password: user1_payload.password
         }
-<<<<<<< HEAD
         await request
           .post("/auth/login")
           .send(payload)
@@ -117,19 +97,10 @@ describe("receipts route tests", () => {
           .expect(200)
         
     }, 20000)
-=======
-        await agent
-          .post("/auth/login")
-          .send(payload)
-          .expect("Content-Type", /json/)
-          .expect(200);
-        
-    }, 10000);
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
 
     beforeEach(() => {
         jest.useRealTimers();
-    });
+    })
 
     afterAll(async () => {
         await clearTable('receipts');
@@ -144,13 +115,13 @@ describe("receipts route tests", () => {
         .expect(200)
         .then((response) => {                          
             expect(response.body.length).toBe(0)
+        })
+        .catch((err) => {
+            expect(err).toBe(null);
         });
-        // .catch((err) => {
-        //     expect(err).toBe(null);
-        // });
     });
 
-    it("POST /receipts/add - create a valid receipt", async () => {
+    it("POST /receipts/add - create a valid receipt as group admin", async () => {
         const groups = await groupAPI.getGroups();
         const group_ids = groups.map(g => g.group_id);
         const payload = {
@@ -158,7 +129,7 @@ describe("receipts route tests", () => {
             name: 'bobby',
             description: 'bobbys description',
             category: 'food',
-            vendor: 'bobby inc',
+            vendor: 'bobby inc'
         }
         await request
             .post("/receipts/add")
@@ -167,198 +138,208 @@ describe("receipts route tests", () => {
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
-                const body = JSON.parse(response.body);
+                const body = response.body;
                 expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
-            });
-<<<<<<< HEAD
-    }, 10000);
-=======
-            // .catch((err) => {
-            //     expect(err).toBe('[Error: expected 200 "OK", got 401 "Unauthorized"]');
-            // });
-    });
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
-
-    /* it("GET /receipts/:id - get a receipt by ID", async () => {
-        const payload = {
-            receipt_id: '20240819055013',
-            group_id: '1',
-            images: 'image.jpg',
-            name: 'bobby',
-            description: 'bobbys description',
-            category: 'food',
-            vendor: 'bobby',
-            tax: null,
-            tip: null,
-            expense_rate: null,
-            items: null
-        }
-
-        let receipt_id;
-
-        // Create receipts
-        await request
-            .post("/receipts/add")
-            .send(payload)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .expect(201)
-            .then(response => {
-                const body = JSON.parse(response.text);
-                receipt_id = body.receipt_id;
-            });
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-        
-        // Get receipt by id
-        await request
-            .get(`/receipts/${receipt_id}`)
-            .expect("Content-Type", /json/)
-            .expect(200)
-            .then(response => {
-                const body = JSON.parse(response.text);
-                expect(body.name).toBe(payload.name);
-                expect(body.description).toBe(payload.description);
-                expect(body.category).toBe(payload.category);
-                expect(body.vendor).toBe(payload.vendor);
-            });
-<<<<<<< HEAD
-    }); */
-=======
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-    });
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
-
-    /* it("PUT /receipts/:id/update - update a receipt", async () => {
-        const payload = {
-            receipt_id: '20240819055013',
-            group_id: '1',
-            images: 'image.jpg',
-            name: 'bobby',
-            description: 'bobbys description',
-            category: 'food',
-            vendor: 'bobby',
-            tax: null,
-            tip: null,
-            expense_rate: null,
-            items: null
-        }
-
-        const updatedPayload = {
-            receipt_id: '20240819055013',
-            group_id: '2',
-            images: 'image2.jpg',
-            name: 'bobbyson',
-            description: 'bobbysons description',
-            category: 'food',
-            vendor: 'bobbyson',
-            tax: null,
-            tip: null,
-            expense_rate: null,
-            items: null
-        }
-
-        let receipt_id;
-
-        //Create the receipt
-        await request
-            .post("/receipts/add")
-            .send(payload)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .expect(201)
-            .then(response => {
-                const body = JSON.parse(response.text);
-                receipt_id = body.receipt_id;
-            });
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-
-        // Now update the receipt
-        await request
-            .put(`/receipts/${receipt_id}/update`)
-            .send(updatedPayload)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .expect(200)
-            .then(response => {
-                const body = JSON.parse(response.text);
-                expect(body.name).toBe(payload.name);
-                expect(body.description).toBe(payload.description);
-                expect(body.category).toBe(payload.category);
-                expect(body.vendor).toBe(payload.vendor);
-            });
-<<<<<<< HEAD
-    }); */
-=======
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-    });
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
-
-    /* it("DELETE /receipts/:id/delete - delete a existing receipt", async () => {
-        const payload = {
-            receipt_id: '20240819055013',
-            group_id: '1',
-            images: 'image.jpg',
-            name: 'bobby',
-            description: 'bobbys description',
-            category: 'food',
-            vendor: 'bobby',
-            tax: null,
-            tip: null,
-            expense_rate: null,
-            items: null
-        }
-
-        let receipt_id;
-
-        // Add a receipt to the table
-        await request
-            .post("/receipts/add")
-            .send(payload)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .expect(201)
-            .then(response => {
-                const body = JSON.parse(response.text);
-                receipt_id = body.receipt_id;
-            });
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-        
-        // Delete the tip
-        await request
-            .delete(`receipts/${receipt_id}/delete`)
-            .expect(200)
-            .then(response => {
-                expect(response.body.msg).toBe('Receipt deleted successfully.');
-            });
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
-        
-        // After receipt is deleted, get by id should not return anything
-        await request
-            .get(`/receipts/${receipt_id}`)
-<<<<<<< HEAD
-            .expect(404)
+            })
             .catch((err) => {
                 expect(err).toBe(null);
             });
-    }); */
-}); 
-=======
-            .expect(404);
-            // .catch((err) => {
-            //     expect(err).toBe(null);
-            // });
     });
-});
->>>>>>> 6fc524cf71b201f663d6b46ef6a661d27f1e860a
+
+    it("GET /receipts/:id - get a receipt by ID with member status", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        // Get receipt by id
+        await request
+            .get(`/receipts/${receipt_ids[0]}`)
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then(response => {
+                const body = response.body;
+                expect(checkPayloadWithResponse(receipts[0], body)).toBeTruthy();
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("POST /receipts/:id/update - update a receipt as receipt admin", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        const payload = {
+            name: 'bob',
+            description: 'bobs description',
+            vendor: 'bob inc'
+        }
+
+        // Update the receipt
+        await request
+            .post(`/receipts/${receipt_ids[0]}/update`)
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(async () => {
+                const receipt = await receiptAPI.getReceiptByID(receipt_ids[0]);
+                expect(checkPayloadWithResponse(payload, receipt)).toBeTruthy();
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("DELETE /receipts/:id/delete - delete a existing receipt as receipt admin", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const initial_length = receipts.length;
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        //Delete the receipt
+        await request
+            .post("/receipts/" + receipt_ids[0] + "/delete")
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(async() => {
+                const receipt_list = await receiptAPI.getReceipts();
+                expect(receipt_list.length).toBe(initial_length - 1);
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("POST /receipts/add - create another valid receipt as group admin", async () => {
+        const groups = await groupAPI.getGroups();
+        const group_ids = groups.map(g => g.group_id);
+        const payload = {
+            group_id: group_ids[0],
+            name: 'ben',
+            description: 'ben description',
+            category: 'food',
+            vendor: 'ben inc'
+        }
+        await request
+            .post("/receipts/add")
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(response => {
+                const body = response.body;
+                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("Logout and login as a user without receipt admin status", async () => {
+        //Login as the second created user
+        const payload = {
+            username: user2_payload.username,
+            password: user2_payload.password
+        }
+        await request
+          .post("/auth/logout")
+          .expect(200)
+        await request
+          .post("/auth/login")
+          .send(payload)
+          .expect("Content-Type", /json/)
+          .expect(200)
+    });
+
+    it("POST /receipts/add - attempt to create a receipt without membership in the group", async () => {
+        const groups = await groupAPI.getGroups();
+        const group_ids = groups.map(g => g.group_id);
+        const payload = {
+            group_id: group_ids[0],
+            name: 'bobby',
+            description: 'bobbys description',
+            category: 'food',
+            vendor: 'bobby inc'
+        }
+        await request
+            .post("/receipts/add")
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(response => {
+                const body = response.body;
+                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("POST /receipts/add - create a valid receipt with membership in the group", async () => {
+        const groups = await groupAPI.getGroups();
+        const group_ids = groups.map(g => g.group_id);
+        const payload = {
+            group_id: group_ids[1],
+            name: 'bobby',
+            description: 'bobbys description',
+            category: 'food',
+            vendor: 'bobby inc'
+        }
+        await request
+            .post("/receipts/add")
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(response => {
+                const body = response.body;
+                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("GET /receipts/:id - attempt to get a receipt by ID without member access", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        // Get receipt by id
+        await request
+            .get(`/receipts/${receipt_ids[0]}`)
+            .expect("Content-Type", /json/)
+            .expect(401)
+    });
+
+    it("POST /receipts/:id/update - attempt to update a receipt without admin status", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        const payload = {
+            name: 'bobert',
+            description: 'bobert description',
+            vendor: 'bobert inc'
+        }
+
+        // Update the receipt
+        await request
+            .post(`/receipts/${receipt_ids[0]}/update`)
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(401)
+    });
+
+    it("DELETE /receipts/:id/delete - attempt to delete a existing receipt without admin status", async () => {
+        const receipts = await receiptAPI.getReceipts();
+        const receipt_ids = receipts.map(r => r.receipt_id);
+
+        //Delete the receipt
+        await request
+            .post("/receipts/" + receipt_ids[0] + "/delete")
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(401)
+    });
+}); 
