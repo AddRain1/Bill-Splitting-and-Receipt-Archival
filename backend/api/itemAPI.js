@@ -122,7 +122,7 @@ class itemTableAPI extends itemAPI{
         const item = new Item(
             result.item_id,
             result.receipt_id,
-            result.user_id,
+            result.payee,
             result.name,
             result.price,
             result.created_at   
@@ -145,36 +145,25 @@ class itemTableAPI extends itemAPI{
             password: PASSWORD,
             database: DATABASE
         });
-        
+      
+        console.log('This is the id:', id);
         let results;
-        try {
-            [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [id]);
-            if (!results) {
-                throw new Error (`No item by item_id = ${id} found.`);
-            }
-        } catch (error) {
-            try {
-                [results] = await connection.execute('SELECT * FROM items WHERE receipt_id = ?', [id]);
-                if (!results) {
-                    throw new Error (`No item by receipt_id = ${id} found.`);
-                }
-            } catch (error) {
-                throw new Error ('No item found.');
-            }
-        }
-        
+        [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [id]);
+        [results] = await connection.execute('SELECT * FROM items WHERE receipt_id = ?', [id]);
+    
+    
         if (results.length === 0) {
             throw new Error("No item found for the given ID");
-        }
+        } 
 
         // get item object from results
         const result = results[0];
         const item = new Item(
             result.item_id,
             result.receipt_id,
-            result.name,
-            result.price,
-            result.payee,
+            result.item_name,
+            result.item_price,
+            result.item_payee,
             result.created_at   
         );
 
@@ -196,35 +185,29 @@ class itemTableAPI extends itemAPI{
             password: PASSWORD,
             database: DATABASE
         });
-        // Get the items with same receipt_id from the database
-        const itemQuery = 'SELECT * FROM items WHERE receipt_id = ?';
-        const itemParams = [item.receipt_id];
         
-        // Check if the item already exists
-        const getInfo = await connection.execute(itemQuery, itemParams);
-        const exist = getInfo[0].length > 0;
+        console.log('Item receipt_id to add:', item.receipt_id); 
         
-        if(exist){
-            // Throw an error if the receipt already exists
+        /*if(this.getItemById(item.receipt_id)){
+            // Throw an error if the item already exists
             throw new Error("item already exist");
-        }
+        } */
 
         // Execute the query to insert the new item into the database
         const query = 'INSERT INTO items (receipt_id, item_name, item_price, item_payee) VALUES (?, ?, ?, ?)';
-        const params = [item.receipt_id, 
-            item.name, 
-            item.price,
-            item.payee];
+        const params = [item.receipt_id, item.name, item.price, item.payee];
         await connection.execute(query, params);
 
-        await connection.close();
+        console.log('Item successfully added');
+
+        await connection.end();
     }
 
     // Override the changeItem_name method
     // Static async function to change name of item in the database
     static async changeItem(id, property_id, property_value){
 
-        const [item] = await this.getItemById(id);
+        const item = await this.getItemById(id);
         if(!item){
             // Throw an error if the receipt already exists
             throw new Error("Item doesn't exist");
@@ -240,16 +223,16 @@ class itemTableAPI extends itemAPI{
 
         // Execute the query to update the item's property in the database
         if (property_id == "name") {
-            await connection.execute('UPDATE items SET item_name = ? WHERE item_id = ?', [property_value], [item.item_id]);
+            await connection.execute('UPDATE items SET item_name = ? WHERE item_id = ?', [property_value, item.item_id]);
          }
          else if (property_id == "price") {
-            await connection.execute('UPDATE items SET item_price = ? WHERE item_id = ?', [property_value], [item.item_id]);
+            await connection.execute('UPDATE items SET item_price = ? WHERE item_id = ?', [property_value, item.item_id]);
          }
          else if (property_id == "receipt_id") {
-            await connection.execute('UPDATE items SET receipt_id = ? WHERE item_id = ?', [property_value], [item.item_id]);
+            await connection.execute('UPDATE items SET receipt_id = ? WHERE item_id = ?', [property_value, item.item_id]);
          }
          else if (property_id == "payee") {
-            await connection.execute('UPDATE items SET item_payee = ? WHERE item_id = ?', [property_value], [item.item_id]);
+            await connection.execute('UPDATE items SET item_payee = ? WHERE item_id = ?', [property_value, item.item_id]);
          }
  
          await connection.end();
@@ -262,7 +245,7 @@ class itemTableAPI extends itemAPI{
     static async deleteItem(id){
         
         // Get item by id to check if it exists
-        const [item] = await this.getItemById(id);
+        const item = await this.getItemById(id);
         if(!item) {
             throw new Error(`No item found.`);
         }

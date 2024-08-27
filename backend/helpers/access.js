@@ -67,7 +67,7 @@ const get_accessible_expense_rates = async (user_id) => {
     return await expenseRateAPI.getExpRt(expense_rate_receipt_query);
 } 
 
-const get_accessible_groups = async user_id => {
+const get_accessible_groups = async (user_id) => {
     const groups = await groupAPI.getUser_groups(user_id)
     return groups;
 }
