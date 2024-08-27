@@ -74,13 +74,12 @@ router.post('/add', [
         );
 
         if(req.user.user_id != req.body.payer_id && req.user.user_id != req.body.receiver_id) res.status(400).json({msg: 'User must be the payer or receiver of the payment request'});
-        if(req.body.receipt_id) {
-            const has_access = await accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id);
-            if(!has_access) res.status(401).json({msg: 'User must have access to the receipt they link.'});
+        else if(req.body.receipt_id && (!(await accessHelper.check_receipt_accessible(req.body.payer_id, req.body.receipt_id)) || !(await accessHelper.check_receipt_accessible(req.body.receiver_id, req.body.receipt_id)))) {
+            res.status(401).json({msg: 'Payer and receiver must have access to the linked receipt.'});
         }
-        if (errors.isEmpty()) {
+        else if (errors.isEmpty()) {
             await paymentRequestAPI.addPaymentRequest(payment_request);
-            if(!res.headersSent) res.status(200).json(JSON.stringify(payment_request));
+            if(!res.headersSent) res.status(200).json(payment_request);
         }
     }
 ]);
@@ -124,26 +123,18 @@ router.post('/:id/update', [
 
         const payment_request = await paymentRequestAPI.getPaymentRequestByID(req.params.id);
 
-        console.log(payment_request)
-        console.log(errors)
         if(errors.isEmpty()) {
             const promises = [];
-            console.log(req.user.user_id)
-            console.log(payment_request.payer_id)
-            console.log(payment_request.receiver_id)
             if(req.user.user_id == payment_request.payer_id) {
                 if(req.body.is_declined) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "is_declined", req.body.is_declined));
-                console.log('1')
             }
             else if(req.user.user_id == payment_request.receiver_id) {
                 if(req.body.pay_by) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by));
                 if(req.body.amount) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount));
                 if(req.body.description) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description));
-                console.log('2')
             }
             else res.status(401).json({msg: 'User must be the payer or receiver to modify request'});
 
-            console.log(promises);
             Promise.all(promises).then(() => {if(!res.headersSent) res.sendStatus(200);})
         }
     }

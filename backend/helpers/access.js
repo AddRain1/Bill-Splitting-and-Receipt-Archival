@@ -68,7 +68,7 @@ const get_accessible_expense_rates = async (user_id) => {
 
     //Get expense rates assigned to each receipt
     const expense_rate_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
-    return await expenseRateAPI.getExpRt(expense_rate_receipt_query);
+    return await expenseRateAPI.getExpenseRates(expense_rate_receipt_query);
 } 
 
 const get_accessible_groups = async (user_id) => {

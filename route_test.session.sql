@@ -144,10 +144,10 @@ DROP TABLE receipts
 
 -- @block
 CREATE TABLE expense_rate(
-    expenseRate_id INT AUTO_INCREMENT PRIMARY KEY,
-    receipt_id CHAR(15) NOT NULL,
-    expenseRate_name TEXT,
-    expenseRate_percentage DECIMAL(4, 2) DEFAULT 0
+    expense_rate_id INT AUTO_INCREMENT PRIMARY KEY,
+    receipt_id INT NOT NULL,
+    name TEXT,
+    percentage DECIMAL(8, 5) DEFAULT 0
 );
 
 -- @block   

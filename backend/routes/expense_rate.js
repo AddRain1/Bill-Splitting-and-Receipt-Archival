@@ -4,6 +4,7 @@ const router = express.Router();
 
 const expenseRateAPI = require("../api/expenseRateAPI.js");
 const ExpenseRate = require('../class/expenseRateClass.js');
+const receiptAPI = require('../api/receiptsAPI.js');
 const accessHelper = require("../helpers/access.js");
 
 //get a list of expense rates for the receipts that the user has access to.
@@ -11,52 +12,49 @@ const accessHelper = require("../helpers/access.js");
 router.get('/', async (req, res) => {
     if(req.query.receipt_id){
         const query = `WHERE receipt_id = ${req.query.receipt_id}`;
-        const expense_rates = expenseRateAPI.getExpenseRate(query);
-        res.sendStatus(200).json(JSON.stringify(expense_rates));
+        const expense_rates = await expenseRateAPI.getExpenseRates(query);
+        res.status(200).json(expense_rates);
     }
     else if(req.query.name){
         const query = `WHERE name LIKE '%${req.query.name}%'`;
-        const expense_rates = expenseRateAPI.getExpenseRate(query);
-        res.sendStatus(200).json(JSON.stringify(expense_rates));
+        const expense_rates = await expenseRateAPI.getExpenseRates(query);
+        res.status(200).json(expense_rates);
     }
     else if(req.query.percentage){
         const query = `WHERE percentage = ${req.query.percentage}`;
-        const expense_rates = expenseRateAPI.getExpenseRate(query);
-        res.sendStatus(200).json(JSON.stringify(expense_rates));
+        const expense_rates = await expenseRateAPI.getExpenseRates(query);
+        res.status(200).json(expense_rates);
     }
     else{
-        const expense_rates = accessHelper.get_accessible_expense_rates(req.user);
-        res.json(JSON.stringify(expense_rates));
+        const expense_rates = await accessHelper.get_accessible_expense_rates(req.user.user_id);
+        if(!res.headersSent) res.status(200).json(expense_rates);
     }
 });
 
 //create a new expense rate
-//Authorization: Must have access to the receipt that the expense rate is assigned to. 
-router.get('/add', [
-    async (req, res) => {
-        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
-            res.sendStatus(401).json({msg: 'User must have access to the receipt they link.'});
-        }
-    },
+//Authorization: Must be admin to the receipt that the expense rate is assigned to. 
+router.post('/add', [
     body("name")
         .trim()
         .isLength({max: 100})
         .escape(),
-    body("percentage", "Percentage must be greater than 0")
+    body("percentage", "Percentage must be a float and non-negative")
         .trim()
-        .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
+        .isFloat({min: 0})
         .escape(),
-    (req, res, next) => {
+    async (req, res, next) => {
         const errors = validationResult(req);
-        const expense_rate = new ExpenseRate({
-            name: req.body.name,
-            percentage: req.body.percentage
-        });
-    
-        if (errors.isEmpty()) {
-            expenseRateAPI.addExpenseRate(expense_rate);
-            
-            res.sendStatus(200).json(JSON.stringify(expense_rate));
+        const expense_rate = new ExpenseRate(
+            req.body.receipt_id,
+            req.body.name,
+            parseFloat(req.body.percentage)
+        );
+
+        const receipt = await receiptAPI.getReceiptByID(req.body.receipt_id);
+        if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be an admin to the receipt linked to the expense rate'});
+        else if (errors.isEmpty()) {
+            await expenseRateAPI.addExpenseRate(expense_rate);
+            if(!res.headersSent) res.status(200).json(expense_rate);
         }
     }
 ]);
@@ -64,49 +62,55 @@ router.get('/add', [
 //get information of expense rate with ID
 //Authorization: Must have access to the receipt that the expense rate is assigned to.
 router.get('/:id', async (req, res) => {
-    if(!accessHelper.check_receipt_accessible(req.user, req.params.receipt_id)) res.sendStatus(401).json({msg: 'User must have access to the linked receipt.'});
+    const expense_rate = await expenseRateAPI.getExpenseRateByID(req.params.id);
+
+    if(!accessHelper.check_receipt_accessible(req.user.user_id, expense_rate.receipt_id)) res.status(401).json({msg: 'User must have access to the linked receipt.'});
     else {
-        const expense_rate = expenseRateAPI.getExpenseRate(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(expense_rate));
+        const expense_rate = await expenseRateAPI.getExpenseRateByID(req.params.id);
+        if(!res.headersSent) res.status(200).json(expense_rate);
     }
 });
 
 //update expense rate with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/update', [
-    async (req, res) => {
-        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user, req.body.receipt_id)) {
-            res.sendStatus(401).json({msg: 'User must have access to the receipt they link.'});
-        }
-    },
+router.post('/:id/update', [
     body("name")
         .trim()
         .isLength({max: 100})
-        .escape(),
+        .escape()
+        .optional(),
     body("percentage", "Percentage must be greater than 0")
         .trim()
-        .isInt({min: 0.01, max: Number.MAX_SAFE_INTEGER})
-        .escape(),
-    (req, res, next) => {
+        .isFloat({min: 0})
+        .escape()
+        .optional(),
+    async (req, res, next) => {
         const errors = validationResult(req);
-        const expense_rate = expenseRateAPI.getExpenseRateByID();
 
-        if (errors.isEmpty() && req.user == expense_rate.admin_id) {
-            expenseRateAPI.changeExpenseRate()
+        const expense_rate = await expenseRateAPI.getExpenseRateByID(req.params.id);
+        const receipt = await receiptAPI.getReceiptByID(expense_rate.receipt_id);
+
+        if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be an admin to the receipt linked to the expense rate to update it.'});
+        else if (errors.isEmpty()) {
+            const promises = [];
+            if(req.body.name) promises.push(expenseRateAPI.changeExpenseRate(req.params.id, "name", req.body.name));
+            if(req.body.percentage) promises.push(expenseRateAPI.changeExpenseRate(req.params.id, "percentage", parseFloat(req.body.percentage)));
             
-            res.sendStatus(200).json(JSON.stringify(expense_rate));
+            Promise.all(promises).then(() => {if(!res.headersSent) res.sendStatus(200);})
         }
     }
 ]);
 
 //delete expense rate with ID
 //Authorization: Must be an admin of the receipt
-router.get('/:id/delete', async (req, res) => {
-    const expense_rate = expenseRateAPI.getExpenseRateByID(req.params.id);
-    if(req.user != expense_rate.admin_id) res.sendStatus(401).json({msg: 'User must be the admin of the receipt to delete expense rate'});
+router.post('/:id/delete', async (req, res) => {
+    const expense_rate = await expenseRateAPI.getExpenseRateByID(req.params.id);
+    const receipt = await receiptAPI.getReceiptByID(expense_rate.receipt_id);
+
+    if(req.user.user_id != receipt.admin_id) res.status(401).json({msg: 'User must be an admin to the receipt linked to the expense rate to delete it.'});
     else {
-        expense_rate.deleteExpenseRate(req.params.id);
-        res.sendStatus(200).json(JSON.stringify(expense_rate));
+        await expenseRateAPI.deleteExpenseRate(req.params.id);
+        if(!res.headersSent) res.status(200).json(expense_rate);
     }
 });
 
