@@ -4,6 +4,7 @@ const taxAPI = require("./taxAPI.js");
 const tipAPI = require("./tipAPI.js");
 const expenseRateAPI = require("./expenseRateAPI.js"); 
 const itemAPI = require("./itemAPI.js");
+const paymentRequestAPI = require('./paymentRequestAPI.js');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -79,6 +80,7 @@ class receiptTable_api extends receipt_api{
         
         // Map the results to an array of Receipts objects
         const receipts = results.map(result => new Receipts(
+            result.admin_id,
             result.group_id,
             result.name,
             result.description,
@@ -142,8 +144,9 @@ class receiptTable_api extends receipt_api{
             database: DATABASE
         });
         // Execute the query to insert the new receipt into the database
-        const query = 'INSERT INTO receipts (group_id, name, description, images, category, vendor) VALUES (?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO receipts (admin_id, group_id, name, description, images, category, vendor) VALUES (?, ?, ?, ?, ?, ?, ?)';
         const params = [
+            receipt.admin_id,
             receipt.group_id, 
             receipt.name, 
             receipt.description, 
@@ -198,6 +201,10 @@ class receiptTable_api extends receipt_api{
         const items = await itemAPI.getItems(receipt_query);
         for(let item of items) {
             await itemAPI.deleteItem(item);
+        }
+        const payment_requests = await paymentRequestAPI.getPaymentRequests(receipt_query);
+        for(let payment_request of payment_requests) {
+            await paymentRequestAPI.deletePaymentRequest(payment_request);
         }
         const connection = await mysql.createConnection({
             host: HOST,

@@ -121,7 +121,7 @@ describe("Receipt routes", () => {
         });
     });
 
-    it("POST /receipts/add - create a valid receipt as admin", async () => {
+    it("POST /receipts/add - create a valid receipt as group admin", async () => {
         const groups = await groupAPI.getGroups();
         const group_ids = groups.map(g => g.group_id);
         const payload = {
@@ -164,7 +164,7 @@ describe("Receipt routes", () => {
             });
     });
 
-    it("POST /receipts/:id/update - update a receipt as admin", async () => {
+    it("POST /receipts/:id/update - update a receipt as receipt admin", async () => {
         const receipts = await receiptAPI.getReceipts();
         const receipt_ids = receipts.map(r => r.receipt_id);
 
@@ -190,7 +190,7 @@ describe("Receipt routes", () => {
             });
     });
 
-    it("DELETE /receipts/:id/delete - delete a existing receipt as admin", async () => {
+    it("DELETE /receipts/:id/delete - delete a existing receipt as receipt admin", async () => {
         const receipts = await receiptAPI.getReceipts();
         const initial_length = receipts.length;
         const receipt_ids = receipts.map(r => r.receipt_id);
@@ -204,6 +204,31 @@ describe("Receipt routes", () => {
             .then(async() => {
                 const receipt_list = await receiptAPI.getReceipts();
                 expect(receipt_list.length).toBe(initial_length - 1);
+            })
+            .catch((err) => {
+                expect(err).toBe(null);
+            });
+    });
+
+    it("POST /receipts/add - create another valid receipt as group admin", async () => {
+        const groups = await groupAPI.getGroups();
+        const group_ids = groups.map(g => g.group_id);
+        const payload = {
+            group_id: group_ids[0],
+            name: 'ben',
+            description: 'ben description',
+            category: 'food',
+            vendor: 'ben inc'
+        }
+        await request
+            .post("/receipts/add")
+            .send(payload)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .then(response => {
+                const body = response.body;
+                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -299,7 +324,7 @@ describe("Receipt routes", () => {
 
         // Update the receipt
         await request
-            .post(`/receipts/${receipt_ids[1]}/update`)
+            .post(`/receipts/${receipt_ids[0]}/update`)
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
@@ -312,7 +337,7 @@ describe("Receipt routes", () => {
 
         //Delete the receipt
         await request
-            .post("/receipts/" + receipt_ids[1] + "/delete")
+            .post("/receipts/" + receipt_ids[0] + "/delete")
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(401)
