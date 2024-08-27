@@ -92,11 +92,15 @@ CREATE TABLE items (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (receipt_id) REFERENCES receipts(receipt_id)
 );
+
+-- @block
+ALTER TABLE items
+CHANGE COLUMN ITEM_PAYEE item_payee VARCHAR(100);
 -- @block
 INSERT INTO items(receipt_id, item_name, item_price, item_payee)
 VALUES('20240715000000', 'Item 1', 10.0, 'John'),
     ('20240715000000', 'Item 2', 20.0, 'Jane'),
-    ('20240716021644', 'Item 1', 10.0, 'Jason');
+    ('20230816000000', 'Item 1', 10.0, 'Jason');
 
 -- @block
 CREATE TABLE users (

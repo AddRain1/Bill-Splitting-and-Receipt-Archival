@@ -90,14 +90,40 @@ class receiptTable_api extends receipt_api{
             result.vendor,
             result.receipt_id
         ));
+
+        await connection.close();
+
         return receipts;
     }
 
     // Override the getReceiptByID method
     // Static async function to get a receipt by ID from the database
     static async getReceiptByID(receipt_id){
-        const receipts = await this.getReceipts('WHERE receipt_id = ' + receipt_id);
-        return receipts[0];
+
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+
+        const [results] = await connection.query('SELECT * FROM receipts WHERE receipt_id = ?', [receipt_id]);
+        const result = results[0];
+        const receipt = new Receipts(
+            result.admin_id,
+            result.group_id,
+            result.receipt_name,
+            result.receipt_description,
+            result.images,
+            result.receipt_category,
+            result.created_at,
+            result.vendor_name,
+            result.receipt_id
+        );
+
+        await connection.end();
+
+        return receipt;
     }
 
     // Override the addReceipt method

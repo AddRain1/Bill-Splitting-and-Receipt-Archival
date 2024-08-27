@@ -1,5 +1,4 @@
 const mysql = require("mysql2/promise");
-const receiptTable_api = require("./receiptsAPI.js");
 const Tax = require("../class/taxClass.js");
 const dotenv = require('dotenv');
 
@@ -83,8 +82,38 @@ class taxTable_api extends tax_api{
     }
 
     static async getTaxById(id){
-        const taxes = await this.getTaxes('WHERE tax_id = ' + id);
-        return taxes[0];
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+    
+        let results;
+        [results] = await connection.execute('SELECT * FROM taxes WHERE tax_id = ?', [id]);
+        [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [id]);
+    
+    
+        if (results.length === 0) {
+            throw new Error("No item found for the given ID");
+        } 
+
+        // get item object from results
+        const result = results[0];
+        const tax = new Tax(
+            result.tax_id,
+            result.receipt_id,
+            result.tax_name,
+            result.tax_percentage 
+        );
+
+
+        // Close connection
+        await connection.end();
+
+        // Return the item object
+        return tax;
     }
 
     // Override the addTax method

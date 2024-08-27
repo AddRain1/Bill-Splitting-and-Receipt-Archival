@@ -6,6 +6,7 @@ class Users{
     password;
     profile_description;
     creation_date;
+    user_id;
     constructor(username, first_name, last_name, email, password, profile_description, creation_date=Date.now(), user_id=null){
         this.username = username;
         this.first_name = first_name;

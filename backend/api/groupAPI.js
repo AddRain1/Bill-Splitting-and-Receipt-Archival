@@ -160,7 +160,7 @@ class groupTableAPI extends groupAPI{
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         });
-        
+
         const query = 'SELECT * FROM user_group WHERE user_id = ?';
         const params = [user_id];
         const [results] = await connection.execute(query, params);
