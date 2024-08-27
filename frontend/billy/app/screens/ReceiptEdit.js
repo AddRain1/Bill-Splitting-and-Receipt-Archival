@@ -115,6 +115,23 @@ function ReceiptEdit(props) {
 
 	const people = [];
 
+	const handleAddNavigate = () => {
+		Alert.alert(
+			"Edit users",
+			"Please select whether you would like to create a new group or add a user to the current group in the receipt.",
+			[
+				{
+					text: "New group",
+					onPress: () => navigation.navigate("NewFriendGroupPage"),
+				},
+				{
+					text: "Add user",
+					onPress: () => navigation.navigate("AddFriendPage"),
+				},
+			],
+		);
+	};
+
 	async function loadReceipt() {
 		try {
 			const response = await fetch("http://localhost:3000/routes/users/${id}", {
@@ -461,7 +478,7 @@ function ReceiptEdit(props) {
 							<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
 							<Text style={[styles.editInput, {}]}> {people.length - 1} </Text>
 						</SafeAreaView>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={handleAddNavigate()}>
 							<Octicons
 								name="plus-circle"
 								size={24}
