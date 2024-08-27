@@ -98,6 +98,7 @@ function ReceiptView(props) {
 				subtot += initialItemList[i].price;
 			}
 			setSubtotal(subtot);
+			setupInitialLists();
 		} catch (error) {
 			console.error("Error:", error);
 		}
@@ -114,6 +115,8 @@ function ReceiptView(props) {
 			}
 		}
 	};
+
+	loadReceipt();
 
 	return (
 		<SafeAreaView style={styles.container}>
