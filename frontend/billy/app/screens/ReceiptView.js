@@ -65,7 +65,7 @@ function ReceiptView(props) {
 
 	async function loadReceipt() {
 		try {
-			const response = await fetch("http://localhost:3000/routes/users/${id}", {
+			const response = await fetch("http://localhost:3000/routes/users/${user_id}", {
 				method: "GET",
 				headers: {
 					// 'Authorization': '${authToken}' // Add auth token here
@@ -80,7 +80,7 @@ function ReceiptView(props) {
 
 		try {
 			const response = await fetch(
-				"http://localhost:3000/routes/receipts/${id}",
+				"http://localhost:3000/routes/receipts/${receipt_id}",
 				{
 					method: "GET",
 					headers: {
@@ -89,6 +89,9 @@ function ReceiptView(props) {
 				},
 			);
 			const data = await response.json();
+			if (data.admin_id === user_id) {
+				setShowEdit(true);
+			}
 			setTitle(data.title);
 			setDate(data.created_at);
 			setTip(data.tip);
