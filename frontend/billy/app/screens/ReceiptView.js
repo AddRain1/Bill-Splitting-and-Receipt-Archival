@@ -58,6 +58,7 @@ function ReceiptView(props) {
 	const [subtotal, setSubtotal] = useState(0);
 	const [tax, setTax] = useState(0);
 	const [tip, setTip] = useState(0);
+	const [showEdit, setShowEdit] = useState(false);
 
 	const people = [];
 	const subtotals = [];
@@ -146,10 +147,11 @@ function ReceiptView(props) {
 					<Octicons name="arrow-left" size={25} color={COLORS.gray} />
 					<Text style={[styles.caption, { color: COLORS.gray }]}> return </Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={[styles.subBarButton, { left: 160 }]}>
+				<TouchableOpacity style={[styles.subBarButton, { left: showEdit ? 160 : 250 }]}>
 					<Octicons name="image" size={25} color={COLORS.gray} />
 					<Text style={[styles.caption, { color: COLORS.gray }]}> view </Text>
 				</TouchableOpacity>
+				{showEdit && 
 				<TouchableOpacity
 					style={[styles.subBarButton, { left: 175 }]}
 					onPress={() => navigation.navigate("ReceiptEdit")}
@@ -157,6 +159,7 @@ function ReceiptView(props) {
 					<Feather name="edit" size={25} color={COLORS.gray} />
 					<Text style={[styles.caption, { color: COLORS.gray }]}> edit </Text>
 				</TouchableOpacity>
+				}
 			</SafeAreaView>
 			<ScrollView
 				contentContainerStyle={styles.scroll}
