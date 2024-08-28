@@ -116,6 +116,8 @@ function AddFriendPage(props) {
     setBarcodeData(data);
     setIsScanning(false);  
   };
+
+  
   const handleAddFriend = async () => {
     if (!username) {
       Alert.alert("Error", "Please enter a friend's ID.");
