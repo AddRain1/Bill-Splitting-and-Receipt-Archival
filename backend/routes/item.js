@@ -44,14 +44,14 @@ router.post('/add', [
     async (req, res, next) => {
       //receipt must exist
       //user must have access to receipt
-      /*if(!accessHelper.check_receipt_accessible(req.body.user, req.body.receipt_id)) {
+      if(!accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) {
           res.status(401).json({msg: 'User must have access to the receipt they link.'});
-      }*/
+      }
       const receipt = await receiptAPI.getReceiptByID(req.body.receipt_id);
       //payee must be part of the group
-      /*if(!accessHelper.check_group_accessible(req.body.payee, receipt.group_id)) {
+      if(!accessHelper.check_group_accessible(req.body.payee, receipt.group_id)) {
         res.status(401).json({msg: 'Payee must be part of the group the item is assigned to'});
-      } */
+      } 
       next();
     },
     body("name")
@@ -93,9 +93,8 @@ router.post('/add', [
 //Authorization: Must have access to the receipt that the item is assigned to.
 router.get('/:id', async (req, res) => {
   const item = await itemAPI.getItemByID(req.params.id);
-  /*if(!accessHelper.check_receipt_accessible(req.user.user_id, item.receipt_id)) res.status(401).json({msg: 'User must have access to the linked receipt.'});
-  else if (!res.headersSent) res.status(200).json(JSON.stringify(item)); */
-  if (!res.headersSent) res.status(200).json(item);
+  if(!accessHelper.check_receipt_accessible(req.user.user_id, item.receipt_id)) res.status(401).json({msg: 'User must have access to the linked receipt.'});
+  else if (!res.headersSent) res.status(200).json(JSON.stringify(item)); 
 });
 
 //update item with ID
@@ -122,19 +121,15 @@ router.put('/:id/update', [
       const item = await itemAPI.getItemByID(req.params.id);
       
       const receipt = await receiptAPI.getReceiptByID(item.receipt_id)
-      /*if(receipt.admin_id == req.user.user_id) {
-        if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) res.status(401).json({msg: 'User must have access to the receipt they link.'});
-        else if (req.body.receipt_id) promises.push(itemAPI.changeItem(req.params.id, "receipt_id", req.body.receipt_id));
-        if(req.body.name) promises.push(itemAPI.changeItem(req.params.id, "name", req.body.name));
-        if(req.body.price) promises.push(itemAPI.changeItem(req.params.id, "price", req.body.price));
-        if(req.body.payee) promises.push(itemAPI.changeItem(req.params.id, "payee", req.body.payee));
-      }
-      else res.status(401).json({msg: 'User be an admin to the receipt linked to this item'}); */
-      if (req.body.receipt_id) promises.push(itemAPI.changeItem(req.params.id, "receipt_id", req.body.receipt_id));
+      if(receipt.admin_id == req.user.user_id) {
+      if(req.body.receipt_id && !accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) res.status(401).json({msg: 'User must have access to the receipt they link.'});
+      else if (req.body.receipt_id) promises.push(itemAPI.changeItem(req.params.id, "receipt_id", req.body.receipt_id));
       if (req.body.name) promises.push(itemAPI.changeItem(req.params.id, "name", req.body.name));
       if (req.body.price) promises.push(itemAPI.changeItem(req.params.id, "price", req.body.price));
       if (req.body.payee) promises.push(itemAPI.changeItem(req.params.id, "payee", req.body.payee));
-
+      }
+      else res.status(401).json({msg: 'User be an admin to the receipt linked to this item'}); 
+    
       await Promise.all(promises);
       const updatedItem = await itemAPI.getItemByID(req.params.id);
   
@@ -149,13 +144,11 @@ router.put('/:id/update', [
 router.delete('/:id/delete', async (req, res) => {
     const item = await itemAPI.getItemByID(req.params.id);
     const receipt = await receiptAPI.getReceiptByID(item.receipt_id)
-    /* if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be an admin to delete an item from the receipt'});
+    if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be an admin to delete an item from the receipt'});
     else {
       await itemAPI.deleteItem(req.params.id);
-      if (!res.headersSent) res.status(200).json(JSON.stringify('Item successfully deleted.'));
-    } */
-    await itemAPI.deleteItem(req.params.id);
-    if (!res.headersSent) res.status(200).json('Item deleted successfully.');
+      if (!res.headersSent) res.status(200).json('Item deleted successfully.');
+    }
 });
 
 module.exports = router;

@@ -138,7 +138,7 @@ const check_tip_accesible = async (user_id, tip_id) => {
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     const tip = await tipAPI.getTipByID(tip_id);
-    if(tip.receipt_id in receiptIds) return true;
+    if(receiptIds.includes(tip.receipt_id)) return true;
     else return false;
 }
 
