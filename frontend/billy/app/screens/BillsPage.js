@@ -8,6 +8,7 @@ import {
 	View,
 } from "react-native";
 import Styles from "../styles";
+import Bill from "../assets/Bill";
 
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
@@ -17,7 +18,7 @@ function BillsPage(props) {
 	const sortBills = (bills, option) => {
 		switch (option) {
 			case "date":
-				return bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+				return bills.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			case "group":
 				return bills.sort((a, b) => a.name.localeCompare(b.name));
 			case "person":
@@ -129,11 +130,31 @@ function BillsPage(props) {
 			</View>
 			<ScrollView style={Styles.scrollContainer}>
 				{bills.map((bill) => {
+					let subtot = 0;
+					let people = [];
+					for (i = 0; i < bill.items.length; i++) {
+						subtot += bill.items[i].price;
+						let payeeIndex = people.indexOf(bill.items[i].payee);
+						if (payeeIndex === -1) {
+							people.push(bill.items[i].payee);
+						}
+					}		
 					return (
-						<SafeAreaView key={bill.receipt_id}>
-							<Text key={bill.receipt_id}>{bill.receipt_name}</Text>
-							<Text key={bill.receipt_id}>{bill.created_at}</Text>
-						</SafeAreaView>
+						<TouchableOpacity
+						onPress={() => navigation.navigate("ReceiptView")}
+						>
+							<Bill
+								storeName = {bill.receipt_name}
+								amount = {subtot + bill.tip + bill.tax}
+								date = {bill.created_at}
+								items = {bill.items}
+								splitBetween={people.length}
+							/>
+						</TouchableOpacity>
+						// <SafeAreaView key={bill.receipt_id}>
+						// 	<Text key={bill.receipt_id}>{bill.receipt_name}</Text>
+						// 	<Text key={bill.receipt_id}>{bill.created_at}</Text>
+						// </SafeAreaView>
 					);
 				})}
 			</ScrollView>
