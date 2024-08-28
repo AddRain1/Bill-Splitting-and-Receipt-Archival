@@ -86,9 +86,10 @@ router.post('/:id/update', [
     }
 ]);
 
-//delete user with ID
+/* //delete user with ID
 //Authorization: Must be logged in as the user being deleted
 //TODO: Add some second check before deleting (enter password? Send email?)
+//TODO: Address objects attached to the user
 router.post('/:id/delete', async (req, res) => {
     if(req.user.user_id != req.params.id) res.status(401).json({msg: 'Must be logged in as the user being deleted.'});
     else {
@@ -96,6 +97,6 @@ router.post('/:id/delete', async (req, res) => {
         await userAPI.deleteUser(req.params.id);
         if(!res.headersSent) res.status(200).json(JSON.stringify(user));
     }
-});
+}); */
 
 module.exports = router;
