@@ -9,28 +9,40 @@ const accessHelper = require('../helpers/access');
 //get a list of payment requests 
 //Authorization: Must be logged in. Can only see payment request if they are the payer, they are the receiver, or have access to the linked receipt.
 router.get('/', async (req, res) => {
+
+    if(!accessHelper.check_payment_request_accessible(req.user.user_id, req.params.id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
+    else {
+        const payment_request = paymentRequestAPI.getPaymentRequestByID(req.params.id);
+        if(!res.headersSent) res.sendStatus(200).json(JSON.stringify(payment_request));
+    }
     if(req.query.payer_id){
         const query = `WHERE payer_id = ${req.query.payer_id}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        if(!accessHelper.check_payment_request_accessible(req.user.user_id, req.query.payer_id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
         if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.receiver_id){
         const query = `WHERE receiver_id = ${req.query.receiver_id}`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        if(!accessHelper.check_payment_request_accessible(req.user.user_id, req.query.receiver_id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
+
         if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.pay_by){
-        const query = `WHERE pay_by = ${req.query.pay_by}`;
+        const query = `WHERE pay_by = ${req.query.pay_by} AND (payer_id = ${req.user.user_id} OR receiver_id = ${req.user.user_id})`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
+        payment_request_list.array.forEach(element => {
+            if(!accessHelper.check_payment_request_accessible(req.user.user_id, element.payer_id)) res.sendStatus(401).json({msg: 'User must be the payer, receiver, or have access to a linked receipt.'});
+        });
         if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.paid_on){
-        const query = `WHERE paid_on = ${req.query.paid_on}`;
+        const query = `WHERE paid_on = ${req.query.paid_on} AND (payer_id = ${req.user.user_id} OR receiver_id = ${req.user.user_id})`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
         if(!res.headersSent) res.status(200).json(payment_request_list);
     }
     else if(req.query.amount){
-        const query = `WHERE amount = ${req.query.amount}`;
+        const query = `WHERE amount = ${req.query.amount} AND (payer_id = ${req.user.user_id} OR receiver_id = ${req.user.user_id})`;
         const payment_request_list = await paymentRequestAPI.getPaymentRequests(query);
         if(!res.headersSent) res.status(200).json(payment_request_list);
     }

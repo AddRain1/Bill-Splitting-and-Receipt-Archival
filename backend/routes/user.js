@@ -23,10 +23,13 @@ router.get('/:id', async (req, res) => {
         const user = await userAPI.getUserByID(req.params.id);
         if(!res.headersSent) res.status(200).json(JSON.stringify(user));
     }
-    else{
+    else if(req.user.user_id != req.params.id){
         const userInfo = await userAPI.getUserByID(req.params.id);
         const userToSend = new Users(userInfo.username, userInfo.first_name, userInfo.last_name, null, null, userInfo.profile_description, userInfo.creation_date, userInfo.user_id);
         if(!res.headersSent) res.status(200).json(JSON.stringify(userToSend));
+    }
+    else{
+        if(!res.headersSent) res.status(401).json("Unauthorized");
     }
 });
 
