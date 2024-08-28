@@ -85,12 +85,23 @@ const check_group_accessible = async (user_id, group_id) => {
 }
 
 const get_accessible_taxes = async user_id => {
+    
     const receipts = await get_accessible_receipts(user_id);
+    console.log('Available receipts: ', receipts);
+    if (receipts.length === 0) {
+        return []; // Return early if there are no receipts to process
+    }
+    
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
-
+    console.log('List of receiptIds: ', receiptIds);
     //Get taxes assigned to each receipt
-    const tax_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
-    return await taxAPI.getTax(tax_receipt_query);
+    if (receiptIds.length > 0) {
+        const tax_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
+        return await taxAPI.getTaxes(tax_receipt_query);
+    }
+    else {
+        return [];
+    }
 }
 
 const check_tax_accesible = async (user_id, tax_id) => {
@@ -104,11 +115,22 @@ const check_tax_accesible = async (user_id, tax_id) => {
 
 const get_accessible_tips = async user_id => {
     const receipts = await get_accessible_receipts(user_id);
+
+    if (receipts.length === 0) {
+        return [];  // Return an empty array if no receipts are accessible
+    }
+
     const receiptIds = receipts.map(receipt => receipt.receipt_id).join(',');
 
     //Get tips assigned to each receipt
-    const tip_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
-    return await tipAPI.getTip(tip_receipt_query);
+    if (receiptIds.length > 0) {
+        const tip_receipt_query = `WHERE receipt_id IN (${receiptIds})`;
+        return await tipAPI.getTips(tip_receipt_query);
+    }
+    else {
+        return [];
+    }
+    
 }
 
 const check_tip_accesible = async (user_id, tip_id) => {

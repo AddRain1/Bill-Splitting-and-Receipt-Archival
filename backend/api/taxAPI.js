@@ -81,7 +81,7 @@ class taxTable_api extends tax_api{
         return taxes;
     }
 
-    static async getTaxById(id){
+    static async getTaxByID(id){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -90,10 +90,7 @@ class taxTable_api extends tax_api{
             database: DATABASE
         });
     
-        let results;
-        [results] = await connection.execute('SELECT * FROM taxes WHERE tax_id = ?', [id]);
-        [results] = await connection.execute('SELECT * FROM taxes WHERE receipt_id = ?', [id]);
-    
+        const [results] = await connection.execute('SELECT * FROM taxes WHERE tax_id = ?', [id]);
     
         if (results.length === 0) {
             throw new Error("No item found for the given ID");
@@ -151,7 +148,7 @@ class taxTable_api extends tax_api{
     static async changeTax(id, property_id, property_value){
 
         // Get tax by Id
-        const [tax] = await this.getTaxById(id);
+        const tax = await this.getTaxByID(id);
         if (!tax) {
             throw new Error('Tax does not exist');
         }
@@ -166,10 +163,10 @@ class taxTable_api extends tax_api{
 
         // Update tax bassed on property_id
         if (property_id == "name") {
-            await connection.execute('UPDATE taxes SET tax_name = ? WHERE tax_id = ?', [property_value], [tax.tax_id]);
+            await connection.execute('UPDATE taxes SET tax_name = ? WHERE tax_id = ?', [property_value, tax.tax_id]);
         }
         else if (property_id == "percentage") {
-            await connection.execute('UPDATE taxes SET tax_percentage = ? WHERE tax_id = ?', [property_value], [tax.tax_id]);
+            await connection.execute('UPDATE taxes SET tax_percentage = ? WHERE tax_id = ?', [property_value, tax.tax_id]);
         }
 
         await connection.end();
@@ -181,7 +178,7 @@ class taxTable_api extends tax_api{
     static async deleteTax(id){
         
         // Get tax by id
-        const [tax] = await this.getTaxById(id);
+        const tax = await this.getTaxByID(id);
         if(!tax) {
             throw new Error('No tax found.');
         }

@@ -1,6 +1,5 @@
 const mysql = require("mysql2/promise");
 const Tip = require("../class/tipClass.js");
-const receiptTable_api = require("./receiptsAPI.js");
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -27,10 +26,10 @@ class tip_api{
     }
 
     // Abstract method to be overridden by subclasses
-    static async getTipById(id){
+    static async getTipByID(id){
         // Check if the subclass has defined this method
-        if(!this.getTipById){
-            throw new Error("getTipById method must be defined");
+        if(!this.getTipByID){
+            throw new Error("getTipByID method must be defined");
         }
     }
 
@@ -78,15 +77,41 @@ class tipTable_api extends tip_api{
         const tips = results.map(result => new Tip(
             result.tip_id,
             result.receipt_id,
-            result.amount
+            result.tip_amount
         ));
         // Return the tip object
         return tips;
     }
 
-    static async getTipById(id){
-        const tips = await this.getTips('WHERE tip_id = ' + id);
-        return tips[0];
+    static async getTipByID(id){
+        // Connect to the MySQL database
+        const connection = await mysql.createConnection({
+            host: HOST,
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+    
+        const [results] = await connection.execute('SELECT * FROM tips WHERE tip_id = ?', [id]);
+    
+        if (results.length === 0) {
+            throw new Error("No item found for the given ID");
+        } 
+
+        // get item object from results
+        const result = results[0];
+        const tip = new Tip(
+            result.tip_id,
+            result.receipt_id,
+            result.tip_amount,
+        );
+
+
+        // Close connection
+        await connection.end();
+
+        // Return the item object
+        return tip;
     }
 
     // Override the addTip method
@@ -114,7 +139,7 @@ class tipTable_api extends tip_api{
 
         // Execute the query to insert the new tip into the database
         const query = 'INSERT INTO tips (receipt_id, tip_amount) VALUES (?, ?)';
-        const params = [ tip.receipt_id, tip.amount];
+        const params = [tip.receipt_id, tip.amount];
         await connection.execute(query, params);
         await connection.end();
     }
@@ -124,7 +149,7 @@ class tipTable_api extends tip_api{
     static async changeTip(id, property_id, property_value){
         
         // Check if the tip exists
-        const [tip] = await this.getTipById(id);
+        const tip = await this.getTipByID(id);
         if (!tip) {
             throw new Error('Tip does not exist');
         }
@@ -136,11 +161,8 @@ class tipTable_api extends tip_api{
             database: DATABASE
         });
         // Execute the query to update tips amount in the database
-        if (property_id == "name") {
-            await connection.execute('UPDATE tips SET tip_amount = ? WHERE receipt_id = ?', [property_value], [tip.receipt_id]);
-        }
-        else if (property_id == "amount") {
-            await connection.execute('UPDATE tips SET tip_id = ? WHERE receipt_id = ?', [property_value], [tip.receipt_id]);
+        if (property_id == "amount") {
+            await connection.execute('UPDATE tips SET tip_amount = ? WHERE receipt_id = ?', [property_value, tip.receipt_id]);
         }
         
         await connection.end();
@@ -151,7 +173,7 @@ class tipTable_api extends tip_api{
     // Call when deleting receipt
     static async deleteTip(id){
         
-        const [tip] = await this.getTipById(id);
+        const tip = await this.getTipByID(id);
         if(!tip) {
             throw new Error('No tip found.');
         }

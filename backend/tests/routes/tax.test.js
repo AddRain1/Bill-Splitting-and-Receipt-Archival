@@ -1,6 +1,7 @@
 let request = require('supertest');
 const app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
+const taxAPI = require('../../api/taxAPI');
 
 describe("tax route tests", () => {
     let request = require('supertest');
@@ -73,20 +74,13 @@ describe("tax route tests", () => {
     beforeEach(() => {
         jest.useRealTimers();
     })
-
+    
     const payload = {
         tax_id: null,
         receipt_id: '20230816000000',
         name: 'orange',
         percentage: '0.08'
     };
-    
-    const updatedPayload = {
-        tax_id: null,
-        receipt_id: '20230816000000',
-        name: 'apple',
-        percentage: '0.22'
-    }
 
     it("GET /tax when no taxes exist", async () => {
         await agent
@@ -94,7 +88,7 @@ describe("tax route tests", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((response) => {
-                expect(response.body.length).toBe([])
+                expect(response.body).toEqual('[]')
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -105,47 +99,66 @@ describe("tax route tests", () => {
 
         await agent
             .post("/taxes/add")
-            .query(payload)
+            .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(201)
             .then(response => {
                 const body = JSON.parse(response.text);
-                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+                expect(body.receipt_id).toBe(payload.receipt_id);
+                expect(body.name).toBe(payload.name);
+                expect(body.percentage).toBe(payload.percentage);
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
-    });
+    }, 10000);
 
     it("GET /taxes/:id - get a tax by ID", async () => {
 
+        const taxes = await taxAPI.getTaxes();
+        const tax_ids = taxes.map(tax => tax.tax_id);
+
         // Attempt to retrieve tax by id
         await agent
-            .get(`/taxes/${payload.receipt_id}`)
+            .get(`/taxes/${tax_ids[0]}`)
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
                 const body = JSON.parse(response.text);
-                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+                expect(body.receipt_id).toBe(payload.receipt_id);
+                expect(body.name).toBe(payload.name);
+                expect(body.percentage).toBe(payload.percentage);
             })
             .catch((err) => {
                 expect(err).toBe(null);
             });
-    });
+    }, 10000);
 
     it("PUT /taxes/:id/update - update a tax", async () => {
 
+        const taxes = await taxAPI.getTaxes();
+        const tax_ids = taxes.map(tax => tax.tax_id);
+
+        const updatedPayload = {
+            tax_id: tax_ids[0],
+            receipt_id: '20230816000000',
+            name: 'apple',
+            percentage: '0.22'
+        }
+
         // Update the tax
         await agent
-            .put(`/taxes/${payload.receipt_id}/update`)
+            .put(`/taxes/${tax_ids[0]}/update`)
             .send(updatedPayload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
                 const body = JSON.parse(response.text);
-                expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+                expect(body.receipt_id).toBe(updatedPayload.receipt_id);
+                expect(body.name).toBe(updatedPayload.name);
+                expect(body.percentage).toBe(updatedPayload.percentage);
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -154,12 +167,15 @@ describe("tax route tests", () => {
 
     it("DELETE /taxes/:id/delete - delete a tax", async () => {
         
+        const taxes = await taxAPI.getTaxes();
+        const tax_ids = taxes.map(tax => tax.tax_id);
+
         // Delete the tax
         await agent
-            .delete(`/taxes/${payload.receipt_id}/delete`)
+            .delete(`/taxes/${tax_ids[0]}/delete`)
             .expect(200)
             .then(response => {
-                expect(response.body.msg).toBe('Tax deleted successfully.');
+                expect(response.body).toBe('Tax deleted successfully.');
             })
             .catch((err) => {
                 expect(err).toBe(null);

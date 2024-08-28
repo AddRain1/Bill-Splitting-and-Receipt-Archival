@@ -1,6 +1,7 @@
 let request = require('supertest');
 let app = require('../../app');
 const {clearTable, checkPayloadWithResponse} = require('../../helpers/database');
+const itemAPI = require('../../api/itemAPI');
 
 describe("item route tests", () => {
     const agent = request.agent(app);  
@@ -79,18 +80,7 @@ describe("item route tests", () => {
         price: '23.46',
         payee: 'john',
         created_at: null,
-        user: 'user2'
     };
-    
-    const updatedPayload = {
-        item_id: null,
-        receipt_id: '20230816000000',
-        name: 'apple', 
-        price: '46.23',
-        payee: 'david',
-        created_at: null,
-        user: 'user2'
-    }
 
     it("GET /items when no items exist", async () => {
         await agent
@@ -98,11 +88,10 @@ describe("item route tests", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((response) => {
-                console.log(response.body);
                 expect(response.body).toEqual([]);
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
     }, 10000); 
 
@@ -116,31 +105,33 @@ describe("item route tests", () => {
             .expect(201)
             .then(response => {
                 const body = response.body;
-                /*expect(payload.receipt_id).toBe(body.receipt_id);
-                expect(payload.name).toBe(body.name);
-                expect(payload.price).toBe(body.price);
-                expect(payload.payee).toBe(body.payee);
-                expect(payload.user).toBe(body.user);*/
+                expect(body.receipt_id).toBe(payload.receipt_id);
+                expect(body.name).toBe(payload.name);
+                expect(body.price).toBe(payload.price);
+                expect(body.payee).toBe(payload.payee);
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
 
     }, 10000); 
 
     it("GET /items/:id - get a item by ID", async () => {
 
+        const items = await itemAPI.getItems();
+        const item_ids = items.map(item => item.item_id);
+
         // Attempt to retrieve item by id
         await agent
-            .get('/items/' + payload.receipt_id)
+            .get('/items/' + item_ids[0])
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
-                const body = response.body;
-                /*expect(item.receipt_id).toBe(body.receipt_id);
-                expect(item.name).toBe(body.name);
-                expect(item.price).toBe(body.price);
-                expect(item.payee).toBe(body.payee);*/
+                const body = JSON.parse(response.text);
+                expect(body.receipt_id).toBe(payload.receipt_id);
+                expect(body.name).toBe(payload.name);
+                expect(body.price).toBe(payload.price);
+                expect(body.payee).toBe(payload.payee);
             })
             .catch((err) => {
                 console.error(err);
@@ -150,19 +141,31 @@ describe("item route tests", () => {
 
     it("PUT /items/:id/update - update a item", async () => {
         
+        const items = await itemAPI.getItems();
+        const item_ids = items.map(item => item.item_id);
+
+        const updatedPayload = {
+            item_id: item_ids[0],
+            receipt_id: '20230816000000',
+            name: 'apple', 
+            price: '46.23',
+            payee: 'david',
+            created_at: null,
+        }
+
         // Update the item
         await agent
-            .put(`/items/${payload.receipt_id}/update`)
+            .put(`/items/${item_ids[0]}/update`)
             .send(updatedPayload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .expect(200)
             .then(response => {
                 const body = response.body;
-                /* expect(updatedPricePayload.name).toBe(body.name);
-                expect(updatedPricePayload.receipt_id).toBe(body.receipt_id);
-                expect(updatedPricePayload.price).toBe(body.price);
-                expect(updatedPricePayload.payee).toBe(body.payee);*/
+                expect(body.receipt_id).toBe(updatedPayload.receipt_id);
+                expect(body.name).toBe(updatedPayload.name);
+                expect(body.price).toBe(updatedPayload.price);
+                expect(body.payee).toBe(updatedPayload.payee);
             })
             .catch((err) => {
                 expect(err).toBe(null);
@@ -171,15 +174,18 @@ describe("item route tests", () => {
 
     it("DELETE /items/:id/delete - delete a item", async () => {
 
+        const items = await itemAPI.getItems();
+        const item_ids = items.map(item => item.item_id);
+
         // Delete the item
         await agent
-            .delete(`/items/${payload.receipt_id}/delete`)
+            .delete(`/items/${item_ids[0]}/delete`)
             .expect(200)
             .then(response => {
-                expect(response.body.msg).toBe('Item deleted successfully.');
+                expect(response.body).toBe('Item deleted successfully.');
             })
             .catch((err) => {
-                console.error(err);
+                expect(err).toBe(null);
             });
 
     }, 10000);

@@ -29,15 +29,15 @@ class itemAPI{
     static async getItemByQuery(query){
         // Check if the subclass has defined this method
         if(!this.getItemByQuery){
-            throw new Error("getItemById method must be defined");
+            throw new Error("getItemByID method must be defined");
     }
     }
 
     // Abstract method to be overridden by subclasses
-    static async getItemById(id){
+    static async getItemByID(id){
         // Check if the subclass has defined this method
-        if(!this.getItemById){
-                throw new Error("getItemById method must be defined");
+        if(!this.getItemByID){
+                throw new Error("getItemByID method must be defined");
         }
     }
 
@@ -135,9 +135,9 @@ class itemTableAPI extends itemAPI{
         // Return the item object
         return item;
     }
-    // Override the getItemById method
+    // Override the getItemByID method
     // Static async function to get an item by item_id from the database
-    static async getItemById(id){
+    static async getItemByID(id){
         // Connect to the MySQL database
         const connection = await mysql.createConnection({
             host: HOST,
@@ -146,11 +146,7 @@ class itemTableAPI extends itemAPI{
             database: DATABASE
         });
       
-        console.log('This is the id:', id);
-        let results;
-        [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [id]);
-        [results] = await connection.execute('SELECT * FROM items WHERE receipt_id = ?', [id]);
-    
+        const [results] = await connection.execute('SELECT * FROM items WHERE item_id = ?', [id]);
     
         if (results.length === 0) {
             throw new Error("No item found for the given ID");
@@ -186,20 +182,22 @@ class itemTableAPI extends itemAPI{
             database: DATABASE
         });
         
-        console.log('Item receipt_id to add:', item.receipt_id); 
+        // Get the tax from the database
+        const itemQuery = 'SELECT * FROM items WHERE receipt_id = ?';
+        const itemParams = [item.receipt_id];
         
-        /*if(this.getItemById(item.receipt_id)){
-            // Throw an error if the item already exists
-            throw new Error("item already exist");
-        } */
+        // Check if the receipt already exists
+        const getInfo = await connection.execute(itemQuery, itemParams);
+        const exist = getInfo[0].length > 0;
+        
+        if(exist){
+            throw new Error("Item already exist");
+        }
 
         // Execute the query to insert the new item into the database
         const query = 'INSERT INTO items (receipt_id, item_name, item_price, item_payee) VALUES (?, ?, ?, ?)';
         const params = [item.receipt_id, item.name, item.price, item.payee];
         await connection.execute(query, params);
-
-        console.log('Item successfully added');
-
         await connection.end();
     }
 
@@ -207,7 +205,7 @@ class itemTableAPI extends itemAPI{
     // Static async function to change name of item in the database
     static async changeItem(id, property_id, property_value){
 
-        const item = await this.getItemById(id);
+        const item = await this.getItemByID(id);
         if(!item){
             // Throw an error if the receipt already exists
             throw new Error("Item doesn't exist");
@@ -245,7 +243,7 @@ class itemTableAPI extends itemAPI{
     static async deleteItem(id){
         
         // Get item by id to check if it exists
-        const item = await this.getItemById(id);
+        const item = await this.getItemByID(id);
         if(!item) {
             throw new Error(`No item found.`);
         }
