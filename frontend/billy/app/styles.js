@@ -218,115 +218,96 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		right: 3,
 	},
-	
-	icon: {
-		size: 25,
-		color: COLORS.white,
-		
-	},
 	arrowContainer: {
 		flexDirection: "row",
-		
 	},
 	returnButtonContainer: {
-		top:40,
+		top: 40,
 		left: 25,
-		flexDirection: "row", 
-		alignItems: 'center'
-
-
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	returnButtonText: {
 		fontFamily: "SplineSansMono",
 		fontSize: 16,
 		color: COLORS.white,
-		
 	},
 	addFriend: {
-		width:380,
+		width: 380,
 		height: 102,
-		top:75,
-
+		top: 75,
 	},
-	qrCodePlaceHolder:{
-		width:275,
+	qrCodePlaceHolder: {
+		width: 275,
 		height: 275,
 		backgroundColor: COLORS.teal,
-		alignSelf: 'center',
-		borderRadius:10
-
-
+		alignSelf: "center",
+		borderRadius: 10,
 	},
 	switchButton: {
 		backgroundColor: COLORS.softWhite,
 		padding: 10,
 		borderRadius: 5,
-		alignItems: 'center',
+		alignItems: "center",
 		marginBottom: 20,
 		top: 120,
 		marginTop: 10,
-		alignSelf: 'center',
-		width: 360
-	  },
-	  switchButtonText: {
-		
+		alignSelf: "center",
+		width: 360,
+	},
+	switchButtonText: {
 		color: COLORS.black,
 		fontSize: 16,
-		fontFamily:"SplineSansMono", 
-	  },
-	  qrCodeContainer: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		top:50,
-	  },
-	  qrCodeScanner: {
+		fontFamily: "SplineSansMono",
+	},
+	qrCodeContainer: {
+		alignItems: "center",
+		justifyContent: "center",
+		top: 50,
+	},
+	qrCodeScanner: {
 		width: 275,
 		height: 275,
-		backgroundColor: '#ccc',
-		alignItems: 'center',
-		justifyContent: 'center',
+		backgroundColor: "#ccc",
+		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: 10,
-		overflow: 'hidden',
-	  },
-	  cameraButtonWrapper: {
-		position: 'absolute',
+		overflow: "hidden",
+	},
+	cameraButtonWrapper: {
+		position: "absolute",
 		bottom: 10,
-		alignItems: 'center',
-	  },
-	  qrCodeText: {
-		color: '#fff',
+		alignItems: "center",
+	},
+	qrCodeText: {
+		color: "#fff",
 		fontSize: 18,
-	  },
-	  cameraButton2:{
-		position:'absolute',
-		top:100,
+	},
+	cameraButton2: {
+		position: "absolute",
+		top: 100,
 		borderRadius: 30,
-		alignItems:'center',
-		width:60,
-		height:60,
-	  },
-	  receiptContainer: {
-		
+		alignItems: "center",
+		width: 60,
+		height: 60,
+	},
+	receiptContainer: {
 		flex: 1,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: "#FFFFFF",
 		padding: 20,
-		
-	  },
-	  billContainer:{
-		flex:1,
-		
-	  },
+	},
+	billContainer: {
+		flex: 1,
+	},
 
 	goArrow2: {
-		
 		width: 25,
 		height: 25,
 		backgroundColor: COLORS.teal,
-		alignItems: 'center',
+		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 4,
-		left:180,
-		
+		left: 180,
 	},
 	icon: {
 		size: 25,
@@ -335,26 +316,24 @@ const styles = StyleSheet.create({
 	newFriendContainer: {
 		flexDirection: "row",
 		backgroundColor: COLORS.softWhite,
-		width:380,
-		borderRadius:4,
-		padding:4,
+		width: 380,
+		borderRadius: 4,
+		padding: 4,
 		top: 10,
-		height:38,
-		marginBottom:40,
-		alignItems:'center'
+		height: 38,
+		marginBottom: 40,
+		alignItems: "center",
 	},
-	newFriendGroupText:{
-		fontFamily:'SplineSansMono',
-		fontSize:14,
+	newFriendGroupText: {
+		fontFamily: "SplineSansMono",
+		fontSize: 14,
 	},
 	scrollViewContent: {
-		top:5,
+		top: 5,
 		flexGrow: 1,
-		alignItems: 'center', // Ensure this is applied to contentContainerStyle
-		justifyContent: 'flex-start',
-	  },
-	
-
+		alignItems: "center", // Ensure this is applied to contentContainerStyle
+		justifyContent: "flex-start",
+	},
 });
 
 export default styles;

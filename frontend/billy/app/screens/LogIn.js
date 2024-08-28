@@ -28,10 +28,10 @@ import {
 	View,
 } from "react-native";
 import CustomInput from "../assets/CustomInput";
-import styles from "../styles";
 import HomeStackNavigator from "../assets/HomeStackNavigator";
+import styles from "../styles";
 
- function LogIn(props) {
+function LogIn(props) {
 	const [font] = useFonts({
 		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"), // Adjust the path accordingly
 	});

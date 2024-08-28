@@ -1,11 +1,10 @@
+import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import React from "react";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import User from "./User";
-import AppLoading from "expo-app-loading";
 
 const WelcomeBar = ({ username }) => {
-	
 	const [font] = useFonts({
 		SplineSansMono: require("./../assets/fonts/SplineSansMono-Regular.ttf"),
 		PlayfairDisplay_400Regular: require("./../assets/fonts/PlayfairDisplay-Regular.ttf"),
@@ -20,7 +19,7 @@ const WelcomeBar = ({ username }) => {
 		<View style={styles.container}>
 			<Image source={require("./../assets/logo.jpeg")} style={styles.image} />
 			<Text style={styles.welcomeText}>
-				hello,  <Text style={styles.username}>{username}</Text>
+				hello, <Text style={styles.username}>{username}</Text>
 			</Text>
 		</View>
 	);
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 	},
 	username: {
-		fontFamily:  "PlayfairDisplay-BoldItalic"
-	}
+		fontFamily: "PlayfairDisplay-BoldItalic",
+	},
 });
 export default WelcomeBar;

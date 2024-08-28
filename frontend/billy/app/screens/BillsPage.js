@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
 	FlatList,
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
-	ScrollView
 } from "react-native";
-import Styles from "../styles";
+import Icon from "react-native-vector-icons/FontAwesome";
 import Bill from "../assets/Bill";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Styles from "../styles";
 
 function BillsPage(props) {
 	const [selectedTab, setSelectedTab] = useState("owe"); // 'owe' or 'owed'
@@ -31,6 +31,7 @@ function BillsPage(props) {
 
 	const bills = [
 		{
+			receipt_id: 1,
 			storeName: "Ralph’s Fresh Fare",
 			amount: 35.16,
 			date: "2024-06-21",
@@ -38,31 +39,30 @@ function BillsPage(props) {
 			splitBetween: 2,
 		},
 		{
+			receipt_id: 2,
 			storeName: "Costco",
 			amount: 77.32,
 			date: "2024-06-17",
 			items: 11,
 			splitBetween: 4,
-	
 		},
 		{
+			receipt_id: 3,
 			storeName: "Tacos El Gordos",
 			amount: 16.98,
 			date: "2024-06-17",
 			items: 2,
 			splitBetween: 1,
-	
 		},
 		{
+			receipt_id: 4,
 			storeName: "Legoland California",
-			amount: 89.80,
+			amount: 89.8,
 			date: "2024-05-29",
 			items: 2,
 			splitBetween: 1,
-		
-		}
+		},
 	];
-	
 
 	return (
 		<View style={Styles.container}>
@@ -143,9 +143,9 @@ function BillsPage(props) {
 				</View>
 			</View>
 			<ScrollView style={Styles.billContainer}>
-				{bills.map((bill, index) => (
+				{bills.map((bill) => (
 					<Bill
-						key={index}
+						key={bill.receipt_id}
 						storeName={bill.storeName}
 						amount={bill.amount}
 						date={bill.date}

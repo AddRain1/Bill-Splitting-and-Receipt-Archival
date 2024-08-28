@@ -4,8 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import React from "react";
-import Receipt from "../assets/Receipts.js";
-import SummaryContainer from "../assets/SummaryContainer.js";
 import {
 	Alert,
 	Image,
@@ -18,6 +16,8 @@ import {
 	View,
 } from "react-native";
 import { Octicons } from "react-native-vector-icons";
+import Receipt from "../assets/Receipts.js";
+import SummaryContainer from "../assets/SummaryContainer.js";
 import WelcomeBar from "../assets/WelcomeBar";
 import Styles from "../styles";
 
@@ -29,7 +29,6 @@ import ReceiptsArchivePage from "./ReceiptsArchivePage";
 import Settings from "./Settings.js";
 
 function HomePage(props) {
-	
 	const [font] = useFonts({
 		SplineSansMono: require("../assets/fonts/SplineSansMono-Regular.ttf"),
 		PlayfairDisplay_400Regular: require("../assets/fonts/PlayfairDisplay-Regular.ttf"),
@@ -43,7 +42,7 @@ function HomePage(props) {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<WelcomeBar username="Taylor"/>
+			<WelcomeBar username="Taylor" />
 			<TouchableOpacity
 				style={styles.settingsButton}
 				onPress={() => navigation.navigate("Settings")}
@@ -54,10 +53,12 @@ function HomePage(props) {
 				<View style={styles.summaryContainers}>
 					<View style={styles.arrowContainer}>
 						<Text style={styles.expenseText}>Expense Breakdown</Text>
-						
 					</View>
 
-					<Image source={require("./../assets/Expense breakdown.png")} style={styles.Placeholder}/>
+					<Image
+						source={require("./../assets/Expense breakdown.png")}
+						style={styles.Placeholder}
+					/>
 				</View>
 
 				<View style={[styles.section, { marginTop: 10 }]}>
@@ -75,11 +76,9 @@ function HomePage(props) {
 							/>
 						</TouchableOpacity>
 					</View>
-                   <View style={styles.Summary}>
-				    <SummaryContainer />
-
-				   </View>
-					
+					<View style={styles.Summary}>
+						<SummaryContainer />
+					</View>
 				</View>
 
 				<View style={styles.summaryContainers}>
@@ -99,9 +98,17 @@ function HomePage(props) {
 					</View>
 
 					<ScrollView style={styles.container2}>
-					  <Receipt storeName="Ralph’s Fresh Fare" amount="35.16" date="24/06/21" />
-            		  <Receipt storeName="Costco" amount="77.32" date="24/06/17" />
-            		  <Receipt storeName="Tacos El Gordos" amount="16.98" date="24/06/17" />
+						<Receipt
+							storeName="Ralph’s Fresh Fare"
+							amount="35.16"
+							date="24/06/21"
+						/>
+						<Receipt storeName="Costco" amount="77.32" date="24/06/17" />
+						<Receipt
+							storeName="Tacos El Gordos"
+							amount="16.98"
+							date="24/06/17"
+						/>
 					</ScrollView>
 				</View>
 			</ScrollView>
@@ -129,7 +136,6 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		width: 380, // Width set to 380px
 		height: 214,
-		
 	},
 	billsText: {
 		fontFamily: "PlayfairDisplay_400Regular",
@@ -170,22 +176,14 @@ const styles = StyleSheet.create({
 		top: 10,
 	},
 	container2: {
-        
-        backgroundColor: '#FFFFFF',
-        flex: 1,
+		backgroundColor: "#FFFFFF",
+		flex: 1,
 		top: 30,
-		left:20,
-    },
-	Summary:{
-		padding:10,
-		
-
-		
-
-	}
-
-   
-
+		left: 20,
+	},
+	Summary: {
+		padding: 10,
+	},
 });
 
 export default HomePage;
