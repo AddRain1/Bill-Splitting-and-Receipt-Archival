@@ -195,7 +195,7 @@ class receiptTable_api extends receipt_api{
         for(let tip of tips) {
             await tipAPI.deleteTip(tip);
         }
-        const expense_rates = await expenseRateAPI.getExpenseRate(receipt_query);
+        const expense_rates = await expenseRateAPI.getExpenseRates(receipt_query);
         for(let expense_rate of expense_rates) {
             await expenseRateAPI.deleteExpenseRate(expense_rate);
         }
