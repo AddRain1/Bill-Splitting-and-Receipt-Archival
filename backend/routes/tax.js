@@ -20,10 +20,9 @@ router.get('/', async (req, res) => {
 router.post('/add', [
     async (req, res, next) => {
         //check if user has access to receipt
-        /*if(!accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) {
+        if(!accessHelper.check_receipt_accessible(req.user.user_id, req.body.receipt_id)) {
             res.status(401).json({msg: 'User must have access to the receipt they link.'});
-        } */
-       console.log('receipt_id: ', req.body.receipt_id);
+        }
        next();
     },
     body("name")
@@ -56,10 +55,10 @@ router.post('/add', [
 //Authorization: Must have access to the receipt that the tax is assigned to.
 router.get('/:id', async (req, res) => {
     try {
-        /*const hasAccess = await accessHelper.check_tax_accessible(req.user.user_id, req.params.id);
+        const hasAccess = await accessHelper.check_tax_accessible(req.user.user_id, req.params.id);
         if (!hasAccess) {
             return res.status(401).json({ msg: 'User must have access to the receipt that the tax is assigned to' });
-        } */
+        } 
         console.log('Fetching tax with id: ', req.params.id);
         const tax = await taxAPI.getTaxByID(req.params.id);
         if (!res.headersSent) {
@@ -92,13 +91,11 @@ router.put('/:id/update', [
         if (errors.isEmpty()) {
             const promises = [];
             const receipt = await receiptAPI.getReceiptByID(tax.receipt_id)
-            /* if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be admin of the receipt.'});
+            if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be admin of the receipt.'});
             else {
                 if(req.body.name) promises.push(taxAPI.changeTax(req.params.id, "name", req.body.name));
                 if(req.body.percentage) promises.push(taxAPI.changeTax(req.params.id, "percentage", req.body.percentage));
-            } */
-            if(req.body.name) promises.push(taxAPI.changeTax(req.params.id, "name", req.body.name));
-            if(req.body.percentage) promises.push(taxAPI.changeTax(req.params.id, "percentage", req.body.percentage));
+            }
             
             await Promise.all(promises);
 
@@ -115,13 +112,11 @@ router.put('/:id/update', [
 router.delete('/:id/delete', async (req, res) => {
     const tax = await taxAPI.getTaxByID(req.params.id);
     const receipt = await receiptAPI.getReceiptByID(tax.receipt_id);
-    /*if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be an admin to delete a tax from the receipt'});
+    if(receipt.admin_id != req.user.user_id) res.status(401).json({msg: 'User must be an admin to delete a tax from the receipt'});
     else {
-      await taxAPI.deleteTax(req.params.id);
-      if (!res.headersSent) res.status(200).json(JSON.stringify('Tax successfully deleted.'));
-    } */
-    await taxAPI.deleteTax(req.params.id);
-    if (!res.headersSent) res.status(200).json('Tax deleted successfully.');
+        await taxAPI.deleteTax(req.params.id);
+        if (!res.headersSent) res.status(200).json('Tax deleted successfully.');
+    } 
 });
 
 module.exports = router;

@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "nodemon ./src/app.js",
     "start": "nodemon ./src/app.js",
-    "test": "jest --force-exit",
+    "test": "jest --force-exit --run-in-band",
     "lint": "node_modules/eslint/bin/eslint.js ."
   },
   "keywords": [],
