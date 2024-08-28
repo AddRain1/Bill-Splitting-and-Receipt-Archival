@@ -22,6 +22,7 @@ import {
 	Text,
 	TextInput,
 	TouchableOpacity,
+	Alert,
 } from "react-native";
 import { Feather, Octicons } from "react-native-vector-icons";
 import Draggable from "../assets/Draggable";
@@ -36,6 +37,7 @@ import styles from "../styles";
 // 		item_price: 5.94,
 // 		index: 1,
 // 		box: 0,
+// 		payee: "Taylor",
 // 	},
 // 	{
 // 		item_id: 2,
@@ -43,6 +45,7 @@ import styles from "../styles";
 // 		item_price: 6.97,
 // 		index: 2,
 // 		box: 0,
+// 		payee: "Taylor",
 // 	},
 // 	{
 // 		item_id: 3,
@@ -50,6 +53,7 @@ import styles from "../styles";
 // 		item_price: 4.55,
 // 		index: 3,
 // 		box: 0,
+// 		payee: "Taylor",
 // 	},
 // 	{
 // 		item_id: 4,
@@ -57,6 +61,7 @@ import styles from "../styles";
 // 		item_price: 5.24,
 // 		index: 4,
 // 		box: 0,
+// 		payee: "Taylor",
 // 	},
 // 	{
 // 		item_id: 5,
@@ -64,6 +69,7 @@ import styles from "../styles";
 // 		item_price: 5.94,
 // 		index: 5,
 // 		box: 1,
+// 		payee: "Jordan",
 // 	},
 // 	{
 // 		item_id: 6,
@@ -71,6 +77,7 @@ import styles from "../styles";
 // 		item_price: 6.97,
 // 		index: 6,
 // 		box: 1,
+// 		payee: "Jordan",
 // 	},
 // 	{
 // 		item_id: 7,
@@ -78,6 +85,7 @@ import styles from "../styles";
 // 		item_price: 4.55,
 // 		index: 7,
 // 		box: 1,
+// 		payee: "Jordan",
 // 	},
 // 	{
 // 		item_id: 8,
@@ -85,6 +93,7 @@ import styles from "../styles";
 // 		item_price: 5.24,
 // 		index: 8,
 // 		box: 1,
+// 		payee: "Jordan",
 // 	},
 // ];
 
@@ -134,7 +143,7 @@ function ReceiptEdit(props) {
 
 	async function loadReceipt() {
 		try {
-			const response = await fetch("http://localhost:3000/routes/users/${id}", {
+			const response = await fetch("http://localhost:3000/routes/users/${user_id}", {
 				method: "GET",
 				headers: {
 					// 'Authorization': '${authToken}' // Add auth token here
@@ -149,7 +158,7 @@ function ReceiptEdit(props) {
 
 		try {
 			const response = await fetch(
-				"http://localhost:3000/routes/receipts/${id}",
+				"http://localhost:3000/routes/receipts/${receipt_id}",
 				{
 					method: "GET",
 					headers: {
@@ -212,7 +221,6 @@ function ReceiptEdit(props) {
 
 		if (oldBox === newBox) {
 			for (i = 0; i < updatedItemList.length; i++) {
-				// updatedItemList.forEach(item => {
 				if (updatedItemList[i].index !== index) {
 					if (
 						index < newIndex &&
@@ -228,14 +236,12 @@ function ReceiptEdit(props) {
 						updatedItemList[i].index += 1;
 					}
 				}
-				// });
 			}
 		} else {
 			boxCounts[oldBox] -= 1;
 			boxCounts[newBox] += 1;
 
 			for (i = 0; i < updatedItemList.length; i++) {
-				// updatedItemList.forEach(item => {
 				if (updatedItemList[i].index !== index) {
 					if (
 						index < newIndex &&
@@ -251,13 +257,13 @@ function ReceiptEdit(props) {
 						updatedItemList[i].index += 1;
 					}
 				}
-				// });
 			}
 
 			itemToMove.box = newBox;
 		}
 
 		itemToMove.index = newIndex;
+		setRemoveLast(true);
 		setItemList(updatedItemList);
 	};
 
@@ -293,6 +299,23 @@ function ReceiptEdit(props) {
 		} catch (error) {
 			console.error("Error:", error);
 		}
+	}
+
+	const handleDeleteUser = (userIndex) => {
+		const updatedItemList = [...itemList];
+		for(i = 0; i < updatedItemList.length; i++) {
+			if(updatedItemList[i].box === userIndex) {
+				updatedItemList[i].box = 0;
+				boxCounts[0]++;
+				updatedItemList[i].index = boxCounts[0];
+			} else if (updatedItemList[i].box < userIndex && updatedItemList[i].box > 0) {
+				updatedItemList[i].index += boxCounts[userIndex];
+			}
+		}
+		boxCounts.splice(userIndex, 1);
+		people.splice(userIndex,1);
+		boxStarts.splice(userIndex, 1);
+		setItemList(updatedItemList);
 	}
 
 	loadReceipt();
@@ -478,7 +501,7 @@ function ReceiptEdit(props) {
 							<Text style={[styles.caption, { fontSize: 14 }]}> Others: </Text>
 							<Text style={[styles.editInput, {}]}> {people.length - 1} </Text>
 						</SafeAreaView>
-						<TouchableOpacity onPress={handleAddNavigate()}>
+						<TouchableOpacity onPress={() => handleAddNavigate()}>
 							<Octicons
 								name="plus-circle"
 								size={24}
@@ -531,6 +554,7 @@ function ReceiptEdit(props) {
 									justifyContent: "center",
 									alignItems: "center",
 								}}
+								onPress={() => handleDeleteUser(1)}
 							>
 								<Octicons
 									name="x"
