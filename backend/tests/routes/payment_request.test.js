@@ -290,29 +290,6 @@ it("POST /paymentrequests/update - As the payer, decline payment request" , asyn
       });
 });
 
-it("POST /paymentrequests/update - As the receiver, update information" , async () => {
-  const payment_requests = await paymentRequestAPI.getPaymentRequests();
-  const payment_request_ids = payment_requests.map(p => p.payment_request_id);
-  
-  const payload = {
-      amount: 500,
-      description: 'hot cheetos and takis'
-  }
-  await request
-      .post("/paymentrequests/" + payment_request_ids[1] + "/update")
-      .send(payload)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
-      .expect(200)
-      .then(response => {
-          const body = response.body;
-          expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
-      })
-      .catch((err) => {
-          expect(err).toBe(null);
-      });
-});
-
   it("POST /paymentrequests/delete - As the receiver, delete the payment request before it is completed" , async () => {
     const payment_requests = await paymentRequestAPI.getPaymentRequests();
     const payment_request_ids = payment_requests.map(p => p.payment_request_id);
@@ -341,6 +318,30 @@ it("POST /paymentrequests/update - As the receiver, update information" , async 
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .expect(401)
+  });
+
+  it("POST /paymentrequests/update - As the receiver, update information" , async () => {
+    const payment_requests = await paymentRequestAPI.getPaymentRequests();
+    const payment_request_ids = payment_requests.map(p => p.payment_request_id);
+    
+    const payload = {
+        amount: 500,
+        description: 'hot cheetos and takis',
+        payment_is_confirmed: true
+    }
+    await request
+        .post("/paymentrequests/" + payment_request_ids[1] + "/update")
+        .send(payload)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .then(response => {
+            const body = response.body;
+            expect(checkPayloadWithResponse(payload, body)).toBeTruthy();
+        })
+        .catch((err) => {
+            expect(err).toBe(null);
+        });
   });
 
   it("Logout and login as another user", async () => {

@@ -118,6 +118,11 @@ router.post('/:id/update', [
         .isBoolean()
         .escape()
         .optional({ nullable: true }),
+    body("payment_is_confirmed", "payment_is_confirmed must have a boolean value")
+        .trim()
+        .isBoolean()
+        .escape()
+        .optional({ nullable: true }),
     async (req, res) => {
         const errors = validationResult(req);
 
@@ -132,6 +137,10 @@ router.post('/:id/update', [
                 if(req.body.pay_by) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "pay_by", req.body.pay_by));
                 if(req.body.amount) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "amount", req.body.amount));
                 if(req.body.description) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "description", req.body.description));
+                if("payment_is_confirmed" in req.body) {
+                    if(req.body.payment_is_confirmed) promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "paid_on", new Date()));
+                    else promises.push(paymentRequestAPI.changePaymentRequest(req.params.id, "paid_on", null));
+                }
             }
             else res.status(401).json({msg: 'User must be the payer or receiver to modify request'});
 
