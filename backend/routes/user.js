@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
+const Users = require("../class/userClass");
 
 const userAPI = require('../api/usersAPI');
 const bcrypt = require('bcrypt');
@@ -15,8 +16,18 @@ router.get('/', async (req, res) => {
 //get information of user with ID
 //Authorization: Must be logged in.
 router.get('/:id', async (req, res) => {
-    const user = await userAPI.getUserByID(req.params.id);
-    if(!res.headersSent) res.status(200).json(JSON.stringify(user));
+    // Check if user logged in is the same as the user being requested
+    // if they are the same, user can access everything
+    // if they are not, user can only access first name, last name, profile description, user_id, and creation date
+    if(req.user.user_id == req.params.id){
+        const user = await userAPI.getUserByID(req.params.id);
+        if(!res.headersSent) res.status(200).json(JSON.stringify(user));
+    }
+    else{
+        const userInfo = await userAPI.getUserByID(req.params.id);
+        const userToSend = new Users(userInfo.username, userInfo.first_name, userInfo.last_name, null, null, userInfo.profile_description, userInfo.creation_date, userInfo.user_id);
+        if(!res.headersSent) res.status(200).json(JSON.stringify(userToSend));
+    }
 });
 
 //update user with ID
