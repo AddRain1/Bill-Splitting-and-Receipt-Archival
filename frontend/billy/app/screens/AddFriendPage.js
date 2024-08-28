@@ -118,6 +118,8 @@ function AddFriendPage(props) {
   };
 
   
+
+  
   const handleAddFriend = async () => {
     if (!username) {
       Alert.alert("Error", "Please enter a friend's ID.");
