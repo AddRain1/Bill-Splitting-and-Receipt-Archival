@@ -28,12 +28,14 @@ import AddFriendPage from "./app/screens/AddFriendPage";
 import FriendsPage from "./app/screens/FriendsPage";
 import HomePage from "./app/screens/Home";
 import FriendGroups from "./app/screens/FriendGroups";
+import { UserProvider } from './app/assets/UserContext';
 
 const Stack = createNativeStackNavigator();
 
 
 export default function App() {
 	return (
+		<UserProvider>
 		<NavigationContainer>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				<Stack.Screen name="LogIn" component={LogIn} />
@@ -47,5 +49,6 @@ export default function App() {
 				
 			</Stack.Navigator>
 		</NavigationContainer>
+		</UserProvider>
 	);
 }

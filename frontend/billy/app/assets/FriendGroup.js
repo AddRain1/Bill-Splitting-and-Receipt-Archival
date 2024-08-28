@@ -1,4 +1,5 @@
 import React from 'react';
+import COLORS from './colors';
 import {
 	Alert,
 	FlatList,
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff',
       borderRadius: 8,
       padding: 16,
-      marginBottom: 12,
+      marginBottom: 10,
       width:380,
       backgroundColor: '#F0F4f8'
     },
@@ -65,14 +66,15 @@ const styles = StyleSheet.create({
       fontFamily: 'SplineSansMono'
     },
     manageButton: {
-      backgroundColor: '#b5e3df',
+      backgroundColor: COLORS.lightGray,
       paddingVertical: 8,
       paddingHorizontal: 16,
       borderRadius: 8,
     },
     manageButtonText: {
-      color: '#fff',
+      color: 'black',
       fontSize: 14,
+      fontFamily: 'SplineSansMono'
     },
   });
   

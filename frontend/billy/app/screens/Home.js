@@ -27,6 +27,7 @@ import COLORS from "../assets/colors.js";
 import BillsPage from "./BillsPage";
 import ReceiptsArchivePage from "./ReceiptsArchivePage";
 import Settings from "./Settings.js";
+import FriendGroup from "../assets/FriendGroup.js";
 
 function HomePage(props) {
 	
@@ -52,15 +53,42 @@ function HomePage(props) {
 			</TouchableOpacity>
 			<ScrollView style={styles.container}>
 				<View style={styles.summaryContainers}>
+					
 					<View style={styles.arrowContainer}>
-						<Text style={styles.expenseText}>Expense Breakdown</Text>
+						<Text style={styles.billsText}>Summary of Outstanding Bills</Text>
+						<TouchableOpacity
+							style={styles.goArrow}
+							onPress={() => navigation.navigate("BillsPage")}
+						>
+							<Icon
+								name="arrow-right"
+								size={16}
+								color={COLORS.black}
+								style={styles.icon}
+							/>
+						</TouchableOpacity>
+					</View>
+					<View style={Styles.friendGroups}>
+						<FriendGroup 
+						groupName="Costco group" 
+						members={['Alex S.', 'Jill M.', 'Grace X.']} 
+						bills="2"
+						onManagePress={() => console.log('Manage Costco group')}
+						/>
+						<FriendGroup 
+						groupName="Grocery" 
+						members={['Jordan W.', 'Taylor S.']} 
+						bills="4"
+						onManagePress={() => console.log('Manage Grocery')}
+						/>
+
 						
 					</View>
 
-					<Image source={require("./../assets/Expense breakdown.png")} style={styles.Placeholder}/>
+					
 				</View>
 
-				<View style={[styles.section, { marginTop: 10 }]}>
+				<View style={[styles.summaryContainers]}>
 					<View style={styles.arrowContainer}>
 						<Text style={styles.billsText}>Summary of Outstanding Bills</Text>
 						<TouchableOpacity
@@ -96,13 +124,14 @@ function HomePage(props) {
 								style={styles.icon}
 							/>
 						</TouchableOpacity>
-					</View>
 
-					<ScrollView style={styles.container2}>
+
+						</View>
+						<View style={styles.receiptContainer}>
 					  <Receipt storeName="Ralph’s Fresh Fare" amount="35.16" date="24/06/21" />
             		  <Receipt storeName="Costco" amount="77.32" date="24/06/17" />
             		  <Receipt storeName="Tacos El Gordos" amount="16.98" date="24/06/17" />
-					</ScrollView>
+					  </View>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -126,9 +155,10 @@ const styles = StyleSheet.create({
 		left: 373, // Adjust as needed
 	},
 	summaryContainers: {
-		marginTop: 10,
-		width: 380, // Width set to 380px
+		marginTop: 10, // Width set to 380px
 		height: 214,
+		marginBottom:10,
+		
 		
 	},
 	billsText: {
@@ -167,7 +197,7 @@ const styles = StyleSheet.create({
 	arrowContainer: {
 		flexDirection: "row",
 		left: 25,
-		top: 10,
+		top: 15,
 	},
 	container2: {
         
@@ -182,7 +212,16 @@ const styles = StyleSheet.create({
 
 		
 
-	}
+	},
+	receiptContainer: {
+		marginTop: 15, // Width set to 380px
+		height: 214,
+		width:380,
+		left:20,
+		marginBottom:10,
+		
+		
+	},
 
    
 

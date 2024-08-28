@@ -16,6 +16,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import NavigationBar from "../assets/NavigationBar";
 import colors from "../assets/colors.js";
 import Styles from "../styles.js";
+import Tesseract from "tesseract.js";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 function ScanPage(props) {
 	const [image, setImage] = useState("");
@@ -32,6 +33,9 @@ function ScanPage(props) {
 	
 
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
+	const [tax, setTax] = useState("");
+	const [tip, setTip] = useState("");
+	const [items, setItems] = useState("");
 
 	useEffect(() => {
 		(async () => {
@@ -40,6 +44,72 @@ function ScanPage(props) {
 			setHasCameraPermission(cameraStatus === "granted");
 		})();
 	}, []);
+
+	const convertImage = async (image) => {
+		try {
+			const result = await Tesseract.recognize(image, "eng", {
+				logger: (m) => console.log(m),
+				tessedit_char_whitelist: '0123456789.',
+			});
+
+			const extractedText = result.data.text;
+			await sortText(extractedText);
+
+			//Create POST request for text
+			const response = await fetch("http://localhost:3000/receipts/add", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ image, tax, tip, items }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const sortText = async (text) => {
+		// Guide for matching text
+		const twoParams = /(.+?)\s+\$?(\d+\.\d{2})(?![\dA-Za-z/])/g;
+		
+		let match;
+		const items = [];
+		const specialLines = { tax: null, tip: null };
+	
+		// process twoParams for items
+		while ((match = twoParams.exec(text)) !== null) {
+	
+			const [_, itemName, price] = match;
+			const trimmedName = itemName.trim();
+			const parsedPrice = parseFloat(price);
+		
+			// Check for special lines
+			const taxMatch = trimmedName.match(/\b(TAX|SALES TAX)\b/i);
+			const tipMatch = trimmedName.match(/\b(TIP)\b/i);
+			const totalMatch = trimmedName.match(/\b(TOTAL|AMOUNT DUE|SUB-TOTAL|SUB TOTAL|SUBTOTAL|AMOUNT|FOOD|CHANGE DUE|CHANGE|CASH|VISA TEND)\b/i);
+		
+			if (taxMatch) {
+				specialLines.tax = parsedPrice;
+			} 
+			else if (tipMatch) {
+				specialLines.tip = parsedPrice;
+			}
+			else if (!totalMatch) {
+				items.push({ name: trimmedName, price: parsedPrice });
+			}
+		}
+	
+		setItems(items.map(item => `${item.name}: ${item.price.toFixed(2)}`));
+		setTip(specialLines.tip);
+		setTax(specialLines.tax);
+	};
+
+
 
 	const handleImagePickerPress = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -50,6 +120,7 @@ function ScanPage(props) {
 
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
+			await convertImage(image);
 			setShowCamera(false); // Hide camera when image is selected
 			setCameraReady(false); // Reset camera readiness
 		}
@@ -73,6 +144,7 @@ function ScanPage(props) {
 			const result = await cameraRef.current.takePictureAsync();
 			setImage(result.uri); // Set the image URI to the state
 			console.log(image)
+			await convertImage(image);
 			setShowCamera(false); // Hide the camera after taking the picture
 			setCameraReady(false); // Reset camera readiness
 		  } catch (error) {

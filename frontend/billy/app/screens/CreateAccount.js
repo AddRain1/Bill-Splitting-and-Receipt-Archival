@@ -117,7 +117,7 @@ function CreateAccount(props) {
 				placeholder="username"
 				value={username}
 				setValue={setUsername}
-				style={[styles.input, { top: 130 }]}
+				style={[styles.input]}
 			/>
 			<CustomInput
 				placeholder="password"

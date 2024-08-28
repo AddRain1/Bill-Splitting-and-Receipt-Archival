@@ -110,7 +110,8 @@ import HomeStackNavigator from "../assets/HomeStackNavigator";
 
 			<TouchableOpacity
 				style={[styles.submitButton, { marginTop: 40 }]}
-				onPress={() => handleLogin()}
+				onPress={() => navigation.navigate("Main")}
+				/*onPress={() => handleLogin()}*/
 			>
 				<Text style={styles.submitText}>Log In</Text>
 			</TouchableOpacity>
