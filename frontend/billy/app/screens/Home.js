@@ -55,10 +55,10 @@ function HomePage(props) {
 				<View style={styles.summaryContainers}>
 					
 					<View style={styles.arrowContainer}>
-						<Text style={styles.billsText}>Summary of Outstanding Bills</Text>
+						<Text style={styles.billsText}>Groups</Text>
 						<TouchableOpacity
 							style={styles.goArrow}
-							onPress={() => navigation.navigate("BillsPage")}
+							onPress={() => navigation.navigate("Groups")}
 						>
 							<Icon
 								name="arrow-right"

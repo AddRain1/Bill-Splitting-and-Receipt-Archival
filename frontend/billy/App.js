@@ -35,7 +35,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 	return (
-		<UserProvider>
+		
 		<NavigationContainer>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				<Stack.Screen name="LogIn" component={LogIn} />
@@ -49,6 +49,6 @@ export default function App() {
 				
 			</Stack.Navigator>
 		</NavigationContainer>
-		</UserProvider>
+		
 	);
 }

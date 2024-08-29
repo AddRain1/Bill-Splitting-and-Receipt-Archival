@@ -19,7 +19,20 @@ import COLORS from "../assets/colors.js";
 import Styles from "../styles.js";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const ManageGroupPage = ({ FriendGroup }) => {
+const ManageGroupPage = ({ route, navigation }) => {
+  const { groupName, members } = route.params;
+  const handleRemoveFriend = (username) => {
+		Alert.alert('Remove Friend', `Friend ${username} removed from group.`);
+		// Here you would also update your backend or state to remove the friend
+	};
+
+	const disbandGroup = () => {
+		Alert.alert('Disband Group', 'The group has been disbanded.');
+		// Here you would also update your backend to remove the group
+		navigation.navigate('HomePage'); // Navigate back to home after disbanding the group
+	};
+
+
     return (
         <SafeAreaView>
             <View style={[Styles.receiptsWelcome, { height: 125 }]}>
@@ -29,10 +42,10 @@ const ManageGroupPage = ({ FriendGroup }) => {
              { left: 25, top: 40, color: "white", marginBottom: 10, alignItems: 'center' }
            ]}
          >
-            {FriendGroup.groupName}
+            	{groupName}
          </Text> 
          
-         <TouchableOpacity style={Styles.returnButtonContainer} onPress={() => navigation.navigate("FriendsPage")}>
+         <TouchableOpacity style={Styles.returnButtonContainer} onPress={() => navigation.navigate("FriendGroups", { groupName, members })}>
            <Icon
              name="arrow-left"
              size={16}
@@ -46,6 +59,25 @@ const ManageGroupPage = ({ FriendGroup }) => {
            </View>
          </TouchableOpacity>
          </View>
+         <FlatList
+				data={members}
+				keyExtractor={(item) => item.username}
+				renderItem={({ item }) => (
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10, padding: 10, backgroundColor: '#f0f0f0', borderRadius: 8 }}>
+						<View>
+							<Text style={{ fontWeight: 'bold' }}>{item.name} ({item.username})</Text>
+							<Text>{item.email}</Text>
+						</View>
+						<TouchableOpacity onPress={() => handleRemoveFriend(item.username)} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#ff6666', padding: 10, borderRadius: 5 }}>
+							<Text style={{ color: 'white' }}>remove</Text>
+						</TouchableOpacity>
+					</View>
+				)}
+			/>
+
+			<TouchableOpacity onPress={disbandGroup} style={{ marginTop: 20, padding: 15, backgroundColor: '#ff6666', borderRadius: 5, marginHorizontal: 20 }}>
+				<Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>Disband Group</Text>
+			</TouchableOpacity>
 
 
 
