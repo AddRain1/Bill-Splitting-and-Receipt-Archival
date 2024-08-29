@@ -12,12 +12,13 @@ import HomeStackNavigator from "./HomeStackNavigator";
 import BillsStackNavigator from "./BillsStackNavigator";
 import FriendsStackNavigator from "./FriendsStackNavigator";
 import ReceiptsStackNavigator from "./ReceiptsStackNavigator";
+import Styles from "../styles";
 
 const Tab = createBottomTabNavigator();
 
 function NavigationBar() {
 	return (
-		
+		<SafeAreaView style={styles.safeArea}>
 		<Tab.Navigator
 			screenOptions={{
 				headerShown: false,
@@ -100,10 +101,16 @@ function NavigationBar() {
 				
 			/>
 		</Tab.Navigator>
+		</SafeAreaView>
+		
 	);
 }
 
 const styles = StyleSheet.create({
+	safeArea: {
+		flex: 1,
+		backgroundColor: COLORS.background, // Assuming you have a background color defined
+	},
 	icon: {
 		justifyContent: "center",
 		alignItems: "center",

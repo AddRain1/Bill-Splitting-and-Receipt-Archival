@@ -34,7 +34,7 @@ const ManageGroupPage = ({ route, navigation }) => {
 
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={Styles.container}>
             <View style={[Styles.receiptsWelcome, { height: 125 }]}>
          <Text
            style={[

@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 const truncateMembers = (members, maxLength) => {
-  const memberNames = members.map(member => member.name || member); // Handle both objects and strings
     const joinedMembers = members.join(', ');
     if (joinedMembers.length > maxLength) {
       return joinedMembers.substring(0, maxLength - 3) + '...';

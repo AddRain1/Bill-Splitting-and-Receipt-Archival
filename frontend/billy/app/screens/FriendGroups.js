@@ -108,6 +108,8 @@ function FriendGroups({ route, navigation }) {
 				/>
       </View>
       
+
+      
        </SafeAreaView>
        
     );

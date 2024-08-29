@@ -33,10 +33,9 @@ function NewFriendGroupPage(props) {
 
 	const createGroup = () => {
 		if (selectedFriends.length > 0) {
-			const groupName = "Costco group"; // You can change this or make it dynamic
-		const memberNames = selectedFriends.map(friend => friend.name); // Extract names
-		Alert.alert('Group Created!', `You have created a group with: ${memberNames.join(', ')}`);
-		navigation.navigate('ManageGroupPage', { groupName, members: memberNames }); // Pass names only
+			const groupName = `${selectedFriends.map(f => f.name).join(', ')}`;
+			Alert.alert('Group Created!', `You have created a group with: ${selectedFriends.map(f => f.name).join(', ')}`);
+			navigation.navigate('ManageGroupPage', { groupName, members: selectedFriends });
 		} else {
 			Alert.alert('No Friends Selected', 'Please select at least one friend to create a group.');
 		}
@@ -94,7 +93,7 @@ function NewFriendGroupPage(props) {
          
          
          />
-         <TouchableOpacity
+                 <TouchableOpacity
 				style={{
 					marginTop: 20,
 					padding: 15,
@@ -108,6 +107,7 @@ function NewFriendGroupPage(props) {
 					Create Group
 				</Text>
 			</TouchableOpacity>
+         
 
         </ScrollView>
 
