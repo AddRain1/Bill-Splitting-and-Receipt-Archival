@@ -47,7 +47,7 @@ function BillsPage(props) {
 		}
 	}
 
-	loadBills();
+	// loadBills();
 	setBills(sortBills(sortOption));
 
 	return (
@@ -144,7 +144,7 @@ function BillsPage(props) {
 						onPress={() => navigation.navigate("ReceiptView")}
 						>
 							<Bill
-								storeName = {bill.receipt_name}
+								storeName = {bill.name}
 								amount = {subtot + bill.tip + bill.tax}
 								date = {bill.created_at}
 								items = {bill.items}
