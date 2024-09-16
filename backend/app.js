@@ -22,6 +22,7 @@ const userRouter = require('./routes/user');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
@@ -32,6 +33,9 @@ app.listen(PORT, (error) =>{
     if(!error) console.log("Server is Successfully Running, and App is listening on port "+ PORT)
     else console.log("Error occurred, server can't start", error);
 });
+
+
+console.log('Session Secret:', process.env.SESSION_SECRET);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -70,5 +74,11 @@ app.use((err, req, res, next) => {
   console.log(err.stack);
   res.status(500).send(err.stack);
 })
+app.use(cors({
+  origin: 'http://10.0.0.8:8081', // Allow requests from your frontend origin
+  methods: ['GET', 'POST'], // Specify allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+}));
+
 
 module.exports = app;
